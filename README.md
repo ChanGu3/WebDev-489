@@ -12,6 +12,11 @@
 
 ---
 > TBA
+>
+> #### Installing Existing Packages/Dependencies
+>
+> Need to Install NodeJS and Node Package Manager[npm]
+> while in the root directory of repo in terminal execute --> npm install
 
 <br>
 
@@ -30,7 +35,7 @@
 > #### Languages
 >
 > - Javascript [JS] (Programming)
-> - Hyper Text Markup Language (Markup)
+> - Hyper Text Markup Language [HTML] (Markup)
 > - Cascade Styling Sheets [CSS] (Declarative)
 >
 > #### Runtime Environment
