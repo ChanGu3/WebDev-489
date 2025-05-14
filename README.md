@@ -29,12 +29,12 @@
 
 <br>
 
-#### Helpful Websites From Syllabus
+#### Resources From Syllabus
 ---
-> ###### - MDN Web Docs References: JavaScript: [Link](https://developer.mozilla.org/en-US/docs/Web/JavaScriptLinks) to an external site.
-> ###### - MDN Web Docs References: HTML: [Link](https://developer.mozilla.org/en-US/docs/Web/HTMLLinks) to an external site.
-> ###### - MDN Web Docs References: CSS: [Link](https://developer.mozilla.org/en-US/docs/Web/CSSLinks) to an external site.
-> ###### - js JavaScript runtime environment: [Link](https://nodejs.org/en/docsLinks) to an external site.
-> ###### - Express: Web Framework for Node.js: [Link](https://expressjs.com/en/4x/api.htmlLinks) to an external site.
+> ###### - MDN Web Docs References: JavaScript: [Link](https://developer.mozilla.org/en-US/docs/Web/JavaScript) to an external site.
+> ###### - MDN Web Docs References: HTML: [Link](https://developer.mozilla.org/en-US/docs/Web/HTML) to an external site.
+> ###### - MDN Web Docs References: CSS: [Link](https://developer.mozilla.org/en-US/docs/Web/CSS) to an external site.
+> ###### - js JavaScript runtime environment: [Link](https://nodejs.org/en/docs) to an external site.
+> ###### - Express: Web Framework for Node.js: [Link](https://expressjs.com/en/4x/api.html) to an external site.
 > ###### - bBootstrap front end toolkit: [Link](https://getbootstrap.com/docs/5.2/getting-started/introduction)
 
