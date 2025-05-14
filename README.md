@@ -2,22 +2,26 @@
 
 ## Collaborators
 
----
-
 > - Jongmin Kim
 > - Monica Kim
 > - Chandler Guthrie  
 
+<br>
+
 ### Collaboration Documentation Location
 
 ---
-> TBA  
+> TBA
+
+<br>
 
 ### Project Type
 
 ---
 
-> #### TBA  
+> TBA  
+
+<br>
 
 ### Web Development Stack
 
@@ -42,6 +46,9 @@
 > #### Database Management Systems [DBMS]
 >
 > - TBA (SQL/NOSQL)  
+
+<br>
+<br>
 
 #### Resources From Syllabus
 
