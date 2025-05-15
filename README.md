@@ -11,20 +11,26 @@
 ### Collaboration Documentation Location
 
 ---
-> TBA
+>
+> #### Google Drive
+>
+> - [Link](https://drive.google.com/drive/folders/10vn7jZNH4iewhBU9jdoEg90wCQiyYmeq?usp=sharing) to google drive documents
 >
 > #### Installing Existing Packages/Dependencies
 >
-> Need to Install NodeJS and Node Package Manager[npm]
-> while in the root directory of repo in terminal execute --> npm install
+> - Step1: Need to Install NodeJS and Node Package Manager[npm]
+> - Step2: While in the root directory of repo in terminal execute --> npm install
 
 <br>
 
-### Project Type
+### Video Streaming Service
 
 ---
 
-> TBA  
+> #### Service/Brand Name: Otaku Stream
+> #### Users
+> - Admin: Upload/Update/Remove Series/Movies and Manage Users
+> - Users: Stream anime as a free or premium user
 
 <br>
 
@@ -46,11 +52,11 @@
 >
 > - Express JS (Routing/HTTP Requests)
 > - React JS (UI)
-> - TBA (DBMS - Framework)
+> - TBA (RDBMS - Framework)
 >
-> #### Database Management Systems [DBMS]
+> #### Relational Database Management System [RDBMS]
 >
-> - TBA (SQL/NOSQL)  
+> - TBA (SQL)  
 
 <br>
 <br>
@@ -70,3 +76,12 @@
 > ##### - Express: Web Framework for Node.js: [Link](https://expressjs.com/en/4x/api.html) to an external site
 >
 > ##### - bBootstrap front end toolkit: [Link](https://getbootstrap.com/docs/5.2/getting-started/introduction) to an external site
+
+#### Resources From Lecture
+
+---
+
+> ##### - HTML: [Link](https://www.w3.org/html/) to an exernal site
+>
+> ##### - CSS: [Link](https://www.w3schools.com/Css/) to an external site
+> 
