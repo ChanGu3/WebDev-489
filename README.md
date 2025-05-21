@@ -84,10 +84,10 @@
 
 ---
 
-> ##### - HTML: [General](https://www.w3.org/html/) to an exernal site
+> ##### - HTML: [General](https://www.w3.org/html/)
 >
-> ##### - CSS: [General](https://www.w3schools.com/Css/) to an external site
+> ##### - CSS: [General](https://www.w3schools.com/Css/)
 >
-> ##### - CSS: [Grid](https://gridbyexample.com/) to an external site 
+> ##### - CSS: [Grid](https://gridbyexample.com/)  
 >
 > ##### - CSS: [Flexbox](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)
