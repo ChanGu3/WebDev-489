@@ -59,7 +59,12 @@
 > - 
 > #### Relational Database Management System [RDBMS]
 >
-> - TBA (SQL)  
+> - TBA (SQL)
+>
+> # Testing (At Least 1 For Mid Sumbmission)
+>
+> - [Playwright](https://playwright.dev/)
+> - [Selenium](https://www.selenium.dev/)
 
 <br>
 <br>
