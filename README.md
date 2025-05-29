@@ -55,7 +55,6 @@
 > - TBA (RDBMS - Framework)
 > -
 > - [BootStrap](https://getbootstrap.com/) (Possible CSS Library)
-> - [TailWind](https://tailwindcss.com/) (Possible CSS Library)
 > - 
 > #### Relational Database Management System [RDBMS]
 >
@@ -63,7 +62,6 @@
 >
 > #### Testing (At Least 1 For Mid Sumbmission)
 >
-> - [Playwright](https://playwright.dev/)
 > - [Selenium](https://www.selenium.dev/)
 
 <br>
