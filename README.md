@@ -97,4 +97,4 @@
 >
 > ##### - HTML Form Element: [Form](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form)
 >
-> ##### - HTTP: [Status Code][https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status]
+> ##### - HTTP: [Status Code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status)
