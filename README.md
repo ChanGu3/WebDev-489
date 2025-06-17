@@ -94,3 +94,7 @@
 > ##### - CSS: [Grid](https://gridbyexample.com/)  
 >
 > ##### - CSS: [Flexbox](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)
+>
+> ##### - HTML Form Element: [Form](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form)
+>
+> ##### - HTTP: [Status Code][https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status]
