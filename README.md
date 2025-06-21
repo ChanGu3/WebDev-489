@@ -25,7 +25,7 @@
 > - Development (To Run Development While Building [Note: will automatically run "npm run clean" first]) --> npm run dev
 > - Build (To Build The Distribution Static Folder [Note: will automatically run "npm run clean" first]) --> npm run build
 > - Clean (To Remove The Current Distribution Build) --> npm run clean
-> - Start (To Run The Server Using The Current Distribution Build) --> npm run clean
+> - Start (To Run The Server Using The Current Distribution Build) --> npm run start
 
 <br>
 
