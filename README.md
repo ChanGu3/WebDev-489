@@ -8,6 +8,27 @@
 
 <br>
 
+### Development Setup
+
+---
+>
+> #### Installing Existing Packages/Dependencies
+>
+> - Step1: Install NodeJS (Node Package Manager[npm] Should Come With It)
+> - Step2: While in the otaku-stream-vss-app directory of repo in terminal execute --> npm install
+>
+>
+> #### Running Scripts For Dev, Build, Starting Build, Clean Build
+>
+> Look inside of the root package.json for more details...  --- Otherwise Below ---
+>
+> - Development (To Run Development While Building [Note: will automatically run "npm run clean" first]) --> npm run dev
+> - Build (To Build The Distribution Static Folder [Note: will automatically run "npm run clean" first]) --> npm run build
+> - Clean (To Remove The Current Distribution Build) --> npm run clean
+> - Start (To Run The Server Using The Current Distribution Build) --> npm run clean
+
+<br>
+
 ### Collaboration Documentation Location
 
 ---
@@ -16,10 +37,6 @@
 >
 > - [Link](https://drive.google.com/drive/folders/10vn7jZNH4iewhBU9jdoEg90wCQiyYmeq?usp=sharing) to google drive documents
 >
-> #### Installing Existing Packages/Dependencies
->
-> - Step1: Need to Install NodeJS and Node Package Manager[npm]
-> - Step2: While in the root directory of repo in terminal execute --> npm install
 
 <br>
 
