@@ -1,5 +1,7 @@
+import '../tailwind.css'
 import { useEffect } from 'react'
-
+import NavbarOS from '../components/NavbarOS.jsx'
+import FooterOS from '../components/FooterOS.jsx';
 
 function NotFound()
 {
@@ -9,7 +11,9 @@ function NotFound()
 
   return (
     <>
-      <p className="p-2">404 Not Found</p>
+      <NavbarOS />
+      <p className="p-10 text-[#F8F8FF]">404 Not Found</p>
+      <FooterOS />
     </>
   );
 }
