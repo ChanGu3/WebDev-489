@@ -1,4 +1,7 @@
+import '../tailwind.css'
 import { useEffect } from 'react'
+import NavbarOS from '../components/NavbarOS.jsx'
+import Footer from '../components/Footer.jsx';
 
 function Home()
 {
@@ -8,7 +11,9 @@ function Home()
 
   return (
     <>
-      <p className="p-2">Home</p>
+      <NavbarOS />
+      <p className="mx-[50%] my-10 text-white">Home</p>
+      <Footer />
     </>
   );
 };
