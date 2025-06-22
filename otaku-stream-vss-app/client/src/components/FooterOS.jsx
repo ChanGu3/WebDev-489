@@ -1,11 +1,11 @@
 import '../tailwind.css'
 
 
-function Footer()
+function FooterOS()
 {
     return (
         <>
-        <footer id="footerOS" className="mt-48 h-[100vh] flex flex-col justify-end items-center">
+        <footer id="footerOS" className="mt-48 min-h-[100vh] flex flex-col justify-end items-center">
             <div className="bg-linear-to-b from-transparent to-[#429bbe5d] w-full h-64 flex flex-col justify-end items-center">
                 <div className="flex flex-row space-x-16 mb-20">
                     <div className="flex flex-col space-y-6">
@@ -74,4 +74,4 @@ function Footer()
     )
 }
 
-export default Footer
+export default FooterOS
