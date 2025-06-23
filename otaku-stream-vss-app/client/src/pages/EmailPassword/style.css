@@ -1,0 +1,95 @@
+body {
+    background-color: #1A1A1A !important;
+    color: #F8F8FF !important;
+    font-family: system-ui, sans-serif;
+}
+
+.navbar {
+    background-color: #0F0F0F;
+}
+
+.navbar-toggler {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+.logo {
+    color: #87CEEB !important;
+    font-weight: bold;
+}
+
+.vr {
+    border-left: 1px solid rgba(169, 169, 169, 0.4);
+    height: 25px;
+}
+
+.main-title, .current-email-label {
+    color: #87CEEB !important;
+}
+
+.sidebar-nav .nav-link {
+    color: #F8F8FF;
+    padding: 0.25rem 0;
+}
+.sidebar-nav .nav-link.active,
+.sidebar-nav .nav-link:hover {
+    font-weight: bold;
+}
+
+h3 {
+    color: #A9A9A9;
+    font-size: 1rem;
+}
+
+.card {
+    background-color: #2B2A2A;
+    border: none;
+}
+
+.card h2 {
+    font-size: 1.25rem;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(169, 169, 169, 0.2);
+}
+
+.current-email {
+    background-color: #3A3939;
+    border: 1px solid rgba(169, 169, 169, 0.7);
+}
+
+.form-control {
+    background-color: #3A3939;
+    border: 1px solid rgba(169, 169, 169, 0.7);
+    color: #F8F8FF;
+}
+
+.form-control:focus {
+    background-color: #3A3939;
+    color: #F8F8FF;
+    border-color: #87CEEB;
+    box-shadow: 0 0 0 0.25rem rgba(135, 206, 235, .25);
+}
+
+.btn-cancel {
+    background-color: #2B2A2A;
+    border: 1px solid rgba(169, 169, 169, 0.7);
+    color: #F8F8FF;
+}
+
+.btn-cancel:hover {
+    background-color: #3A3939;
+    border-color: #A9A9A9;
+    color: #F8F8FF;
+}
+
+.btn-update {
+    background-color: #87CEEB;
+    border-color: #87CEEB;
+    color: #1A1A1A;
+}
+
+.btn-update:hover {
+    background-color: #98d7f0;
+    border-color: #98d7f0;
+    color: #1A1A1A;
+}
