@@ -1,0 +1,135 @@
+body {
+    background-color: #1A1A1A;
+    font-family: system-ui, sans-serif;
+    color: #ffffff;
+}
+
+.navbar {
+    background-color: #0F0F0F;
+}
+
+.navbar-toggler {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+.logo {
+    color: #87CEEB !important;
+    font-weight: bold;
+}
+
+.vr {
+    color: #444;
+}
+
+.main-container {
+    max-width: 800px;
+    margin-top: 3rem;
+    margin-bottom: 5rem;
+}
+.main-nav {
+    background-color: #0d1117 !important;
+    border-bottom: 1px solid #30363d;
+}
+.main-title {
+    color: #87CEEB;
+    font-weight: 600;
+}
+.sub-title {
+    color: #A9A9A9;
+}
+.content-card {
+    background-color: #2B2A2A;
+    border: 1px solid rgba(169, 169, 169, 0.3);
+    border-radius: 0.5rem;
+    box-shadow: none;
+}
+.card-body {
+    padding: 2.5rem;
+}
+.card-footer {
+    background-color: transparent;
+    border-top: none;
+    padding: 0 2.5rem 2.5rem;
+}
+.divider {
+    border-color: rgba(169, 169, 169, 0.3);
+}
+.section-title {
+    color: #ffffff;
+    font-weight: 500;
+}
+.section-description {
+    color: #A9A9A9;
+    font-size: 0.9rem;
+}
+.form-label {
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+.select-wrapper {
+    position: relative;
+}
+.select-wrapper::after {
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    content: "\f078";
+    color: #777777;
+    position: absolute;
+    right: 1rem;
+    top: 75%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+.form-select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: #3A3939;
+    border: 1px solid rgba(248, 248, 255, 0.4);
+    color: #ffffff;
+    background-image: none;
+}
+.form-select:focus {
+    box-shadow: none;
+    border-color: #87CEEB;
+}
+.form-check-label {
+    color: #ffffff;
+}
+.form-check-input {
+    background-color: #3A3939;
+    border-color: rgba(248, 248, 255, 0.4);
+}
+.form-check-input:checked {
+    background-color: #87CEEB;
+    border-color: #87CEEB;
+}
+.form-check-input:focus {
+    box-shadow: none;
+    border-color: #87CEEB;
+}
+.btn {
+    border-radius: 0.3rem;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+.btn-cancel {
+    background-color: #2B2A2A;
+    border: 1px solid #A9A9A9;
+    color: #ffffff;
+}
+.btn-cancel:hover {
+    background-color: #3A3939;
+    color: #ffffff;
+}
+.btn-save {
+    background-color: rgba(169, 169, 169, 0.5);
+    border: 1px solid #A9A9A9;
+    color: rgba(255, 255, 255, 0.7);
+}
+.btn-save:hover {
+    background-color: #87CEEB;
+    border-color: #87CEEB;
+    color: #1A1A1A;
+} 
