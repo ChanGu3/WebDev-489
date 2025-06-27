@@ -1,3 +1,6 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
 .bg-dark-primary{
     background-color: #1A1A1A;
 }
