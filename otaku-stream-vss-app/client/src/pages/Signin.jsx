@@ -25,7 +25,7 @@ function Signin()
                         <p className="md:w-[55%] text-center text-os-white font-thin text-sm">Enter Your email and password to access your account!</p>
                     </div>
                     <form id="signinForm" name="signinForm" className="w-full flex flex-col space-y-4 items-center justify-center"  onSubmit={(e) =>  { e.preventDefault(); ValidateSignin();}} method="post">
-                        <input id="email" name="password" className="w-full border-os-blue-secondary border-2 rounded-sm px-2 py-1 text-os-white placeholder:text-os-white/80  placeholder:font-thin" type="text" placeholder="Email"/>
+                        <input id="email" name="email" className="w-full border-os-blue-secondary border-2 rounded-sm px-2 py-1 text-os-white placeholder:text-os-white/80  placeholder:font-thin" type="text" placeholder="Email"/>
                         <input id="password" name="password" className="w-full border-os-blue-secondary border-2 rounded-sm px-2 py-1 text-os-white placeholder:text-os-white/80  placeholder:font-thin" type="password" placeholder="Password"/>
                         <button className="w-full bg-os-blue-primary hover:bg-os-blue-secondary active:bg-os-blue-tertiary rounded-sm p-1.5 font-semibold cursor-pointer" type="submit">Sign In</button>
                     </form>

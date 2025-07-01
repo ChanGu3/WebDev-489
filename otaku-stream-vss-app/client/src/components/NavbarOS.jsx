@@ -88,8 +88,8 @@ function NavbarOS()
                         <img className="min-w-6 w-6 mx-1 mt-1" type="image/png" src={tvLogo} alt="os-tv-logo"/>
                         <p className="text-os-blue-primary font-bold text-md hidden md:block">OtakuStream</p>
                     </a>
-                    <a className="px-5 flex flex-row items-center cursor-pointer hover:bg-gray-800 active:bg-gray-700 h-full" href="#">
-                        <img className="min-w-4 w-4 mt-0.75" src="/magnifying-glass-zoom-svgrepo-com.svg" alt="search-icon" href="#"></img>
+                    <a className="px-5 flex flex-row items-center cursor-pointer hover:bg-gray-800 active:bg-gray-700 h-full" href="/discover/search">
+                        <img className="min-w-4 w-4 mt-0.75" src="/magnifying-glass-zoom-svgrepo-com.svg" alt="search-icon"></img>
                     </a>
                     <div className="relative h-full hidden md:block">
                         <button id="categoriestab" name="categoriestab" className="px-3 flex flex-row items-center justify-center space-x-1 cursor-pointer hover:bg-gray-800 active:bg-gray-700 h-full" type="button" onClick={() => ToggleCategoriesDropDown()}>

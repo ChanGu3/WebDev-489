@@ -6,6 +6,7 @@ import Signin from './pages/Signin.jsx'
 import Signup from './pages/signup/Signup.jsx'
 import SignupSuccess from './pages/signup/SignupSuccess.jsx'
 import About from './pages/About.jsx'
+import Search from './pages/Search.jsx'
 
 function App() {
   return (
@@ -20,6 +21,10 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="*" element={<NotFound />} />
           <Route path="about" element={<About />} />
+        </Route>
+
+        <Route path="discover">
+          <Route path="search" element={<Search />} />
         </Route>
 
 
