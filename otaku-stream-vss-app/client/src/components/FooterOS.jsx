@@ -30,10 +30,10 @@ function FooterOS()
 {
     return (
         <>
-        <footer id="footerOS" className="mt-36 md:mt-48 min-h-[100vh] flex flex-col justify-end items-center">
+        <footer id="footerOS" className="mt-12 md:mt-36 flex flex-col justify-end items-center">
             <div className="bg-linear-to-b from-transparent to-os-blue-tertiary/40 w-full flex flex-col justify-end items-center">
                 <div className="flex flex-row space-x-2 md:space-x-16 mb-16 md:mb-18">
-                    <LinkTab titleName="Navigation" links={[{id: 1, name: "Go Home", href:"/"}, {id: 2, name: "Categories", href:"#"}]} />
+                    <LinkTab titleName="Navigation" links={[{id: 1, name: "Go Home", href:"/"}, {id: 2, name: "Genres", href:"/discover/genres"}, {id: 3, name: "Other", href:"/discover/other"}]} />
                     <LinkTab titleName="Socials" links={[{id: 1, name: "Twitter", href:"#"}]} />
                     <LinkTab titleName="OtakuStream" links={[{id: 1, name: "About Us", href:"#"}]} />
                     <LinkTab titleName="General" links={[{id: 1, name: "Support", href:"#"}]} />

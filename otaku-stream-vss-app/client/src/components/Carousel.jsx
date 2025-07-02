@@ -17,10 +17,9 @@ function CarouselItem({index, item, currCarouselIndex, prevCarouselIndex})
 {
     return (
         <a className={`${(index === currCarouselIndex) ? 'animate-fade-in' : (index === prevCarouselIndex) ? 'animate-fade-out' : 'hidden'}`} href={item.href}>
-            <div className='z-40 absolute left-[12vw] top-[25vw] flex flex-col justify-start'>
+            <div className='z-40 absolute left-[12vw] top-[25vw] bg-os-dark-tertiary/40 rounded-sm p-1 w-48 md:w-128 flex flex-col justify-start'>
                 <p className="md:p-1 text-os-white font-bold text-lf md:text-4xl">{item.logoImage}</p>
-                <p className="p-0.5 text-os-dark-secondary font-bold text-[6px] w-5/8 line-clamp-2m block md:hidden">{item.description.slice(0, 80)}...</p>
-                <p className="p-2 text-os-white/80 font-bold text-xs w-5/8 line-clamp-2m hidden md:block">{item.description.slice(0, 250)}...</p>
+                <p className="p-0.5 md:p-2 text-os-white/95 font-semibold text-[6px] md:text-xs h-[30px] md:h-[60px] line-clamp-3 md:line-clamp-3">{item.description}</p>
             </div>
             <div className="absolute block w-full h-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 z-30 [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)]">
                 <img src={item.src} className="absolute w-full h-full" alt={item.href} />

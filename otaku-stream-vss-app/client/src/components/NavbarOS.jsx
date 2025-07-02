@@ -82,7 +82,7 @@ function NavbarOS()
     return (
         <>
             {/* --- Navbar --- */}
-            <nav id="navbar" className="fixed top-0 left-0 w-full h-12 flex flex-row bg-os-dark-tertiary z-98">
+            <nav id="navbar" className="fixed top-0 left-0 w-full h-16 flex flex-row bg-os-dark-tertiary z-98">
                 <div className="flex flex-row items-center z-100">
                     <a id="logo" className="mx-2 px-1 flex flex-row items-center justify-center hover:brightness-0 hover:invert" href="/">
                         <img className="min-w-6 w-6 mx-1 mt-1" type="image/png" src={tvLogo} alt="os-tv-logo"/>
@@ -99,7 +99,7 @@ function NavbarOS()
                         {/* --- Categories Dropdown --- */}
                         <div id="categoriesdropdown" name="categoriesdropdown" className="absolute bg-os-blue-tertiary p-2 flex flex-row hidden">
                             <div id="genres" className="flex flex-col justify-start">
-                                <a className="font-semibold hover:underline text-xs" href="#">Genres</a>
+                                <a className="font-semibold hover:underline text-xs" href="/discover/genres">Genres</a>
                                 <div className="my-1 border-os-white rounded-sm border-b-2 w-[95%]"></div>
                                 <div className="grid grid-flow-col grid-rows-5 gap-y-2 gap-x-1">
                                     <Category categoryName="Action" href="#"/>
@@ -121,7 +121,7 @@ function NavbarOS()
                             </div>
                             <div className="m-6 my-0 border-os-white border-l-2 rounded-xs w-auto"></div>
                             <div id="genres" className="flex flex-col justify-start">
-                                <a className="font-semibold hover:underline text-xs" href="#">Other</a>
+                                <a className="font-semibold hover:underline text-xs" href="/discover/other">Other</a>
                                 <div className="my-1 border-os-white rounded-sm border-b-2 w-[95%]"></div>
                                 <div className="grid grid-flow-col grid-rows-5 gap-y-2 gap-x-1">
                                     <Category categoryName="Browse [A-Z]" href="#"/>
@@ -232,7 +232,7 @@ function NavbarOS()
             </div>
 
             {/* NAVBAR MARGIN FITTING */}
-            <div className="w-full h-12"> </div>
+            <div className="w-full h-16"> </div>
         </>
     )
 };

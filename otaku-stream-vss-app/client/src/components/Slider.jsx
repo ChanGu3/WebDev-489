@@ -2,14 +2,14 @@ import { useState, useEffect, useRef} from 'react';
 import { useMediaQuery } from 'react-responsive';
 import '../tailwind.css'
 
-function SliderItem({ index, Component, sliderItems }) 
+function SliderItem({ index, component, sliderItems }) 
 {
     return (
         <>
             <div ref={(el) => sliderItems.current[index] = el} className="relative">
                 <div name="overlay" className="absolute bg-os-dark-primary/80 inset-0 z-10 rounded-sm hidden"></div>
                 <div name="component" className="p-1">
-                    <Component index={index}/>
+                    {component}
                 </div>
             </div>
         </>
@@ -146,7 +146,7 @@ function Slider({sliderList, title})
         translateX = translateX - (gapSize * currFirstItemIndex);
     }
 
-    window.console.log(translateX);
+    
     return (
     <>
         <div id="indicators-slider" className="my-8 md:my-12 overflow-hidden">
@@ -159,7 +159,7 @@ function Slider({sliderList, title})
                     {
                         sliderList.map((component, index) => {
                             return ( 
-                                <SliderItem key={index} index={index} Component={component} sliderItems={sliderItems}/> 
+                                <SliderItem key={index} index={index} component={component} sliderItems={sliderItems}/> 
                             )
                         })
                     }

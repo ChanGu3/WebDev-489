@@ -17,7 +17,7 @@ function Signin()
     return (
         <>
         <NavbarOS />
-            <div className="flex flex-col items-center justify-center mt-20 space-y-20">
+            <main className="flex flex-col items-center justify-center mt-20 space-y-20">
                 <p className="font-bold text-3xl text-os-blue-primary">Otaku Stream</p>
                 <div className="flex flex-col justify-center items-center space-y-6 w-65 md:w-100">
                     <div className="flex flex-col items-center space-y-1 w-full">
@@ -42,7 +42,7 @@ function Signin()
                     <a className="text-os-blue-tertiary hover:text-os-blue-secondary active:text-os-blue-secondary text-sm" href="#">Forgot Password?</a>
                     <a className="text-os-blue-tertiary hover:text-os-blue-secondary active:text-os-blue-secondary text-sm" href="/auth/signup">Sign Up?</a>
                 </div>
-            </div>
+            </main>
         <FooterOS />
         </>
     );

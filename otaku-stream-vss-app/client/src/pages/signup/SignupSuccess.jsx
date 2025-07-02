@@ -12,7 +12,7 @@ function SignupSuccess()
     return (
         <>
         <NavbarOS />
-            <div className="flex flex-col items-center justify-center mt-20 space-y-20">
+            <main className="flex flex-col items-center justify-center mt-20 space-y-20">
                 <p className="font-bold text-3xl text-os-blue-primary">Otaku Stream</p>
                 <div className="flex flex-col justify-center items-center space-y-6 w-65 md:w-100">
                     <p className="text-center text-os-blue-tertiary font-bold text-lg md:text-2xl">Account Created Successfully!</p>
@@ -25,7 +25,7 @@ function SignupSuccess()
                     <a className="w-full bg-os-blue-primary hover:bg-os-blue-secondary active:bg-os-blue-tertiary rounded-sm p-1.5 font-semibold text-center" href="#">Go Premium?</a>
                     <a className="w-full bg-os-blue-primary hover:bg-os-blue-secondary active:bg-os-blue-tertiary rounded-sm p-1.5 font-semibold text-center" href="/">Skip</a>
                 </div>
-            </div>
+            </main>
         <FooterOS />
         </>
     );

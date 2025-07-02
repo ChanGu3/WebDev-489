@@ -17,7 +17,7 @@ function Signup()
     return (
         <>
         <NavbarOS />
-            <div className="flex flex-col items-center justify-center mt-20 space-y-20">
+            <main className="flex flex-col items-center justify-center mt-20 space-y-20">
                 <p className="font-bold text-3xl text-os-blue-primary">Otaku Stream</p>
                 <div className="flex flex-col justify-center items-center space-y-6 w-65 md:w-100">
                     <div className="flex flex-col items-center space-y-1 w-full">
@@ -43,7 +43,7 @@ function Signup()
                     <a className="text-os-blue-secondary hover:text-os-blue-tertiary active:text-os-blue-tertiary text-sm" href="/auth/signin">Sign In?</a>
                     <p className="md:w-[70%] text-xs text-center text-os-white " href="/auth/signin">By clicking Sign up, you agree to our <a className="text-os-dark-secondary hover:underline cursor-pointer" href="#">Terms of Service</a> and <a className="text-os-dark-secondary hover:underline cursor-pointer" href="#">Privacy Policy</a></p>
                 </div>
-            </div>
+            </main>
         <FooterOS />
         </>
     );

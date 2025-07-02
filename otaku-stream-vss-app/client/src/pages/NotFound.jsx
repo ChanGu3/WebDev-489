@@ -12,7 +12,9 @@ function NotFound()
   return (
     <>
       <NavbarOS />
-      <p className="p-10 text-os-white">404 Not Found</p>
+      <main>
+        <p className="p-10 text-os-white">404 Not Found</p>
+      </main>
       <FooterOS />
     </>
   );

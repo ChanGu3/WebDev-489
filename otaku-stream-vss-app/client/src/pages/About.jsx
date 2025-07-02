@@ -12,7 +12,9 @@ function About()
   return (
     <>
       <NavbarOS />
-        <p className="mx-[45%] my-10 text-os-white text-4xl">About</p>
+        <main>
+          <p className="mx-[45%] my-10 text-os-white text-4xl">About</p>
+        </main>
       <FooterOS />
     </>
   );
