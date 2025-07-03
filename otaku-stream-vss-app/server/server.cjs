@@ -1,5 +1,5 @@
 const express = require('express');
-const apiRouter = require('./routing/api-router.js');
+const apiRouter = require('./routes/api-router.cjs');
 const path = require('path');
 
 const app = express();
