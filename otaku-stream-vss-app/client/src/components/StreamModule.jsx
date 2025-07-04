@@ -9,11 +9,12 @@ function SeriesModule({isMovie, animeTitle, streamTitle, streamImageSrc, streamD
     return (
         <>
         <div className="w-32 md:w-56 h-auto relative">
-            <a href={href} className="flex flex-col space-y-0.5">
+            <a href={href} className="relative flex flex-col space-y-0.5 group">
                 <img src={streamImageSrc} className="rounded-xs aspect-video"></img>
+                <div className="absolute top-0 left-0 rounded-xs aspect-video w-full group-active:bg-os-dark-secondary/30"></div>
                 <div className="flex flex-col">
-                    <p className="font-semibold text-[10px] md:text-xs text-os-dark-secondary">{animeTitle}</p>
-                    <p className="font-semibold text-[8px] md:text-[10px] text-os-white">{streamInfo}</p>
+                    <p className="font-semibold text-[10px] md:text-xs text-os-dark-secondary group-active:underline">{animeTitle}</p>
+                    <p className="font-semibold text-[8px] md:text-[10px] text-os-white group-active:underline">{streamInfo}</p>
                 </div>
             </a>
 

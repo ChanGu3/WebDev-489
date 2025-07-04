@@ -51,9 +51,10 @@ function SeriesModule({seriesID, title, imageSrc, seasonNum, episodeNum, movieNu
     return (
         <>
         <div className="w-36 md:w-72 h-auto relative">
-            <a href={href} className="flex flex-col gap-y-1">
+            <a href={href} className="relative flex flex-col gap-y-1 group">
                 <img src={imageSrc} className="rounded-xs aspect-[3/2]"></img>
-                <p className="font-semibold text-sm md:text-lg text-os-dark-secondary">{title}</p>
+                <div className="absolute top-0 left-0 rounded-xs aspect-[3/2] w-full group-active:bg-os-dark-secondary/30"></div>
+                <p className="font-semibold text-sm md:text-lg text-os-dark-secondary group-active:underline">{title}</p>
             </a>
 
             {/* --HOVERING-- Discover */}
