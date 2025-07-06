@@ -6,6 +6,8 @@ import "../tailwind.css";
 import Dropdown from "../components/Dropdown.jsx"
 import StreamModule2 from "../components/StreamModule2.jsx"
 
+import { ShortenCountAsString } from '../Helpers/DocumentFunction.mjs'
+
 function FavoriteSeries(starRef, seriesID)
 {
     const starSVG = starRef.current;
@@ -154,7 +156,7 @@ function AnimeDetails({seriesID})
                                     {/* Rating Dropdown */}
                                     <div className="relative flex flex-col justify-center items-center select-none">
                                         <div ref={ratingButtonRef} onClick={() => {SetIsStarDroppedDown(!isStarDroppedDown)}} className="flex flex-row items-center justify-between gap-x-2 cursor-pointer bg-os-dark-tertiary/40 hover:bg-os-dark-tertiary/70 px-2 py-1 h-6 md:h-10 w-24 md:w-38">
-                                            <p className="text-os-white text-xs md:text-lg font-bold">{averageRating} ({(totalRating > 999999) ? ((totalRating/1000000).toFixed(1).toString() + "M") : ((totalRating > 999) ? ((totalRating/1000).toFixed(1).toString() + "K"): (""))})</p>
+                                            <p className="text-os-white text-xs md:text-lg font-bold">{averageRating} {ShortenCountAsString(totalRating)}</p>
                                             <img src="/triangle-filled-svgrepo-com.svg" className="w-2 md:w-4"></img>
                                         </div>
                                         <div ref={ratingDropDownRef} className={`absolute flex flex-col justify-center top-6 md:top-10 left-0 w-36 md:w-60 bg-os-dark-tertiary/90 py-1 ${(isStarDroppedDown) ? "" : "hidden"} z-100`}>

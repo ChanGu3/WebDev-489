@@ -11,6 +11,7 @@ import SafeSpace from './pages/SafeSpace.jsx'
 import CategoryResult from './pages/CategoryResult.jsx'
 import Categories from './pages/Categories.jsx'
 import AnimeDetails from './pages/AnimeDetails.jsx'
+import AnimeStream from './pages/AnimeStream.jsx'
 
 function App() {
   return (
@@ -36,6 +37,10 @@ function App() {
 
         <Route path="series">
           <Route path="animedetails" element={<AnimeDetails />}/>
+        </Route>
+
+        <Route path="stream">
+          <Route path="animestream" element={<AnimeStream />}/>
         </Route>
 
         {/* Authentication */}
