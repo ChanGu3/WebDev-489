@@ -10,6 +10,7 @@ import Search from './pages/Search.jsx'
 import SafeSpace from './pages/SafeSpace.jsx'
 import CategoryResult from './pages/CategoryResult.jsx'
 import Categories from './pages/Categories.jsx'
+import AnimeDetails from './pages/AnimeDetails.jsx'
 
 function App() {
   return (
@@ -27,12 +28,15 @@ function App() {
         </Route>
 
         <Route path="discover">
-          <Route path="search" element={<Search />} />
+          <Route path="search" element={<Search />} /> 
           <Route path="category" element={<CategoryResult/>} />
           <Route path="genres" element={<Categories typeTitle="Genres"/>} />
           <Route path="other" element={<Categories typeTitle="Other"/>} />
         </Route>
 
+        <Route path="series">
+          <Route path="animedetails" element={<AnimeDetails />}/>
+        </Route>
 
         {/* Authentication */}
         <Route path="auth">

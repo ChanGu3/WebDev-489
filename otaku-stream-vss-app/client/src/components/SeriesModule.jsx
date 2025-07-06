@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import '../tailwind.css'
 
 function FavoriteSeries(starRef, seriesID)
 {
@@ -12,8 +13,6 @@ function FavoriteSeries(starRef, seriesID)
     {
         starSVG.setAttribute("fill", "none");
     }
-
-    console.log("Hello");
 }
 
 
