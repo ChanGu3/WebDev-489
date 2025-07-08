@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Example from './pages/Example.jsx'
 import NotFound from './pages/NotFound.jsx'
@@ -10,8 +12,46 @@ import Search from './pages/Search.jsx'
 import SafeSpace from './pages/SafeSpace.jsx'
 import CategoryResult from './pages/CategoryResult.jsx'
 import Categories from './pages/Categories.jsx'
+import AnimeDetails from './pages/AnimeDetails.jsx'
+import AnimeStream from './pages/AnimeStream.jsx'
+
+function MemberAuthorization({children, hide=false})
+{
+  const [auth, setAuth] = useState(null);
+
+  useEffect(() =>
+  {
+    fetch('/api/authorize/member/routes', {
+      method: 'GET',
+      credentials: 'include',
+    }).then((response) => {
+      if(response.ok)
+      {
+        setAuth(!hide);  
+      }
+      else
+      {
+        setAuth(hide);
+      }
+    }).catch((error) => {
+        setAuth(hide);
+    });
+
+
+  }, []);
+
+  if (auth == null) {
+    return (
+      <div>Loading...</div>
+    )
+  }
+
+  return (auth) ?  children : <Navigate to='/404' replace/>
+}
 
 function App() {
+
+
   return (
     <Router>
       <Routes>
@@ -22,22 +62,39 @@ function App() {
         {/*Root URL*/}
         <Route path="">
           <Route path="/" element={<Home />} />
-          <Route path="*" element={<NotFound />} />
+          <Route path="*" element={<Navigate to='/404' replace/>} />
+          <Route path="/404" element={<NotFound />} />
           <Route path="about" element={<About />} />
         </Route>
 
         <Route path="discover">
-          <Route path="search" element={<Search />} />
+          <Route path="search" element={<Search />} /> 
           <Route path="category" element={<CategoryResult/>} />
           <Route path="genres" element={<Categories typeTitle="Genres"/>} />
           <Route path="other" element={<Categories typeTitle="Other"/>} />
         </Route>
 
+        <Route path="series">
+          <Route path="animedetails" element={<AnimeDetails />}/>
+        </Route>
+
+        <Route path="stream">
+          <Route path="animestream" element={<AnimeStream />}/>
+        </Route>
 
         {/* Authentication */}
         <Route path="auth">
-          <Route path="signin" element={<Signin />} />
-          <Route path="signup" element={<Signup />} />
+          <Route path="signin" element={
+              <MemberAuthorization hide={true}>
+                <Signin/>
+              </MemberAuthorization>
+            } 
+          />
+          <Route path="signup" element={
+              <MemberAuthorization hide={true}>
+                <Signup/>
+              </MemberAuthorization>
+            } />
           <Route path="signup/success" element={<SignupSuccess />} />
         </Route>
 

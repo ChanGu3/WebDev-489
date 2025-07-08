@@ -1,0 +1,62 @@
+const chalk = require('chalk');
+const db = require('../db/db.cjs');
+
+async function AttemptSignIn(req, res) {
+  // user already exists sign in just take them to home bypasses sign in entirely -- WONT NEED THIS WHEN BLOCKING SIGN IN ENTIRELY
+  if(req.session.user)
+  {
+    res.status(200).end();
+    return;
+  }
+
+
+    const { email, password } = req.body;
+
+    try
+    {
+      const user = await db.Member.Authorization(email, password);
+      req.session.user = user.toJSON();
+      const newSession = await db.Session.AddToDB(req.sessionID, user.email);
+      res.status(200).end();
+    }
+    catch(err)
+    {
+      res.clearCookie('connect.sid');
+      res.status(400).json({error: err.message});
+    }
+}
+
+async function AttemptSignOut(req, res)
+{
+    try
+    {
+      const tempSessionID = req.sessionID;
+      await db.Session.RemoveSessionByID(req.sessionID);
+      await new Promise((resolve, reject) => {
+        req.session.destroy((err) => {
+          if(err)
+          {
+            reject(new Error("session could not be destroyed"));
+          }
+          else
+          {
+            res.clearCookie('connect.sid');
+            resolve();
+          }
+        });
+      });
+      res.status(200).end();
+      console.log(chalk.magenta(`[otakustream] successfully removed session with id:{${tempSessionID}} from client and server`));
+    }
+    catch(err)
+    {
+      res.status(500).json({error: err.message});
+    }
+}
+
+const AuthentifyContoller = {
+    AttemptSignIn,
+    AttemptSignOut,
+};
+
+module.exports = AuthentifyContoller;

@@ -1,7 +1,7 @@
 import '../tailwind.css'
 import { useEffect } from 'react'
 import NavbarOS from '../components/NavbarOS.jsx'
-import FooterOS from '../components/FooterOS.jsx';
+import FooterOS from '../components/FooterOS.jsx'
 
 /* Carousel Import */
 import Carousel from '../components/Carousel.jsx';
@@ -11,13 +11,6 @@ import Slider from '../components/Slider.jsx';
 
 import SeriesModule from '../components/SeriesModule.jsx';
 import StreamModule from '../components/StreamModule.jsx';
-
-function Test()
-{
-  return (
-    <div className="w-32 h-18 md:w-64 md:h-36 bg-os-blue-primary rounded-sm"></div>
-  )
-}
 
 function Home()
 {

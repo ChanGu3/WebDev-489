@@ -25,9 +25,9 @@ function Signup()
                         <p className="md:w-[65%] text-center text-os-white font-thin text-sm">Enter your email and create a password by typing it in twice to sign up as a Otaku Stream Member!</p>
                     </div>
                     <form id="signinForm" name="signinForm" className="w-full flex flex-col space-y-4 items-center justify-center"  onSubmit={(e) =>  { e.preventDefault(); ValidateSignup();}} method="post">
-                        <input id="email" name="password" className="w-full border-os-blue-tertiary border-2 rounded-sm px-2 py-1 text-os-white placeholder:text-os-white/80  placeholder:font-thin" type="text" placeholder="Email"/>
-                        <input id="password" name="password" className="w-full border-os-blue-tertiary border-2 rounded-sm px-2 py-1 text-os-white placeholder:text-os-white/80 placeholder:font-thin" type="password" placeholder="Password"/>
-                        <input id="passwordagain" name="passwordagain" className="w-full border-os-blue-tertiary border-2 rounded-sm px-2 py-1 text-os-white placeholder:text-os-white/80  placeholder:font-thin" type="password" placeholder="Password Again"/>
+                        <input id="email" name="email" autoComplete='email' className="w-full border-os-blue-tertiary border-2 rounded-sm px-2 py-1 text-os-white placeholder:text-os-white/80  placeholder:font-thin" type="text" placeholder="Email"/>
+                        <input id="password" name="password" autoComplete='new-password' className="w-full border-os-blue-tertiary border-2 rounded-sm px-2 py-1 text-os-white placeholder:text-os-white/80 placeholder:font-thin" type="password" placeholder="Password"/>
+                        <input id="passwordagain" name="passwordagain" autoComplete='new-password' className="w-full border-os-blue-tertiary border-2 rounded-sm px-2 py-1 text-os-white placeholder:text-os-white/80  placeholder:font-thin" type="password" placeholder="Password Again"/>
                         <button className="w-full bg-os-blue-primary hover:bg-os-blue-tertiary active:bg-os-blue-secondary rounded-sm p-1.5 font-semibold cursor-pointer" type="submit">Sign Up</button>
                     </form>
 
