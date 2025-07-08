@@ -1,6 +1,7 @@
 import '../tailwind.css'
 import tvLogo from '../assets/images/brand-tv-logo.png'
-import { useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
+import { useNavigate } from 'react-router-dom';
 
 function Category({categoryName, href})
 {
@@ -9,95 +10,127 @@ function Category({categoryName, href})
     )
 }
 
-function NavbarOS()
+async function SignOut(navigate)
 {
-    const [isCategoriesVisible, setCategoriesVisible] = useState(false);
-    const [isProfileDropdownVisible, setProfileDropdownVisible] = useState(false);
-
-    function ToggleCategoriesDropDown()
+    try
     {
-        if (isProfileDropdownVisible)
+        const response = await fetch('/api/authentify/signout', {
+            method: 'POST',
+            headers: { 'Content-type': 'application/json' },
+            credentials: 'include',
+        });
+
+        if (response.ok)
         {
-            ToggleProfileDropDown();
-        }
-
-        const cOverlay = document.getElementById('categoriesdropdown');
-        const cTab = document.getElementById('categoriestab');
-        const darkOverlay = document.getElementById('darkoverlay');
-        const rcDropdown = document.getElementById('removecategorydropdown');
-
-        if (isCategoriesVisible == true) // hide 
-        {
-            cTab.classList.remove('bg-os-blue-tertiary');
-            cOverlay.classList.add('hidden');
-            darkOverlay.classList.add('hidden');
-            rcDropdown.classList.add('hidden');
-            document.body.classList.remove('overflow-hidden');
-        }
-        else //un-hide
-        {
-            cTab.classList.add('bg-os-blue-tertiary');
-            cOverlay.classList.remove('hidden');
-            darkOverlay.classList.remove('hidden');
-            rcDropdown.classList.remove('hidden');
-            document.body.classList.add('overflow-hidden');
-        }
-
-        setCategoriesVisible(!isCategoriesVisible);
-    }
-
-    function ToggleProfileDropDown()
-    {
-        if (isCategoriesVisible)
-        {
-            ToggleCategoriesDropDown();
-        }
-
-        const pDropdown = document.getElementById('profiledropdown');
-        const pTab = document.getElementById('profiletab');
-        const darkOverlay = document.getElementById('darkoverlay');
-        const rpDropdown = document.getElementById('removeprofiledropdown');
-
-        if (isProfileDropdownVisible == true)
-        {
-            pTab.classList.remove('bg-os-blue-tertiary');
-            pDropdown.classList.add('hidden');
-            darkOverlay.classList.add('hidden');
-            rpDropdown.classList.add('hidden');
-            document.body.classList.remove('overflow-hidden');
+            if (response.status === 200)
+            { 
+                navigate('/auth/signin');
+            }
         }
         else
         {
-            pTab.classList.add('bg-os-blue-tertiary');
-            pDropdown.classList.remove('hidden');
-            darkOverlay.classList.remove('hidden');
-            rpDropdown.classList.remove('hidden');
+            if (response.status === 200)
+            { 
+                navigate('/');
+            }
+        }
+    }
+    catch(err)
+    {    
+        navigate('/');    
+    }
+}
+
+function NavbarOS()
+{
+    const navigate = useNavigate();
+
+    const categoryDropdownRef = useRef(null);
+    const categoriesTabRef = useRef(null);
+    const [isCategoryDropped, SetIsCategoryDropped] = useState(false);
+    const profileDropdownRef = useRef(null);
+    const profileTabRef = useRef(null);
+    const [isProfileDropped, SetIsProfileDropped] = useState(false);
+
+    const [isMember, SetIsMember] = useState(false);
+    let email = null;
+
+    
+    useEffect(() => {
+        fetch('/api/authorize/member/navbar', {
+            method: 'GET',
+            credentials: 'include',
+        }).then((response) => {
+            if(response.ok)
+            {
+                return response.json();
+            }
+        }).then((data) => {
+            if (data)
+            {
+                email = data.user.email;
+                SetIsMember(true);
+            }
+        }).catch();
+
+        document.addEventListener('mousedown', OnMouseDown);
+        
+        return () => {
+            document.removeEventListener('mousedown', OnMouseDown)
+        };
+    }, []);
+    
+    useEffect(() => {
+        if(isCategoryDropped || isProfileDropped)
+        {
             document.body.classList.add('overflow-hidden');
         }
+        else
+        {
+            document.body.classList.remove('overflow-hidden');
+        }
+    }, [isCategoryDropped, isProfileDropped])
 
-        setProfileDropdownVisible(!isProfileDropdownVisible);
+    function OnMouseDown(event)
+    {
+        if(!categoryDropdownRef.current.contains(event.target) && !categoriesTabRef.current.contains(event.target))
+        {
+            SetIsCategoryDropped(false);
+        }
+
+        if(!profileDropdownRef.current.contains(event.target) && !profileTabRef.current.contains(event.target))
+        {
+            SetIsProfileDropped(false);
+        }
     }
-
 
     return (
         <>
             {/* --- Navbar --- */}
             <nav id="navbar" className="fixed top-0 left-0 w-full h-16 flex flex-row bg-os-dark-tertiary z-98">
                 <div className="flex flex-row items-center z-100">
+
+                    {/* Logo Tab */}
                     <a id="logo" className="mx-2 px-1 flex flex-row items-center justify-center hover:brightness-0 hover:invert" href="/">
                         <img className="min-w-6 w-6 mx-1 mt-1" type="image/png" src={tvLogo} alt="os-tv-logo"/>
                         <p className="text-os-blue-primary font-bold text-md hidden md:block">OtakuStream</p>
                     </a>
+
+                    {/* Search Tab */}
                     <a className="px-5 flex flex-row items-center cursor-pointer hover:bg-gray-800 active:bg-gray-700 h-full" href="/discover/search">
                         <img className="min-w-4 w-4 mt-0.75" src="/magnifying-glass-zoom-svgrepo-com.svg" alt="search-icon"></img>
                     </a>
+
                     <div className="relative h-full hidden md:block">
-                        <button id="categoriestab" name="categoriestab" className="px-3 flex flex-row items-center justify-center space-x-1 cursor-pointer hover:bg-gray-800 active:bg-gray-700 h-full" type="button" onClick={() => ToggleCategoriesDropDown()}>
+
+                        {/* Categories Tab */}
+                        <button ref={categoriesTabRef} id="categoriestab" name="categoriestab" className={`px-3 ${((isCategoryDropped) ? "bg-os-blue-tertiary" : "" )} flex flex-row items-center justify-center space-x-1 cursor-pointer hover:bg-gray-800 active:bg-gray-700 h-full`} type="button" onClick={() => SetIsCategoryDropped(!isCategoryDropped)}>
                             <p className="text-os-white text-sm">Categories</p>
                             <img className="w-2 mt-1" src="/triangle-filled-svgrepo-com.svg" alt="dropdown-icon"></img>
                         </button>
+
                         {/* --- Categories Dropdown --- */}
-                        <div id="categoriesdropdown" name="categoriesdropdown" className="absolute bg-os-blue-tertiary p-2 flex flex-row hidden">
+                        <div ref={categoryDropdownRef} id="categoriesdropdown" name="categoriesdropdown" className={`absolute bg-os-blue-tertiary p-2 flex-col gap-y-2  lg:gap-y-0 lg:flex-row ${((isCategoryDropped) ? "flex" : "hidden" )}`}>
                             <div id="genres" className="flex flex-col justify-start">
                                 <a className="font-semibold hover:underline text-xs" href="/discover/genres">Genres</a>
                                 <div className="my-1 border-os-white rounded-sm border-b-2 w-[95%]"></div>
@@ -119,32 +152,41 @@ function NavbarOS()
                                     <Category categoryName="Thriller" href="#" />
                                 </div>
                             </div>
+
                             <div className="m-6 my-0 border-os-white border-l-2 rounded-xs w-auto"></div>
-                            <div id="genres" className="flex flex-col justify-start">
+
+                            <div id="other" className="flex flex-col justify-start">
                                 <a className="font-semibold hover:underline text-xs" href="/discover/other">Other</a>
                                 <div className="my-1 border-os-white rounded-sm border-b-2 w-[95%]"></div>
-                                <div className="grid grid-flow-col grid-rows-5 gap-y-2 gap-x-1">
+                                <div className="grid grid-flow-col lg:grid-rows-5 grid-rows-2 gap-y-2 gap-x-1">
                                     <Category categoryName="Browse [A-Z]" href="#"/>
-
                                 </div>
                             </div>
                         </div>
+
                     </div>
+
+                    {/* Support Tab */}
                     <div className="border-os-dark-secondary border-l-2 ml-[14px] rounded-xs h-1/2 w-4"></div>
                     <a id="support" name="support" className="px-3 flex flex-row items-center justify-center space-x-1 cursor-pointer hover:bg-gray-800 active:bg-gray-700 h-full" href="/support">
                         <p className="text-os-white text-sm">Support</p>
                     </a>
+
+                    {/* About Us Tab */}
                     <a id="aboutus" name="aboutus" className="px-3 flex-row items-center justify-center space-x-1 cursor-pointer hover:bg-gray-800 active:bg-gray-700 h-full hidden md:flex" href="/about">
                         <p className="text-os-white text-sm">About Us</p>
                     </a>
                 </div>
                 <div className="relative h-full ml-auto z-100">
-                    <button id="profiletab" name="profiletab" className="px-4 flex flex-row items-center justify-center cursor-pointer hover:bg-gray-800 active:bg-gray-700 h-full" type="button" onClick={() => ToggleProfileDropDown()}>
+
+                    {/* Profile Tab */}
+                    <button ref={profileTabRef} id="profiletab" name="profiletab" className={`px-4 ${((isProfileDropped) ? "bg-os-blue-tertiary" : "" )} flex flex-row items-center justify-center cursor-pointer hover:bg-gray-800 active:bg-gray-700 h-full`} type="button" onClick={() => SetIsProfileDropped(!isProfileDropped)}>
                         <img className="min-w-7 w-7 mr-1 rounded-full border-1 border-os-white" type="image/png" src={tvLogo} alt="os-tv-logo"/>
                         <img className="w-2" src="/triangle-filled-svgrepo-com.svg" alt="dropdown-icon"></img>
                     </button>
+
                     {/* --- Guest Profile Dropdown --- */}
-                    <div id="profiledropdown" name="profiledropdown" className="absolute right-0 w-35 md:w-60 bg-os-blue-tertiary py-4 px-2 flex flex-col space-y-4 hidden">
+                    <div ref={(el) => { return (!isMember) ? profileDropdownRef.current = el : null }} id="profiledropdown" name="profiledropdown" className={`absolute right-0 w-35 md:w-60 bg-os-blue-tertiary py-4 px-2 ${((isProfileDropped && !isMember) ? "flex" : "hidden" )} flex-col space-y-4`}>
                         <a className="flex flex-col py-2 pl-2 pr-4 hover:bg-os-blue-secondary active:bg-os-blue-secondary rounded-xs space-y-0.25" href="/auth/signin">
                             <p className="text-sm font-bold">Sign In</p>
                             <p className="text-xs font-semibold text-os-white">Welcome Back! <span className="hidden md:inline">Can't wait to see what your into now!</span></p>
@@ -154,8 +196,9 @@ function NavbarOS()
                             <p className="text-xs font-semibold text-os-white">Join Us! <span className="hidden md:inline">Watch anime ad free with a premium account!</span></p>
                         </a>
                     </div>
+
                     {/* --- Member Profile Dropdown --- */}
-                    <div id="memberprofiledropdown" name="guestprofiledropdown" className="absolute right-0 w-60 bg-os-blue-tertiary py-4 px-2 flex flex-col space-y-4 hidden">
+                    <div ref={(el) => { (isMember) ? profileDropdownRef.current = el : null }} id="memberprofiledropdown" name="memberprofiledropdown" className={`absolute right-0 w-60 bg-os-blue-tertiary py-4 px-2 ${((isProfileDropped && isMember) ? "flex" : "hidden" )} flex-col space-y-4`}>
                         <div className="flex flex-col space-y-2">
                             <a className="flex flex-row items-center hover:bg-os-blue-secondary active:bg-os-blue-secondary rounded-xs space-x-1 px-1 py-1.5 w-[60%]" href="#">
                                 <img className="w-5" src="/bed-svgrepo-com.svg" alt="safespace-icon"></img>
@@ -178,13 +221,15 @@ function NavbarOS()
                             </a>
                         </div>
                         <div className="flex flex-row justify-end">
+                            <button type="button" onClick={() => { SignOut(navigate); }} className="flex flex-row hover:bg-os-blue-secondary active:bg-os-blue-secondary rounded-xs px-3 py-2 cursor-pointer">
                                 <img className="w-5" src="/logout-svgrepo-com.svg" alt="safespace-icon"></img>
                                 <p className="text-sm font-semibold">Sign Out</p>
+                            </button>
                         </div>
                     </div>
                     
                     {/* --- Admin Profile Dropdown --- */}
-                    <div id="adminprofiledropdown" name="guestprofiledropdown" className="absolute right-0 w-60 bg-os-blue-tertiary py-4 px-2 flex flex-col space-y-4 hidden">
+                    <div id="adminprofiledropdown" name="adminprofiledropdown" className="absolute right-0 w-60 bg-os-blue-tertiary py-4 px-2 flex flex-col space-y-4 hidden">
                         <div className="flex flex-col space-y-2">
                             <a className="flex flex-row items-center hover:bg-os-blue-secondary active:bg-os-blue-secondary rounded-xs space-x-1 px-1 py-1.5 w-[60%]" href="#">
                                 <img className="w-5" src="/bed-svgrepo-com.svg" alt="bed-icon"></img>
@@ -218,16 +263,13 @@ function NavbarOS()
                                 <p className="text-sm font-semibold">Sign Out</p>
                         </div>
                     </div>
+                    
                 </div>
 
-                {/* --- Remove Category Dropdown Overlay --- */}
-                <div id="removecategorydropdown" name="removecategorydropdown" className="fixed top-0 left-0 w-[100vw] h-[100vh] z-99 hidden" onClick={() => ToggleCategoriesDropDown()}></div>
-                {/* --- Remove Profile Dropdown Overlay --- */}
-                <div id="removeprofiledropdown" name="removeprofiledropdown" className="fixed top-0 left-0 w-[100vw] h-[100vh] z-99 hidden" onClick={() => ToggleProfileDropDown()}></div>
             </nav>
 
             {/* --- Dark Overlay --- */}
-            <div id="darkoverlay" className="fixed bg-black/30 w-full h-[100vh] z-90 hidden">
+            <div id="darkoverlay" className={`fixed bg-black/30 w-full h-[100vh] z-90 ${((isCategoryDropped || isProfileDropped) ? "" : "hidden" )}`}>
 
             </div>
 

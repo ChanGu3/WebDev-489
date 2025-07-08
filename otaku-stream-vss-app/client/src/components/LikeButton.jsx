@@ -1,6 +1,6 @@
 import '../tailwind.css'
 import { useRef, useState } from 'react'
-import { ShortenCountAsString } from '../Helpers/DocumentFunction.mjs'
+import { ShortenCountAsString } from '../Helpers/documentfunction.mjs'
 
 function LikeButton({seriesID})
 {

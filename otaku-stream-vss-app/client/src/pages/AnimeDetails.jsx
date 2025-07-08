@@ -6,7 +6,7 @@ import "../tailwind.css";
 import Dropdown from "../components/Dropdown.jsx"
 import StreamModule2 from "../components/StreamModule2.jsx"
 
-import { ShortenCountAsString } from '../Helpers/DocumentFunction.mjs'
+import { ShortenCountAsString } from '../Helpers/documentfunction.mjs'
 
 function FavoriteSeries(starRef, seriesID)
 {
