@@ -148,6 +148,9 @@ function MemberInit(sequelize)
             password: {
                 type: DataTypes.STRING,
                 allowNull: false,
+                validate: {
+                    len: [7, Infinity],
+                },
             }
         },
         {

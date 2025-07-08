@@ -54,9 +54,25 @@ async function AttemptSignOut(req, res)
     }
 }
 
+async function AttemptSignUp(req, res, next)
+{
+  const {email, password} = req.body;
+
+  try
+  {
+    const newMember = await db.Member.AddToDB(email, password);
+    next();
+  }
+  catch(err)
+  {
+    res.status(502).json({error: err.message});
+  }
+}
+
 const AuthentifyContoller = {
     AttemptSignIn,
     AttemptSignOut,
+    AttemptSignUp,
 };
 
 module.exports = AuthentifyContoller;

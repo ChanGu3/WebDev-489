@@ -23,19 +23,6 @@ const Database = {
     Session,
 }
 
-class Authorization
-{
-    static IsMember()
-    {
-        
-    }
-
-    static IsAdmin()
-    {
-
-    }
-}
-
 async function Setup()
 {
     const isForce = (isDev);

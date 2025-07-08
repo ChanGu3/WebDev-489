@@ -40,13 +40,13 @@ function MemberAuthorization({children, hide=false})
 
   }, []);
 
-  if (auth == null) {
+  if (auth === null) {
     return (
       <div>Loading...</div>
     )
   }
 
-  return (auth) ?  children : <Navigate to='/404' replace/>
+  return (auth) ?  children : <Navigate to='/404' replace/>;
 }
 
 function App() {
@@ -95,7 +95,11 @@ function App() {
                 <Signup/>
               </MemberAuthorization>
             } />
-          <Route path="signup/success" element={<SignupSuccess />} />
+          <Route path="signup/success" element={
+              <MemberAuthorization>
+                <SignupSuccess />
+              </MemberAuthorization>
+            } />
         </Route>
 
         <Route path="profile">

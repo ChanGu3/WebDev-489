@@ -15,10 +15,7 @@ authentifyRouter.post('/signout', controller.AttemptSignOut);
 //
 // Sign Up
 //
-authentifyRouter.use('signup', (req, res, next) => {
-
-  next();
-})
+authentifyRouter.use('/signup', controller.AttemptSignUp, controller.AttemptSignIn);
 
 
 module.exports = authentifyRouter;
