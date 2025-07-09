@@ -3,7 +3,7 @@ const chalk = require('chalk');
 const {Model, DataTypes, Op} = require('sequelize');
 const { Member } = require('./member.cjs');
 const cron = require('node-cron');
-const ErrorMsg = require('./error-msg.cjs');
+const ErrorMsg = require('../../server-logging.cjs');
 
 //
 // Returns Date 31 Days In The Future at time-stamp 00:00:00
@@ -191,7 +191,7 @@ function SessionInit(sequelize)
         },
         {
             sequelize,
-            modelName:"Session",
+            modelName: `${Session.name}`,
         }
     )
 
