@@ -1,5 +1,5 @@
 const chalk = require('chalk');
-const db = require('../db/db.cjs');
+const db = require('../../db/db.cjs');
 
 async function AttemptSignIn(req, res) {
   // user already exists sign in just take them to home bypasses sign in entirely -- WONT NEED THIS WHEN BLOCKING SIGN IN ENTIRELY

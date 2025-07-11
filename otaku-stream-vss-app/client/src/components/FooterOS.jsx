@@ -33,23 +33,24 @@ function FooterOS()
         <footer id="footerOS" className="mt-12 md:mt-36 flex flex-col justify-end items-center">
             <div className="bg-linear-to-b from-transparent to-os-blue-tertiary/40 w-full flex flex-col justify-end items-center">
                 <div className="flex flex-row space-x-2 md:space-x-16 mb-16 md:mb-18">
-                    <LinkTab titleName="Navigation" links={[{id: 1, name: "Go Home", href:"/"}, {id: 2, name: "Genres", href:"/discover/genres"}, {id: 3, name: "Other", href:"/discover/other"}]} />
+                    {/* {id: 2, name: "Genres", href:"/discover/genres"}, {id: 3, name: "Other", href:"/discover/other"} */}
+                    <LinkTab titleName="Navigation" links={[{id: 1, name: "Go Home", href:"/"}]} />
                     <LinkTab titleName="Socials" links={[{id: 1, name: "Twitter", href:"#"}]} />
                     <LinkTab titleName="OtakuStream" links={[{id: 1, name: "About Us", href:"#"}]} />
                     <LinkTab titleName="General" links={[{id: 1, name: "Support", href:"#"}]} />
-                    <LinkTab titleName="Socials" links={[{id: 1, name: "Twitter", href:"#"}]} />
+                    {/* <LinkTab titleName="Socials" links={[{id: 1, name: "Twitter", href:"#"}]} /> */}
 
                     {/* --- Guest Account --- */}
                     <LinkTab titleName="Account" links={[{id: 1, name: "Sign In", href:"/auth/signin"}, {id: 2, name: "Sign Up", href:"/auth/signup"}]} />
 
                     {/* --- Member Account --- */}
+                    {/* {id: 1, name: "Safe Space", href:"#"}, */}
                     <div className="hidden">
-                        <LinkTab titleName="Account" links={[
-                            {id: 1, name: "Safe Space", href:"#"}, 
-                            {id: 2, name: "Favorites", href:"#"},
-                            {id: 3, name: "Profile", href:"#"},
-                            {id: 4, name: "Settings", href:"#"},
-                            {id: 5, name: "Sign Out", href:"/auth/signout"},
+                        <LinkTab titleName="Account" links={[ 
+                            {id: 1, name: "Favorites", href:"#"},
+                            {id: 2, name: "Profile", href:"#"},
+                            {id: 3, name: "Settings", href:"#"},
+                            {id: 4, name: "Sign Out", href:"/auth/signout"},
                         ]}/>
                     </div>
 

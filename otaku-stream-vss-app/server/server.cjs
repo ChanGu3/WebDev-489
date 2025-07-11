@@ -1,9 +1,9 @@
 const path = require('path');
-const chalk = require('chalk');
+const { Logging } = require('./server-logging.cjs');
 const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
 const isDev = (argv.dev === true || argv.d === true);
-(isDev) ? console.log(chalk.cyan("[otakustream] in development process")):console.log(chalk.cyan("[otakustream] in production process"));
+(isDev) ? Logging.LogProcess("in development process"): Logging.LogProcess(" in production process");
 
 
 const express = require('express');
@@ -11,6 +11,7 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const controller = require('./controllers/server-controller.cjs');
 const apiRouter = require('./routes/api/api-router.cjs');
+const uploadsRouter = require('./routes/uploads-router.cjs');
 const database = require('./db/db.cjs'); // Need this imported here!!!
 
 const sessionSecretKey = 'some-key'
@@ -47,6 +48,11 @@ app.use(session({
 app.use(express.json());
 
 //
+// - Uploads Routing -
+//
+app.use('/uploads', uploadsRouter);
+
+//
 // - Serves Static Files From Build -
 //
 app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
@@ -71,6 +77,7 @@ app.get('/*splat', (req, res) => {
 //
 // - SERVER PORT -
 //
-app.listen(3000, () => {
-  console.log(chalk.cyan(`[otakustream] server running on http://localhost:${3000}`));
+const PORT = 3000;
+app.listen(PORT, () => {
+  Logging.LogProcess(`server running on http://localhost:${PORT}`);
 });

@@ -61,29 +61,33 @@ function App() {
 
         {/*Root URL*/}
         <Route path="">
-          <Route path="/" element={<Home />} />
+          <Route path="" element={<Home />} />
           <Route path="*" element={<Navigate to='/404' replace/>} />
-          <Route path="/404" element={<NotFound />} />
+          <Route path="404" element={<NotFound />} />
           <Route path="about" element={<About />} />
         </Route>
 
         <Route path="discover">
-          <Route path="search" element={<Search />} /> 
+          <Route path="" element={<Navigate to='/404' replace/>} />
+          <Route path="search" element={<Search />} />
           <Route path="category" element={<CategoryResult/>} />
-          <Route path="genres" element={<Categories typeTitle="Genres"/>} />
-          <Route path="other" element={<Categories typeTitle="Other"/>} />
+          {/*<Route path="genres" element={<Categories typeTitle="Genres"/>} />*/}
+          {/*<Route path="other" element={<Categories typeTitle="Other"/>} />*/}
         </Route>
 
-        <Route path="series">
+        <Route path="series" >
+          <Route path="" element={<Navigate to='/404' replace/>} />
           <Route path="animedetails" element={<AnimeDetails />}/>
         </Route>
 
         <Route path="stream">
+          <Route path="" element={<Navigate to='/404' replace/>} />
           <Route path="animestream" element={<AnimeStream />}/>
         </Route>
 
         {/* Authentication */}
         <Route path="auth">
+          <Route path="" element={<Navigate to='/404' replace/>} />
           <Route path="signin" element={
               <MemberAuthorization hide={true}>
                 <Signin/>
@@ -103,7 +107,8 @@ function App() {
         </Route>
 
         <Route path="profile">
-          <Route path="safespace" element={<SafeSpace />} />
+          <Route path="" element={<Navigate to='/404' replace/>} />
+          {/*<Route path="safespace" element={<SafeSpace />} /> */}
         </Route>
 
       </Routes>

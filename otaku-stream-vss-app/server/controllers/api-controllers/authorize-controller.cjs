@@ -1,4 +1,4 @@
-const db = require('../db/db.cjs');
+const db = require('../../db/db.cjs');
 
 async function AuthorizeMember(req, res, next) 
 {
@@ -15,24 +15,11 @@ async function AuthorizeMember(req, res, next)
     }
     catch(err){}
 
-    res.status(403).end();
+    res.status(403).json({error: "Not Authorized"});
 }
-
-async function AllowedRoutes(req, res, next) 
-{
-    res.status(200).json();
-}
-
-async function SetupNavbar(req, res, next) 
-{
-    res.status(200).json({user: { email: req.session.user.email } });
-}
-
 
 const AuthorizeController = {
     AuthorizeMember,
-    AllowedRoutes,
-    SetupNavbar,
 };
 
 module.exports = AuthorizeController;

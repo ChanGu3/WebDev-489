@@ -1,32 +1,34 @@
-const {Model, DataTypes, Op} = require('sequelize');
+const {Model, DataTypes, Sequelize, Op} = require('sequelize');
 const { Logging, errormsg } = require('../../server-logging.cjs');
 const { uploads } = require('../../server-uploads.cjs');
-const path = require('path');
+const multer = require('multer');
+
 
 class Anime extends Model 
 {
-
     static async #Exists(id)
     {
         const anime = await Anime.findByPk(id);
         return (anime) ? true : false;
     }
 
-    //
-    // title-id <-- folder
-    //
+    static #AnimeDirPath(anime)
+    {
+        return `${anime.id}`;
+    }
+
     static #CreateDirectory(anime)
     {
         return new Promise(async (resolve, reject) => {
             try
             {
-                const dirName = `${anime.title}-${anime.id}`
+                const dirName = this.#AnimeDirPath(anime);
                 await uploads.mkDir(dirName);
                 resolve(dirName);
             }
             catch(err)
             {
-                Logging.LogError(`anime directory creation could not be resolved for id:${id} --- ${err}`);
+                Logging.LogError(`anime directory creation could not be resolved for id:${anime.id} --- ${err}`);
                 reject({error: err.message});
             }
         })
@@ -37,13 +39,13 @@ class Anime extends Model
         return new Promise(async (resolve, reject) => {
             try
             {
-                const dirName = `${anime.title}-${anime.id}`
-                await uploads.mkDir(dirName);
+                const dirName = this.#AnimeDirPath(anime);
+                await uploads.recursiveDirDeleteInAnime(dirName);
                 resolve(dirName);
             }
             catch(err)
             {
-                Logging.LogError(`anime directory creation could not be resolved for id:${id} --- ${err}`);
+                Logging.LogError(`anime directory removal could not be resolved for id:${anime.id} --- ${err}`);
                 reject({error: err.message});
             }
         })
@@ -59,7 +61,7 @@ class Anime extends Model
                     description: description, 
                     copyright: copyright, 
                     originalTranslation: originalTranslation, 
-                    coverFilename: coverFilename
+                    coverFilename: coverFilename,
                 });
 
                 await anime.validate();
@@ -67,11 +69,10 @@ class Anime extends Model
                 await anime.save();
 
                 await this.#CreateDirectory(anime);
-                resolve();
+                resolve(anime);
             }
             catch(err)
             {
-                
                 Logging.LogError(`Could Not Add Anime To Database ${title} --- ${err.message}`);
                 reject(new Error(errormsg.fallback));
             }
@@ -86,20 +87,29 @@ class Anime extends Model
                 if(await this.#Exists(id))
                 {
                     const anime = await Anime.findByPk(id);
+                    const dirName = this.#AnimeDirPath(anime);
+                    
+                    await Anime.destroy({
+                        where: {
+                            id : anime.id
+                        },
+                    });
 
-                    if(await uploads.doesDirExist())
+                    if(await uploads.doesAnimePathExist(dirName))
                     {
-                        resolve();
-                    }   
+                        this.#DeleteDirectory(anime);
+                    }    
                 }
                 else
                 {
-                    resolve();   
+                    Logging.LogWarning(`anime with id:${id} does not exists so removing is unnecessary`);
                 }
+
+                resolve();
             }
             catch(err)
             {
-                Logging.LogError(`Could Not Remove Anime From Database ${title} --- ${err.message}`);
+                Logging.LogError(`could not remove anime from database ${id} --- ${err.message}`);
                 reject(new Error(errormsg.fallback));
             }
         });
@@ -113,12 +123,62 @@ class Anime extends Model
                 if(await this.#Exists(id))
                 {
                     const anime = await Anime.findByPk(id)
-                    resolve(anime);
+                    resolve(anime.toJSON());
+                }
+                else
+                {
+                    Logging.LogError(`could not get anime with id: ${id}`);
+                    reject({error: `could not get anime with id: ${id}`});
                 }
             }
             catch(err)
             {
                 Logging.LogError(`could not get anime with id: ${id} --- ${err}`);
+                reject({error: err.message})
+            }
+        })
+    }
+
+    static GetAll({getNewestReleases = false, limit = 10, isAZ = false, search = undefined, shuffle = false } = {})
+    {
+        return new Promise(async (resolve, reject) => {
+            try
+            {
+                const query = {}
+                query.order = []
+                query.where = {}
+                if (getNewestReleases)
+                {
+                    query.limit = 6;
+                    query.offset = 0;
+                    query.order.push(['createdAt', 'ASC'])
+                }
+                query.limit = limit;
+                if(isAZ)
+                {
+                    query.order.push([Sequelize.fn('LOWER', Sequelize.col('title')), 'ASC']);
+                }
+
+                if(search)
+                {   
+                    query.where.title = {
+                        [Op.like]: `%${search}%`
+                    }
+                }
+
+                if(shuffle)
+                {
+                    query.order.push([Sequelize.literal('Random()')]);
+                }
+
+                const animeList = await Anime.findAll(query);
+                resolve(animeList.map((element) => {
+                    return element.toJSON();
+                }));
+            }
+            catch(err)
+            {
+                Logging.LogError(`could not get all anime --- ${err}`);
                 reject({error: err.message})
             }
         })

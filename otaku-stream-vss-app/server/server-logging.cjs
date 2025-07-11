@@ -5,7 +5,9 @@ const fallback = "Server Error - please try again later";
 const emailExists = "Email Already Exists - please sign in or use a different email";
 const authorizationFail = "email or password is invalid please try again";
 const sessionDoesNotExist = "session does not exists so could not retrieve email"
-
+const genreDoesNotExist = "genre does not exists so could not retrieve it"
+const animeGenreDoesNotExist = "AnimeGenre does not exists so could not retrieve it";
+const animeOtherTranslationDoesNotExist = "AnimeOtherTranslation does not exists so could not retrieve it";
 
 function LogProcess(msg)
 {
@@ -37,6 +39,9 @@ const errormsg = {
     emailExists,
     authorizationFail,
     sessionDoesNotExist,
+    genreDoesNotExist,
+    animeGenreDoesNotExist,
+    animeOtherTranslationDoesNotExist,
 }
 
 const Logging = {

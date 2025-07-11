@@ -1,21 +1,13 @@
 const express = require('express');
 const authorizeRouter = express.Router()
-const controller = require('../../controllers/authorize-controller.cjs');
-
+const controller = require('../../controllers/api-controllers/authorize-controller.cjs');
+const memberRouter = require('./member-router.cjs');
 
 //
 // 
 //
 authorizeRouter.use('/member', controller.AuthorizeMember);
+authorizeRouter.use('/member', memberRouter);
 
-//
-// routes authorization
-//
-authorizeRouter.get('/member/routes', controller.AllowedRoutes);
-
-//
-// Navbar member authorization
-//
-authorizeRouter.get('/member/navbar', controller.SetupNavbar);
 
 module.exports = authorizeRouter;

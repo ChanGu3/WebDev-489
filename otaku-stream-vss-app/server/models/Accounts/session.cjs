@@ -182,6 +182,7 @@ function SessionInit(sequelize)
                     model: Member,
                     key: 'email',  
                 },
+                onDelete: 'CASCADE',
             },
             expDate: {
                 type: DataTypes.DATE,

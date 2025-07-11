@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
+const PORT = 3000;
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -9,7 +11,12 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:3000', // Your Express backend
+        target: `http://localhost:${PORT}`, // Your Express backend
+        changeOrigin: true,
+        secure: false
+      },
+        '/uploads': {
+        target: `http://localhost:${PORT}`, // Your Express backend
         changeOrigin: true,
         secure: false
       }
