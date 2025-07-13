@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Example from './pages/Example.jsx'
 import NotFound from './pages/NotFound.jsx'
@@ -9,19 +9,19 @@ import Signup from './pages/signup/Signup.jsx'
 import SignupSuccess from './pages/signup/SignupSuccess.jsx'
 import About from './pages/About.jsx'
 import Search from './pages/Search.jsx'
-import SafeSpace from './pages/SafeSpace.jsx'
+//import SafeSpace from './pages/SafeSpace.jsx'
 import CategoryResult from './pages/CategoryResult.jsx'
-import Categories from './pages/Categories.jsx'
+//import Categories from './pages/Categories.jsx'
 import AnimeDetails from './pages/AnimeDetails.jsx'
 import AnimeStream from './pages/AnimeStream.jsx'
 
-function MemberAuthorization({children, hide=false})
+function MemberAuthorization({children, hide=false, redirectURL='/404'})
 {
   const [auth, setAuth] = useState(null);
 
   useEffect(() =>
   {
-    fetch('/api/authorize/member/routes', {
+    fetch('/api/authorize/member', {
       method: 'GET',
       credentials: 'include',
     }).then((response) => {
@@ -46,7 +46,7 @@ function MemberAuthorization({children, hide=false})
     )
   }
 
-  return (auth) ?  children : <Navigate to='/404' replace/>;
+  return (auth) ?  children : <Navigate to={redirectURL} replace/>;
 }
 
 function App() {
@@ -70,19 +70,24 @@ function App() {
         <Route path="discover">
           <Route path="" element={<Navigate to='/404' replace/>} />
           <Route path="search" element={<Search />} />
-          <Route path="category" element={<CategoryResult/>} />
+          <Route path="genre/:genre" element={<CategoryResult isGenre={true} isAZ={true}/>} />
+          <Route path="other/A-Z" element={<CategoryResult isGenre={false} isAZ={true}/>} />
           {/*<Route path="genres" element={<Categories typeTitle="Genres"/>} />*/}
           {/*<Route path="other" element={<Categories typeTitle="Other"/>} />*/}
         </Route>
 
         <Route path="series" >
           <Route path="" element={<Navigate to='/404' replace/>} />
-          <Route path="animedetails" element={<AnimeDetails />}/>
+          <Route path=":animeID/:title" element={<AnimeDetails />}/>
         </Route>
 
         <Route path="stream">
           <Route path="" element={<Navigate to='/404' replace/>} />
-          <Route path="animestream" element={<AnimeStream />}/>
+          <Route path=":streamID/:title" element={
+              <MemberAuthorization hide={false} redirectURL={'/auth/signin'}>
+                <AnimeStream />
+              </MemberAuthorization>
+            } />
         </Route>
 
         {/* Authentication */}

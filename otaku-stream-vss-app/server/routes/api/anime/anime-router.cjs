@@ -14,6 +14,8 @@ animeRouter.get('/stream', animeController.GetAllAnimeStream);
 
 animeRouter.get('/stream/:streamID', animeController.GetSingleAnimeStream);
 
+animeRouter.get('/stream/:streamID/like', animeController.GetAnimeStreamLikes);
+
 animeRouter.get('/installment/:installmentID', animeController.GetSingleInstallment);
 
 animeRouter.get('/:animeID', animeController.GetSingleAnime);

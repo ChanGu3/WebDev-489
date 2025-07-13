@@ -18,7 +18,6 @@ function AnimeIDRateData(animeRatingList)
     animeRatingList.forEach((element) => {
             ratingTotal = ratingTotal + element.rating;
             rateData[`rate${element.rating}Count`] = rateData[`rate${element.rating}Count`] + 1;
-            rateData.count = rateData.count + 1;
     });
 
     if(animeRatingList.length > 0)
@@ -122,6 +121,45 @@ class AnimeRate extends Model
         })
     }
 
+    //
+    // reject --> string: error msg
+    // resolve --> nothing
+    //
+    static UpdateDB(email, animeID, rating)
+    {
+        return new Promise( async (resolve, reject) => {
+
+            if (!(await this.#Exists(email, animeID)))
+            {
+                Logging.LogWarning(`email & animeID pair does not exist`);
+                reject(new Error(`${email} does not have a rating for ${animeID}`));
+                return;
+            }
+
+            try
+            {
+                await AnimeRate.update(
+                    {
+                        rating: rating,
+                    },
+                    {
+                        where:{
+                            email: email,
+                            animeID: animeID,
+                        }
+                    }
+                );
+
+                resolve();
+            }
+            catch(err)
+            {
+                Logging.LogError(`could not update AnimeRate from database ${email}|${animeID} --- ${err.message}`);
+                reject(new Error(errormsg.fallback));
+            }
+        })
+    }
+
     static GetAllByAnimeID(animeID)
     {
         return new Promise( async (resolve, reject) => {
@@ -137,6 +175,35 @@ class AnimeRate extends Model
             catch(err)
             {
                 Logging.LogError(`could not get list of AnimeRates from database using animeID:${animeID} --- ${err.message}`);
+                reject(new Error(errormsg.fallback));
+            }
+        })
+    }
+
+    static GetByEmailANDAnimeID(email, animeID)
+    {
+        return new Promise( async (resolve, reject) => {
+            try
+            {
+                const animeRates = await AnimeRate.findOne({
+                        where: {
+                            email: email,
+                            animeID: animeID,
+                        }
+                });
+
+                if(animeRates)
+                {
+                    resolve(animeRates.toJSON())
+                }
+                else
+                {
+                    reject(new Error(`email:${email} has not rated animeID:${animeID}`));
+                }
+            }
+            catch(err)
+            {
+                Logging.LogError(`could not get AnimeRate from database using email:${email}|animeID:${animeID} --- ${err.message}`);
                 reject(new Error(errormsg.fallback));
             }
         })

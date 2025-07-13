@@ -2,6 +2,7 @@ const CombineDBJSON = require('../../helper/combine-dbjson.cjs');
 const { Anime } = require('../../../models/Anime/Anime.cjs');
 const { AnimeInstallment } = require('../../../models/Anime/AnimeInstallment.cjs');
 const { AnimeStream } = require('../../../models/Anime/AnimeStream.cjs');
+const { AnimeStreamLike } = require('../../../models/Anime/AnimeStreamLike.cjs')
 const { Genre } = require('../../../models/Anime/Genre.cjs');
 
 async function GetAllAnime(req, res)
@@ -10,13 +11,12 @@ async function GetAllAnime(req, res)
 
     const { limit, getNewestReleases, isAZ, genres, search, shuffle } = req.query;
     if (getNewestReleases === 'true') { query.getNewestReleases = true; }
-    if (limit) { query.limit = limit }
+    if (limit && Number(limit) !== NaN) { query.limit = Number(limit) }
     if (isAZ === 'true') { query.isAZ = true }
     let genresList = null;
-    if (genres) { genresList = [].concat(genres); }
+    if (genres !== 'null' && genres !== 'undefined' && genres) { genresList = [].concat(genres); }
     if (search) { query.search = search }
     if (shuffle === 'true') { query.shuffle = true } 
-
     try
     {
         const animeList = await Anime.GetAll(query);
@@ -73,6 +73,21 @@ async function GetAllGenres(req, res)
     }
 }
 
+async function GetAnimeStreamLikes(req, res)
+{
+    const { streamID } = req.params;
+
+    try
+    {
+        const animeStreamLikeList = await AnimeStreamLike.GetAllByStreamID(streamID);
+        res.status(200).json(animeStreamLikeList);
+    }
+    catch(err)
+    {
+        res.status(500).json({error: err.message});
+    }
+}
+
 async function GetSingleGenre(req, res)
 {
         const { genreName } = req.params;
@@ -89,10 +104,14 @@ async function GetSingleGenre(req, res)
 
 async function GetAllInstallments(req, res)
 {
+    const { animeID } = req.query;
+    const query = {}
+    query.animeID = (animeID) ? animeID : false
+
     try
     {
-        const animeInstallmentList = await AnimeInstallment.GetAll();
-    
+        const animeInstallmentList = await AnimeInstallment.GetAll(query);
+
         await Promise.all(
             animeInstallmentList.map(async (element) => {
                 return await CombineDBJSON.CombineInstallmentData(element);
@@ -118,8 +137,7 @@ async function GetSingleInstallment(req, res)
     try
     {
         const animeInstallment = await AnimeInstallment.GetByID(installmentID);
-        const animeInstallmentFull = await CombineDBJSON.CombineInstallmentData(animeInstallment);
-
+        const animeInstallmentFull = await CombineDBJSON.CombineInstallmentData(animeInstallment.toJSON());
         if(isOldestValue)
         {
             animeInstallmentFull.animeStreamList.sort((a, b) => new Date(a.releaseDate).getTime() - new Date(b.releaseDate).getTime());
@@ -142,8 +160,13 @@ async function GetAllAnimeStream(req, res)
     try
     {
         const animeStreamList = await AnimeStream.GetAll();
-
-        res.status(200).json(animeStreamList);
+        const animeStreamListComb = await Promise.all(
+            animeStreamList.map(async (animeStream) => { 
+                const animeStreamComb = await CombineDBJSON.CombineAnimeStreamData(animeStream);
+                return animeStreamComb;
+            })
+        );
+        res.status(200).json(animeStreamListComb);
     }
     catch(err)
     {
@@ -157,7 +180,8 @@ async function GetSingleAnimeStream(req, res)
     try
     {
         const animeStream = await AnimeStream.GetByID(streamID);
-        res.status(200).json(animeStream);
+        const animeStreamComb = await CombineDBJSON.CombineAnimeStreamData(animeStream);
+        res.status(200).json(animeStreamComb);
     }
     catch(err)
     {
@@ -169,6 +193,7 @@ const animeController = {
     GetAllAnime,
     GetSingleAnime,
     GetAllGenres,
+    GetAnimeStreamLikes,
     GetSingleGenre,
     GetAllInstallments,
     GetSingleInstallment,

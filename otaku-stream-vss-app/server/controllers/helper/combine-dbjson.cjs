@@ -1,3 +1,4 @@
+const { Anime } = require('../../models/Anime/Anime.cjs');
 const { AnimeGenre } = require('../../models/Anime/AnimeGenre.cjs');
 const { AnimeInstallment } = require('../../models/Anime/AnimeInstallment.cjs');
 const { AnimeOtherTranslation } = require('../../models/Anime/AnimeOtherTranslation.cjs');
@@ -21,13 +22,26 @@ async function CombineAnimeData(animeDBJSON)
 async function CombineInstallmentData(animeInstallmentDBJSON)
 {
     const animeInstallmentStreamList = await AnimeStream.GetAllByInstallmentID(animeInstallmentDBJSON.id);
+    await Promise.all(animeInstallmentStreamList.map(async (animeStream) => { return await CombineAnimeStreamData(animeStream)}));
     animeInstallmentDBJSON.animeStreamList = animeInstallmentStreamList;
     return animeInstallmentDBJSON;
 }
 
+
+async function CombineAnimeStreamData(animeStreamDBJSON)
+{
+    const anime = await Anime.GetByID(animeStreamDBJSON.animeID);
+    animeStreamDBJSON.animeTitle = anime.title;
+    const animeInstallment = await AnimeInstallment.GetByID(animeStreamDBJSON.installmentID);
+    animeStreamDBJSON.installmentSeasonNum = animeInstallment.seasonNum;
+
+    return animeStreamDBJSON
+}
+
 const CombineDBJSON = {
     CombineAnimeData,
-    CombineInstallmentData
+    CombineInstallmentData,
+    CombineAnimeStreamData,
 }
 
 module.exports = CombineDBJSON;

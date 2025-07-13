@@ -3,7 +3,7 @@ const chalk = require('chalk');
 const {Model, DataTypes, Op} = require('sequelize');
 const { Member } = require('./member.cjs');
 const cron = require('node-cron');
-const ErrorMsg = require('../../server-logging.cjs');
+const { Logging, errormsg } = require('../../server-logging.cjs');
 
 //
 // Returns Date 31 Days In The Future at time-stamp 00:00:00
@@ -55,7 +55,7 @@ class Session extends Model
             catch(err)
             {
                 console.error(chalk.red(`[otakustream] Could Not Build Session For ${email} --- ${err}`));
-                reject(new Error(ErrorMsg.fallback));
+                reject(new Error(errormsg.fallback));
             }
         });
     }
@@ -75,7 +75,7 @@ class Session extends Model
             }
             else
             {
-                reject(new Error(ErrorMsg.sessionDoesNotExist));
+                reject(new Error(errormsg.sessionDoesNotExist));
             }
         });
     }
@@ -101,12 +101,12 @@ class Session extends Model
                 catch(err)
                 {
                     console.error(chalk.red(`[otakustream] Could Not Log Session For ${id} --- ${err}`));
-                    reject(new Error(ErrorMsg.fallback));
+                    reject(new Error(errormsg.fallback));
                 }
             }
             else
             {
-                reject(new Error(ErrorMsg.sessionDoesNotExist));
+                reject(new Error(errormsg.sessionDoesNotExist));
             }
         });
     }
@@ -132,13 +132,13 @@ class Session extends Model
                 catch(err)
                 {
                     console.error(chalk.red(`[otakustream] Could Not Update Session For ${oldID} --- ${err}`));
-                    reject(new Error(ErrorMsg.fallback));
+                    reject(new Error(errormsg.fallback));
                 }
             }
             else
             {
                 console.error(chalk.red(`[otakustream] Could Not Update Session For ${oldID}`));
-                reject(new Error(ErrorMsg.sessionDoesNotExist));
+                reject(new Error(errormsg.sessionDoesNotExist));
             }
         });
     }
@@ -157,7 +157,7 @@ class Session extends Model
             }
             catch(err)
             {
-                reject(new Error(ErrorMsg.sessionDoesNotExist));
+                reject(new Error(errormsg.sessionDoesNotExist));
             }
         })
     }
@@ -206,8 +206,7 @@ function SessionInit(sequelize)
                 },
             },
         });
-
-        console.log(`Purged All Expired Session on ${dateNow}`);
+        Logging.LogProcess(`Purged All Expired Session on ${dateNow}`);
     });
 }
 

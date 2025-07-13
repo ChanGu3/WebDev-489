@@ -1,5 +1,6 @@
 import '../tailwind.css'
 import { useEffect, useRef, useState } from 'react'
+import { useParams, useNavigate } from "react-router-dom";
 import NavbarOS from '../components/NavbarOS.jsx'
 import FooterOS from '../components/FooterOS.jsx';
 import FavoriteButton from '../components/FavoriteButton.jsx';
@@ -8,11 +9,69 @@ import StreamModule2 from '../components/StreamModule2.jsx'
 
 function AnimeStream()
 {
+    const { streamID, title } = useParams();
+    const navigate = useNavigate();
     const [isShowingDetails, SetIsShowingDetails] = useState(false);
+    const [animeStream, SetAnimeStream] = useState(null);
+    const [prevAnimeStream, SetPrevAnimeStream] = useState(null);
+    const [nextAnimeStream, SetNextAnimeStream] = useState(null);
 
     useEffect(() => {
-        document.title = "Anime Stream - Otaku Stream";
+        document.title = `stream ${title} - Otaku Stream`;
 
+        // Anime For The Page Fetch
+        fetch(`/api/anime/stream/${streamID}`, {
+            method: 'GET',
+        }).then((response) => {
+            if(response.ok)
+            {
+                return response.json();
+            }
+            else
+            {
+                navigate('/404');
+            }
+        }).then((currentAnimeStream) => {
+            if(currentAnimeStream)
+            {
+                SetAnimeStream(currentAnimeStream);
+
+                fetch(`/api/anime/installment/${currentAnimeStream.installmentID}`, {
+                    method: 'GET',
+                }).then((response) => {
+                    if(response.ok)
+                    {
+                        return response.json();
+                    }
+                }).then((installment) => {
+                    if(installment)
+                    {
+                        if(installment.animeStreamList)
+                        {
+                            const prevAnimeStream = installment.animeStreamList[(installment.animeStreamList.length-1) + 2 - currentAnimeStream.streamNumber];
+                            if (prevAnimeStream)
+                            {
+                                SetPrevAnimeStream(prevAnimeStream);
+                            }
+
+                            const nextAnimeStream = installment.animeStreamList[(installment.animeStreamList.length-1) - currentAnimeStream.streamNumber];
+                            if (nextAnimeStream)
+                            {
+                                SetNextAnimeStream(nextAnimeStream);
+                            }
+                        }
+                    }
+
+                }).catch((err) => {
+                });
+            }
+            else
+            {
+                navigate('/404');
+            }
+        }).catch((err) => {
+            navigate('/404');
+        });
     }, []);
 
 
@@ -21,12 +80,12 @@ function AnimeStream()
         <NavbarOS/>
             <main className="">
                 {/* Title Image */}
-                <a href="/">
+                <a href={(animeStream) ? `/series/${animeStream.animeID}/${animeStream.animeTitle}` : ''}>
                     <div className="relative w-full h-[10vw] ">
                         <div className="absolute top-0 left-0 z-11 w-full h-full flex justify-start items-center px-8">
-                            <p className="text-lg md:text-4xl font-semibold text-os-white">Anime Title</p>
+                            <p className="text-lg md:text-4xl font-semibold text-os-white">{(animeStream) ? animeStream.animeTitle : ''}</p>
                         </div>
-                        <img src="/jpeg/Test.jpeg" className="absolute top-0 left-0 object-cover w-full h-[100%] mask-b-from-55% mask-b-to-100% z-10" />
+                        <img src="/png/ImageNotFound.png" className="absolute top-0 left-0 object-cover w-full h-[100%] mask-b-from-55% mask-b-to-100% z-10" />
                     </div>
                 </a>
 
@@ -56,35 +115,23 @@ function AnimeStream()
 
                     {/* Stream Title */}
                     <p className="self-center flex flex-row justify-between text-os-white font-semibold">
-                        <span className="text-xs md:text-2xl font-semibold">Season 1 Episode 2: The Sun Hidden In The Cloud</span>
+                        <span className="text-xs md:text-2xl font-semibold">{(animeStream) ? `Season ${animeStream.installmentSeasonNum} Episode ${animeStream.streamNumber}: ${animeStream.title}` : ''}</span>
                         <span className="italic whitespace-nowrap text-[8px] md:text-lg">
-                            <span className="text-os-blue-secondary">Release Date:</span> Sep 13 2018
+                            <span className="text-os-blue-secondary">Release Date:</span> {(() => { if(animeStream) { return `${new Date(animeStream.releaseDate).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})}`} else { return ''} })()}
                         </span>
                     </p>
 
                     {/* Like & Favorite */}
                     <div className="flex flex-row justify-between items-center py-2">
-                        <LikeButton seriesID={-1}/>
-                        <FavoriteButton seriesID={-1}/>
+                        <LikeButton streamID={(animeStream) ? animeStream.id : undefined}/>
+                        <FavoriteButton animeID={(animeStream) ? animeStream.animeID : undefined}/>
                     </div>
 
                     {/* Description */}
                     <div className="flex flex-col w-[100%]">
                         <p className="text-os-blue-secondary text-sm font-semibold py-2 underline underline-offset-4">Synopsis:</p>
                         <p className={`whitespace-pre-wrap text-os-white text-xs w-[100%] ${(isShowingDetails) ? "": "line-clamp-4"}`}>
-                        {`[Anime Summary] Lorem ipsum Morbi erat ex, lacinia nec efficitur eget, sagittis ut orci. Etiam in dolor placerat, pharetra ligula et, bibendum neque. 
-
-Vestibulum vitae congue lectus, sed ultricies augue. Nam iaculis elit nec velit luctus, vitae rutrum nunc imperdiet. 
-
-Nunc vel turpis sit amet lectus pellentesque tincidunt. Proin commodo tincidunt enim, at sodales mi dictum ac. 
-
-Maecenas molestie, metus quis malesuada dictum, leo erat egestas lacus, sit amet tristique urna magna a diam. 
-
-Donec ultricies dui sit amet mi ornare egestas. Phasellus ultricies lectus non interdum pellentesque. Cras nisi tellus, feugiat sed enim quis, tristique interdum lacus. Sed vel pharetra arcu, ac fermentum neque. Morbi mollis sollicitudin varius. Ut sit amet vulputate velit.
-
-Mauris semper neque quis lacinia volutpat. Aenean vestibulum diam ex, sit amet posuere dolor luctus non. Ut consectetur felis blandit ipsum convallis, non lobortis justo facilisis. Ut vitae velit pulvinar, pharetra libero semper, dignissim urna.
-
-Nullam quam quam, viverra eget feugiat a, interdum et erat. Morbi fringilla, eros et consequat iaculis, ligula nunc hendrerit neque, ac.`}
+                        {(animeStream) ? `${animeStream.synopsis}` : ''}
                         </p>
 
                         <div className="mt-4 border border-os-dark-secondary w-[100%]"></div>
@@ -96,18 +143,35 @@ Nullam quam quam, viverra eget feugiat a, interdum et erat. Morbi fringilla, ero
 
                     {/* Next/Prev Episodes */}
                     <div className="flex flex-row justify-between">
-                        <div className="flex flex-col">
+
+                        {/* PREVIOUS STREAM */}
+                        <div className={`flex flex-col ${(prevAnimeStream) ? '' : 'invisible'}`}>
                             <p className="my-1 text-os-white font-semibold text-sm md:text-xl self-start">Previous Stream</p>  
                             <div className="w-27.5 sm:w-35 md:w-60">
-                                <StreamModule2 isMovie={false} streamTitle="EpisodeTitle" streamImageSrc="/jpeg/Test.jpeg" dateReleased="05/04/25" href="#" episodeNum="7"/>
+                                {(prevAnimeStream) ? <StreamModule2 
+                                                        isMovie={prevAnimeStream.isMovie} 
+                                                        streamTitle={prevAnimeStream.title} 
+                                                        streamImageSrc="/png/ImageNotFound.png" 
+                                                        dateReleased={(() => { if(prevAnimeStream) { return `${new Date(prevAnimeStream.releaseDate).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})}`} else { return ''} })()} 
+                                                        href={`/stream/${prevAnimeStream.id}/${prevAnimeStream.title}`} 
+                                                        episodeNum={prevAnimeStream.streamNumber}/> : '' }
                             </div>                              
                         </div>
-                        <div className="flex flex-col">
+
+                        {/* NEXT STREAM */}
+                        <div className={`flex flex-col ${(nextAnimeStream) ? '' : 'invisible'}`}>
                             <p className="my-1 text-os-white font-semibold text-sm md:text-xl self-end">Next Stream</p>  
                             <div className="w-27.5 sm:w-35 md:w-60">
-                                <StreamModule2 isMovie={true} streamTitle="Movie" streamImageSrc="/jpeg/Test.jpeg" dateReleased="05/04/25" href="#" flipBottomText={true}/>
+                                {(nextAnimeStream) ? <StreamModule2 
+                                                        isMovie={nextAnimeStream.isMovie} 
+                                                        streamTitle={nextAnimeStream.title} 
+                                                        streamImageSrc="/png/ImageNotFound.png" 
+                                                        dateReleased={(() => { if(nextAnimeStream) { return `${new Date(nextAnimeStream.releaseDate).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})}`} else { return ''} })()} 
+                                                        href={`/stream/${nextAnimeStream.id}/${nextAnimeStream.title}`} 
+                                                        episodeNum={nextAnimeStream.streamNumber}/> : '' }
                             </div>                              
                         </div>
+
                     </div>
                 </div>
             </main>

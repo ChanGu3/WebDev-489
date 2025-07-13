@@ -94,16 +94,52 @@ class AnimeStreamLike extends Model
         return new Promise( async (resolve, reject) => {
             try
             {
-                const animeStreamLikes = await AnimeFavorite.findAll({
+                const animeStreamLikes = await AnimeStreamLike.findAll({
                         where: {
                             streamID: streamID,
                         }
                 });
-                resolve(animeStreamLikes.map( (element) => { const {createdAt, updatedAt, ...rest} = element.toJSON(); return rest; }));
+
+                if (animeStreamLikes)
+                {
+                    resolve(animeStreamLikes.map( (element) => { const {createdAt, updatedAt, ...rest} = element.toJSON(); return rest; }));
+                }
+                else
+                {
+                    reject(new Error(`no likes exist for the streamID:${streamID}`));
+                }
             }
             catch(err)
             {
                 Logging.LogError(`could not get list of animeStreamLikes from database using streamID:${streamID} --- ${err.message}`);
+                reject(new Error(errormsg.fallback));
+            }
+        })
+    }
+
+    static GetByEmailANDStreamID(email, streamID)
+    {
+        return new Promise( async (resolve, reject) => {
+            try
+            {
+                const animeStreamLikes = await AnimeStreamLike.findOne({
+                        where: {
+                            email: email,
+                            streamID: streamID,
+                        }
+                });
+                if (animeStreamLikes)
+                {
+                    resolve(animeStreamLikes.toJSON());
+                }
+                else
+                {
+                    reject(new Error(`email:${email} doesn't have streamID:${streamID} liked`));
+                }
+            }
+            catch(err)
+            {
+                Logging.LogError(`could not get animeStreamLike from database using email:${email}|streamID:${streamID} --- ${err.message}`);
                 reject(new Error(errormsg.fallback));
             }
         })

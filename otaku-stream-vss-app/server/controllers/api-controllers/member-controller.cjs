@@ -3,11 +3,7 @@ const { Anime } = require('../../models/Anime/Anime.cjs');
 const { AnimeFavorite } = require('../../models/Anime/AnimeFavorite.cjs');
 const { AnimeWatchHistory } = require('../../models/Anime/AnimeWatchHistory.cjs');
 const { AnimeStreamLike } = require('../../models/Anime/AnimeStreamLike.cjs');
-
-async function AllowedRoutes(req, res, next) 
-{
-    res.status(200).json();
-}
+const { AnimeRate } = require('../../models/Anime/AnimeRate.cjs');
 
 async function SetupNavbar(req, res, next) 
 {
@@ -36,12 +32,21 @@ async function GetAllAnimeFavorite(req, res)
 
 async function GetAllAnimeStreamHistory(req, res)
 {
-    const latestStreamPerSeries = (req.query.latestStreamPerSeries === 'true') ? req.query.latestStreamPerSeries : false;
+    const { latestStreamPerSeries, animeID } = req.query;
+
+    const query = {};
+    query.latestStreamPerSeries = (latestStreamPerSeries === 'true') ? true : false;
+    query.animeID = (animeID) ? animeID : false
 
     try
     {
-        const animeStreamHistoryList = await AnimeWatchHistory.GetWatchHistoryByEmail(req.session.user.email, {latestStreamPerSeries: latestStreamPerSeries});
-        res.status(200).json(animeStreamHistoryList);
+        const animeStreamHistoryList = await AnimeWatchHistory.GetWatchHistoryByEmail(req.session.user.email, query);
+        const animeStreamHistoryListComb = await Promise.all( animeStreamHistoryList.map((animeStreamHistory) => {
+                const animeStreamHistoryComb = CombineDBJSON.CombineAnimeStreamData(animeStreamHistory);
+                return animeStreamHistoryComb;
+            })
+        )
+        res.status(200).json(animeStreamHistoryListComb);
     }
     catch(err)
     {
@@ -51,12 +56,14 @@ async function GetAllAnimeStreamHistory(req, res)
 
 async function GetSingleAnimeStreamHistory(req, res)
 {
+    const latestStreamPerSeries = (req.query.latestStreamPerSeries === 'true') ? req.query.latestStreamPerSeries : false;
     const { streamID } = req.params;
 
     try
     {
-        const animeStreamHistoryList = await AnimeWatchHistory.GetWatchHistoryByEmailANDStreamID(req.session.user.email, streamID);
-        res.status(200).json(animeStreamHistoryList);
+        const animeStreamHistory = await AnimeWatchHistory.GetWatchHistoryByEmailANDStreamID(req.session.user.email, streamID);
+        const animeStreamHistoryComb = CombineDBJSON.CombineAnimeStreamData(animeStreamHistory);
+        res.status(200).json(animeStreamHistoryComb);
     }
     catch(err)
     {
@@ -80,6 +87,21 @@ async function UpdateSingleAnimeStreamHistory(req, res)
             await AnimeWatchHistory.AddToDB(req.session.user.email, streamID);
             res.status(200).json({success: "added the streamID to history"});
         }
+    }
+    catch(err)
+    {
+        res.status(500).json({error: err.message});
+    }
+}
+
+async function GetAnimeFavorite(req, res)
+{
+    const { animeID } = req.params;
+
+    try
+    {
+        const favorite = await AnimeFavorite.GetByEmailANDID(req.session.user.email, animeID);
+        res.status(200).json(favorite);
     }
     catch(err)
     {
@@ -117,6 +139,21 @@ async function RemoveAnimeFavorite(req, res)
     }
 }
 
+async function GetAnimeStreamLike(req, res)
+{
+    const { streamID } = req.params;
+
+    try
+    {
+        await AnimeStreamLike.GetByEmailANDStreamID(req.session.user.email, streamID);
+        res.status(200).json({success: `${req.session.user.email} successfully got AnimeStreamLike with ${streamID}`});
+    }
+    catch(err)
+    {
+        res.status(500).json({error: err.message});
+    }
+}
+
 async function AddAnimeStreamLike(req, res)
 {
     const { streamID } = req.params;
@@ -147,17 +184,85 @@ async function RemoveAnimeStreamLike(req, res)
     }
 }
 
+async function GetAnimeRating(req, res)
+{
+    const { animeID } = req.params;
+
+    try
+    {
+        const animeRate = await AnimeRate.GetByEmailANDAnimeID(req.session.user.email, animeID);
+        res.status(200).json(animeRate);
+    }
+    catch(err)
+    {
+        res.status(500).json({error: err.message});
+    }
+}
+
+async function AddAnimeRating(req, res)
+{
+    const { animeID } = req.params;
+    const { newRating } = req.body;
+
+    try
+    {
+        await AnimeRate.AddToDB(req.session.user.email, animeID, newRating);
+        console.log(newRating);
+        res.status(200).json({success: `successfully added AnimeRate with ${animeID} and rating ${newRating}`});
+    }
+    catch(err)
+    {
+        res.status(500).json({error: err.message});
+    }
+}
+
+async function UpdateAnimeRating(req, res)
+{
+    const { animeID } = req.params;
+    const { newRating } = req.body;
+
+    try
+    {
+        await AnimeRate.UpdateDB(req.session.user.email, animeID, newRating);
+        res.status(200).json({success: `successfully added AnimeRate with ${animeID} and rating ${newRating}`});
+    }
+    catch(err)
+    {
+        res.status(500).json({error: err.message});
+    }
+}
+
+async function RemoveAnimeRating(req, res)
+{
+    const { animeID } = req.params;
+
+    try
+    {
+        await AnimeRate.RemoveFromDB(req.session.user.email, animeID);
+        res.status(200).json({success: `successfully removed AnimeRate with ${animeID}`});
+    }
+    catch(err)
+    {
+        res.status(500).json({error: err.message});
+    }
+}
+
 const MemberController = {
-    AllowedRoutes,
     SetupNavbar,
     GetAllAnimeFavorite,
     GetAllAnimeStreamHistory,
     GetSingleAnimeStreamHistory,
     UpdateSingleAnimeStreamHistory,
+    GetAnimeFavorite,
     AddAnimeFavorite,
     RemoveAnimeFavorite,
+    GetAnimeStreamLike,
     AddAnimeStreamLike,
-    RemoveAnimeStreamLike
+    RemoveAnimeStreamLike,
+    GetAnimeRating,
+    AddAnimeRating,
+    UpdateAnimeRating,
+    RemoveAnimeRating,
 };
 
 module.exports = MemberController;

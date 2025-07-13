@@ -60,13 +60,13 @@ function Carousel({carouselList})
 
     function CarouselInit()
     {
-        if (carouselList.length === 1)    /* Remove Slider Controls */
+        if (currentCarouselData.length === 1)    /* Remove Slider Controls */
         {
             document.getElementById('left-slider').classList.add('hidden');
             document.getElementById('right-slider').classList.add('hidden');
             document.getElementById('slider-indicators').classList.add('hidden');
         }
-        else if (carouselList.length === 0) /* Removes Entire Carousel */
+        else if (currentCarouselData.length === 0) /* Removes Entire Carousel */
         {
             document.getElementById('indicators-carousel').classList.add('hidden');
         }
@@ -74,12 +74,12 @@ function Carousel({carouselList})
 
     function SlideLeft()
     {
-        (currCarouselIndex !== 0) ? SlideToElement(currCarouselIndex - 1) : SlideToElement(carouselList.length - 1);
+        (currCarouselIndex !== 0) ? SlideToElement(currCarouselIndex - 1) : SlideToElement(currentCarouselData.length - 1);
     }
 
     function SlideRight()
     {
-        (currCarouselIndex !== carouselList.length-1) ? SlideToElement(currCarouselIndex + 1) : SlideToElement(0);
+        (currCarouselIndex !== currentCarouselData.length-1) ? SlideToElement(currCarouselIndex + 1) : SlideToElement(0);
     }
     
     function SlideToElement(index)

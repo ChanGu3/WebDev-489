@@ -1,7 +1,6 @@
 const path = require('path');
 const {Model, DataTypes, Op} = require('sequelize');
 const { Anime } = require('./Anime.cjs');
-const { AnimeInstallment } = require('./AnimeInstallment.cjs');
 const { Logging, errormsg } = require('../../server-logging.cjs');
 const { uploads } = require('../../server-uploads.cjs');
 
@@ -166,20 +165,19 @@ class AnimeStream extends Model
         })
     }
 
-    static GetAllByInstallmentID(installmentID, isAsc = false)
+    static GetAllByInstallmentID(installmentID, isDesc = false)
     {
         return new Promise(async (resolve, reject) => {
             try
             {
-                const order = (isAsc) ? 'ASC': 'DESC';
+                const query = {}
+                query.order = []
+                query.order.push(['releaseDate', (isDesc) ? 'DESC': 'ASC'])
 
                 const animeStreamList = await AnimeStream.findAll({
                     where : {
                         installmentID: installmentID,
                     },
-                    order : [
-                        ['releaseDate', 'DESC'],
-                    ],
                 })
                 const animeStreamData = animeStreamList.map((element) => { 
                     const {createdAt, updatedAt, ...rest} = element.toJSON();
@@ -210,7 +208,7 @@ function AnimeStreamInit(sequelize)
                 type: DataTypes.UUID,
                 allowNull: false,
                 references: {
-                    model: AnimeInstallment,
+                    model: 'AnimeInstallments',
                     key: 'id',
                 },
                 onDelete: 'CASCADE',

@@ -6,7 +6,7 @@ const multer = require('multer');
 
 class Anime extends Model 
 {
-    static async #Exists(id)
+    static async Exists(id)
     {
         const anime = await Anime.findByPk(id);
         return (anime) ? true : false;
@@ -84,7 +84,7 @@ class Anime extends Model
         return new Promise(async (resolve, reject) => { 
             try
             {
-                if(await this.#Exists(id))
+                if(await this.Exists(id))
                 {
                     const anime = await Anime.findByPk(id);
                     const dirName = this.#AnimeDirPath(anime);
@@ -120,7 +120,7 @@ class Anime extends Model
         return new Promise(async (resolve, reject) => {
             try
             {
-                if(await this.#Exists(id))
+                if(await this.Exists(id))
                 {
                     const anime = await Anime.findByPk(id)
                     resolve(anime.toJSON());
@@ -172,9 +172,12 @@ class Anime extends Model
                 }
 
                 const animeList = await Anime.findAll(query);
+                
                 resolve(animeList.map((element) => {
                     return element.toJSON();
                 }));
+
+                
             }
             catch(err)
             {

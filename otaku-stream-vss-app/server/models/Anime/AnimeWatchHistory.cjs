@@ -131,7 +131,7 @@ class AnimeWatchHistory extends Model
         });
     }
 
-    static GetWatchHistoryByEmail(email, { byWatchDate = false, latestStreamPerSeries = false} = {})
+    static GetWatchHistoryByEmail(email, { byWatchDate = false, latestStreamPerSeries = false, animeID = false} = {})
     {
         return new Promise( async (resolve, reject) => {
             try
@@ -140,12 +140,16 @@ class AnimeWatchHistory extends Model
                 query.attributes = ['streamID'];
                 query.where = { email: email };
                 query.include = [ // inner join (I NEED TO GET ALL THAT )
+                    {
+                        model: AnimeStream,
+                        required: true,
+                        attributes: { exclude: ['createdAt', 'updatedAt', 'id'] }
+                    }
+                ];
+                if(animeID)
                 {
-                    model: AnimeStream,
-                    required: true,
-                    attributes: { exclude: ['createdAt', 'updatedAt', 'id'] }
+                    query.include[0].where = { animeID: animeID };
                 }
-                    ];
                 let orderList = (byWatchDate) ? ['dateStartedWatching', 'DESC'] : undefined;
                 if (latestStreamPerSeries)
                 {

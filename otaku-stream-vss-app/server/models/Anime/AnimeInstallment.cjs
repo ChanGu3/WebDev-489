@@ -1,8 +1,17 @@
 const path = require('path');
 const {Model, DataTypes, Op} = require('sequelize');
 const { Anime } = require('./Anime.cjs');
+const { AnimeStream } = require('./AnimeStream.cjs');
 const { Logging, errormsg } = require('../../server-logging.cjs');
 const { uploads } = require('../../server-uploads.cjs');
+
+async function AddEpisodeCount(installment)
+{
+    const animeStream = await AnimeStream.GetAllByInstallmentID(installment.id);
+    installment.episodes = animeStream.length;
+
+    return installment;
+}
 
 class AnimeInstallment extends Model 
 {
@@ -122,7 +131,8 @@ class AnimeInstallment extends Model
                 if(await this.#Exists(id))
                 {
                     const animeInstallment = await AnimeInstallment.findByPk(id)
-                    resolve(animeInstallment.toJSON());
+                    await AddEpisodeCount(animeInstallment.toJSON());
+                    resolve(animeInstallment);
                 }
                 else
                 {
@@ -138,14 +148,24 @@ class AnimeInstallment extends Model
     }
 
     
-    static GetAll()
+    static GetAll({animeID = false} = {})
     {
         return new Promise(async (resolve, reject) => {
             try
             {
-                const animeInstallmentList = await AnimeInstallment.findAll()
+                const query = {}
+                query.order = [];
+                query.order.push (['createdAt', 'ASC']);
+                if(animeID)
+                {
+                    query.where = { animeID: animeID }
+                }
 
-                resolve(animeInstallmentList.map((element) => { return element.toJSON(); }));
+                const animeInstallmentList = await AnimeInstallment.findAll(query);
+                const newAnimeInstallmentList = await Promise.all(
+                    animeInstallmentList.map(async (element) => { return await AddEpisodeCount(element.toJSON()); })
+                );
+                resolve(newAnimeInstallmentList);
             }
             catch(err)
             {
@@ -160,26 +180,28 @@ class AnimeInstallment extends Model
         return new Promise(async (resolve, reject) => {
             try
             {
-                const animeInstallmentList = await AnimeInstallment.findAll({
-                    where : {
-                        animeID: animeID,
-                    }
-                })
+                const query = {}
+                query.where = { animeID: animeID }
+                query.order = [];
+                query.order.push(['createdAt', 'ASC']);
+                const animeInstallmentList = await AnimeInstallment.findAll(query)
                 let seasons = 0;
                 let movies =  0;
                 const animeInstallmentData = {};
-                animeInstallmentData.list = animeInstallmentList.map((element) => { 
-                    const {animeID, createdAt, updatedAt, ...rest} = element.toJSON();
-                    if(element.isSeason)
-                    {
-                        seasons = seasons + 1;
-                    }
-                    else
-                    {
-                        movies = movies + 1;
-                    }
-                    return rest;
-                });
+                animeInstallmentData.list = await Promise.all( animeInstallmentList.map( async (element) => { 
+                        const {animeID, createdAt, updatedAt, ...rest} = element.toJSON();
+                        if(element.isSeason)
+                        {
+                            seasons = seasons + 1;
+                        }
+                        else
+                        {
+                            movies = movies + 1;
+                        }
+                        await AddEpisodeCount(rest);
+                        return rest;
+                    })
+                );
                 animeInstallmentData.seasons = seasons;
                 animeInstallmentData.movies = movies;
                 resolve(animeInstallmentData);
@@ -222,14 +244,20 @@ function AnimeInstallmentInit(sequelize)
             },
             seasonNum: {
                 type: DataTypes.INTEGER,
-                unique: true,
                 allowNull: true,
             }
         },
         {
             sequelize,
             modelName: `${AnimeInstallment.name}`,
+            indexes: [
+                {
+                    unique: true,
+                    fields: ['animeID', 'seasonNum'],
+                },
+            ],
         },
+        
     )
 }
 

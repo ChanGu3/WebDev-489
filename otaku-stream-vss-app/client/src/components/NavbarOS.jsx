@@ -1,5 +1,4 @@
 import '../tailwind.css'
-import tvLogo from '../assets/images/brand-tv-logo.png'
 import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom';
 
@@ -51,12 +50,12 @@ function NavbarOS()
     const profileDropdownRef = useRef(null);
     const profileTabRef = useRef(null);
     const [isProfileDropped, SetIsProfileDropped] = useState(false);
+    const [genreList, SetGenreList] = useState(null);
 
     const [isMember, SetIsMember] = useState(false);
     const [isAdmin, SetIsAdmin] = useState(false);
-    let email = null;
+    const [email, SetEmail] = useState(false);
 
-    
     useEffect(() => {
         fetch('/api/authorize/member/navbar', {
             method: 'GET',
@@ -69,8 +68,22 @@ function NavbarOS()
         }).then((data) => {
             if (data)
             {
-                email = data.user.email;
+                SetEmail(data.user.email);
                 SetIsMember(true);
+            }
+        }).catch();
+
+        fetch('/api/anime/genre', {
+            method: 'GET',
+        }).then((response) => {
+            if(response.ok)
+            {
+                return response.json();
+            }
+        }).then((data) => {
+            if (data)
+            {
+                SetGenreList(data);
             }
         }).catch();
 
@@ -113,7 +126,7 @@ function NavbarOS()
 
                     {/* Logo Tab */}
                     <a id="logo" className="mx-2 px-1 flex flex-row items-center justify-center hover:brightness-0 hover:invert" href="/">
-                        <img className="min-w-6 w-6 mx-1 mt-1" type="image/png" src={tvLogo} alt="os-tv-logo"/>
+                        <img className="min-w-6 w-6 mx-1 mt-1" type="image/png" src={'/png/brand-tv-logo.png'} alt="os-tv-logo"/>
                         <p className="text-os-blue-primary font-bold text-md hidden md:block">OtakuStream</p>
                     </a>
 
@@ -136,21 +149,7 @@ function NavbarOS()
                                 <a className="font-semibold text-xs" >Genres</a> {/* hover:underline href="/discover/genres" */}
                                 <div className="my-1 border-os-white rounded-sm border-b-2 w-[95%]"></div>
                                 <div className="grid grid-flow-col grid-rows-5 gap-y-2 gap-x-1">
-                                    <Category categoryName="Action" href="#"/>
-                                    <Category categoryName="Adventure" href="#" />
-                                    <Category categoryName="Comedy" href="#" />
-                                    <Category categoryName="Drama" href="#" />
-                                    <Category categoryName="Fantasy" href="#" />
-                                    <Category categoryName="Music" href="#" />
-                                    <Category categoryName="Romance" href="#" />
-                                    <Category categoryName="Slice of life" href="#" />
-                                    <Category categoryName="Sports" href="#" />
-                                    <Category categoryName="Seinen" href="#" />
-                                    <Category categoryName="Shonen" href="#" />
-                                    <Category categoryName="Shojo" href="#" />
-                                    <Category categoryName="Sci-Fi" href="#" />
-                                    <Category categoryName="Supernatural" href="#" />
-                                    <Category categoryName="Thriller" href="#" />
+                                    {  (genreList) ? genreList.map((genreData, index) => { return ( <Category key={index} categoryName={genreData.name} href={`/discover/genre/${genreData.name}`}/> ) }) : "" }
                                 </div>
                             </div>
 
@@ -160,7 +159,7 @@ function NavbarOS()
                                 <a className="font-semibold text-xs">Other</a> {/* hover:underline href="/discover/other" */}
                                 <div className="my-1 border-os-white rounded-sm border-b-2 w-[95%]"></div>
                                 <div className="grid grid-flow-col lg:grid-rows-5 grid-rows-2 gap-y-2 gap-x-1">
-                                    <Category categoryName="Browse [A-Z]" href="#"/>
+                                    <Category categoryName="Browse [A-Z]" href="/discover/other/A-Z"/>
                                 </div>
                             </div>
                         </div>
@@ -181,8 +180,9 @@ function NavbarOS()
                 <div className="relative h-full ml-auto z-100">
 
                     {/* Profile Tab */}
-                    <button ref={profileTabRef} id="profiletab" name="profiletab" className={`px-4 ${((isProfileDropped) ? "bg-os-blue-tertiary" : "" )} flex flex-row items-center justify-center cursor-pointer hover:bg-gray-800 active:bg-gray-700 h-full`} type="button" onClick={() => SetIsProfileDropped(!isProfileDropped)}>
-                        <img className="min-w-7 w-7 mr-1 rounded-full border-1 border-os-white" type="image/png" src={tvLogo} alt="os-tv-logo"/>
+                    <button ref={profileTabRef} id="profiletab" name="profiletab" className={`px-4 ${((isProfileDropped) ? "bg-os-blue-tertiary" : "" )} flex flex-row items-center justify-center gap-x-2 cursor-pointer hover:bg-gray-800 active:bg-gray-700 h-full`} type="button" onClick={() => SetIsProfileDropped(!isProfileDropped)}>
+                        <p className={`text-os-white  text-[8px] md:text-sm font-semibold ${(isMember) ? '' : 'hidden'}`}>{email}</p>
+                        <img className="min-w-7 w-7 mr-1 rounded-full border-1 border-os-white" type="image/png" src={(isMember) ? '/png/Signed-In-ProfileLogo.png' : '/png/Signed-Out-ProfileLogo.png'} alt="os-tv-logo"/>
                         <img className="w-2" src="/triangle-filled-svgrepo-com.svg" alt="dropdown-icon"></img>
                     </button>
 
@@ -199,7 +199,7 @@ function NavbarOS()
                     </div>
 
                     {/* --- Member Profile Dropdown --- */}
-                    <div ref={(el) => { (isMember) ? profileDropdownRef.current = el : null }} id="memberprofiledropdown" name="memberprofiledropdown" className={`absolute right-0 w-60 bg-os-blue-tertiary py-4 px-2 ${((isProfileDropped && isMember) ? "flex" : "hidden" )} flex-col space-y-4`}>
+                    <div ref={(el) => { (isMember) ? profileDropdownRef.current = el : null }} id="memberprofiledropdown" name="memberprofiledropdown" className={`absolute right-0 w-[100%] bg-os-blue-tertiary py-4 px-2 ${((isProfileDropped && isMember) ? "flex" : "hidden" )} flex-col space-y-4`}>
                         <div className="flex flex-col space-y-2">
                             {/*
                             <a className="flex flex-row items-center hover:bg-os-blue-secondary active:bg-os-blue-secondary rounded-xs space-x-1 px-1 py-1.5 w-[60%]" href="#">

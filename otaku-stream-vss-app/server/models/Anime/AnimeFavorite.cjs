@@ -89,6 +89,35 @@ class AnimeFavorite extends Model
         })
     }
 
+    static GetByEmailANDID(email, animeID)
+    {
+        return new Promise( async (resolve, reject) => {
+            try
+            {
+                const animeFavorites = await AnimeFavorite.findOne({
+                        where: {
+                            email: email,
+                            animeID: animeID,
+                        }
+                });
+
+                if(animeFavorites)
+                {
+                    resolve(animeFavorites.toJSON());
+                }
+                else
+                {
+                    reject(new Error(`Does Not Exist In Database email:${email}|animeID:${animeID}`));
+                }
+            }
+            catch(err)
+            {
+                Logging.LogError(`could not get AnimeFavorite from database using email:${email}|animeID:${animeID} --- ${err.message}`);
+                reject(new Error(errormsg.fallback));
+            }
+        })
+    }
+
     static GetAllByEmail(email)
     {
         return new Promise( async (resolve, reject) => {
