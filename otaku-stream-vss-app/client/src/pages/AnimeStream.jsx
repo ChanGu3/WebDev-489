@@ -16,6 +16,16 @@ function AnimeStream()
     const [prevAnimeStream, SetPrevAnimeStream] = useState(null);
     const [nextAnimeStream, SetNextAnimeStream] = useState(null);
 
+    function WatchedAnimeStream()
+    {
+        fetch(`/api/authorize/member/anime/stream/history/${animeStream.id}`, {
+            method: 'PUT',
+            credentials: 'include',
+        }).then((response) => {
+        }).catch((error) => {
+        });
+    }
+
     useEffect(() => {
         document.title = `stream ${title} - Otaku Stream`;
 
@@ -94,7 +104,7 @@ function AnimeStream()
                     <div className="absolute top-0 left-0 bg-os-dark-tertiary/80 w-[100%] h-[100%] z-0"></div>
                     <div className={`relative bg-os-dark-tertiary aspect-video w-[100%] xl:w-[70vw] h-[100%] z-10`}>
                         <div className="absolute top-0 left-0 flex flex-col justify-center items-center w-[100%] h-[100%]">
-                            <button onClick={() => {}} className="rounded-full bg-os-dark-primary hover:bg-os-dark-primary/60 ring-2 ring-os-white hover:ring-os-blue-secondary flex flex-col justify-center items-center p-4 md:p-6 group cursor-pointer">
+                            <button onClick={() => { WatchedAnimeStream(); }} className="rounded-full bg-os-dark-primary hover:bg-os-dark-primary/60 ring-2 ring-os-white hover:ring-os-blue-secondary active:ring-os-blue-secondary/70 flex flex-col justify-center items-center p-4 md:p-6 group cursor-pointer">
                                 <svg className="w-6 md:w-8" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
                                     <title>triangle-filled</title>
                                     <g transform="scale(1,-1) translate(0,-512)">

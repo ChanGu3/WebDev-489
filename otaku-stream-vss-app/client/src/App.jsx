@@ -15,7 +15,7 @@ import CategoryResult from './pages/CategoryResult.jsx'
 import AnimeDetails from './pages/AnimeDetails.jsx'
 import AnimeStream from './pages/AnimeStream.jsx'
 
-function MemberAuthorization({children, hide=false, redirectURL='/404'})
+function MemberAuthorization({children, hideFromMember=false, redirectURL='/404'})
 {
   const [auth, setAuth] = useState(null);
 
@@ -27,14 +27,14 @@ function MemberAuthorization({children, hide=false, redirectURL='/404'})
     }).then((response) => {
       if(response.ok)
       {
-        setAuth(!hide);  
+        setAuth(true); 
       }
       else
       {
-        setAuth(hide);
+        setAuth(false);
       }
     }).catch((error) => {
-        setAuth(hide);
+        setAuth(false);
     });
 
 
@@ -46,7 +46,18 @@ function MemberAuthorization({children, hide=false, redirectURL='/404'})
     )
   }
 
-  return (auth) ?  children : <Navigate to={redirectURL} replace/>;
+  if(auth && !hideFromMember) 
+  {
+      return children
+  }
+  else if(!auth  && hideFromMember)
+  {
+      return children
+  }
+  else
+  {
+    return ( <Navigate to={redirectURL} replace/> );
+  }
 }
 
 function App() {
@@ -62,9 +73,9 @@ function App() {
         {/*Root URL*/}
         <Route path="">
           <Route path="" element={<Home />} />
-          <Route path="*" element={<Navigate to='/404' replace/>} />
           <Route path="404" element={<NotFound />} />
           <Route path="about" element={<About />} />
+          <Route path="*" element={ <Navigate to='/404' replace/>} />
         </Route>
 
         <Route path="discover">
@@ -82,25 +93,24 @@ function App() {
         </Route>
 
         <Route path="stream">
-          <Route path="" element={<Navigate to='/404' replace/>} />
           <Route path=":streamID/:title" element={
-              <MemberAuthorization hide={false} redirectURL={'/auth/signin'}>
+              <MemberAuthorization hideFromMember={false} redirectURL={"/auth/signin"}>
                 <AnimeStream />
               </MemberAuthorization>
-            } />
+          }/>
         </Route>
 
         {/* Authentication */}
         <Route path="auth">
           <Route path="" element={<Navigate to='/404' replace/>} />
           <Route path="signin" element={
-              <MemberAuthorization hide={true}>
+              <MemberAuthorization hideFromMember={true}>
                 <Signin/>
               </MemberAuthorization>
             } 
           />
           <Route path="signup" element={
-              <MemberAuthorization hide={true}>
+              <MemberAuthorization hideFromMember={true}>
                 <Signup/>
               </MemberAuthorization>
             } />

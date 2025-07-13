@@ -26,7 +26,6 @@ function FavoriteButton({animeID})
                 return response.json();
             }
         }).then((data) => {
-            console.log(data);
             if(data)
             {
                 if(theMethod === 'GET')
