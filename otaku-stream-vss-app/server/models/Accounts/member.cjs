@@ -1,6 +1,6 @@
 const {Model, DataTypes} = require('sequelize');
 const bcrypt = require('bcrypt');
-const ErrorMsg = require('./error-msg.cjs');
+const { errormsg } = require('../../server-logging.cjs');
 const saltRounds = 12;
 
 function HashPassword(password, saltRounds){
@@ -9,7 +9,7 @@ function HashPassword(password, saltRounds){
         if(err) 
         {
             console.error(`Could Not Hash ${email} --- ${err.message}`);
-            reject(new Error(ErrorMsg.fallback));
+            reject(new Error(errormsg.fallback));
         }
         else
         {
@@ -61,7 +61,7 @@ class Member extends Model
 
             if (await Member.Exists(emailLower))
             {
-                reject(new Error(ErrorMsg.emailExists));
+                reject(new Error(errormsg.emailExists));
                 return;
             }
 
@@ -83,7 +83,7 @@ class Member extends Model
             catch(err)
             {
                 console.error(`Could Not Add Member To Database ${email} --- ${err.message}`);
-                reject(new Error(ErrorMsg.fallback));
+                reject(new Error(errormsg.fallback));
             }
         })
     }
@@ -111,23 +111,23 @@ class Member extends Model
                         else
                         {
                             
-                            reject(new Error(ErrorMsg.authorizationFail));
+                            reject(new Error(errormsg.authorizationFail));
                         }
                     }
                     catch(err)
                     {
                         console.error(`Could Not Hash ${email} --- ${err.message}`);
-                        reject(new Error(ErrorMsg.fallback));
+                        reject(new Error(errormsg.fallback));
                     }
                 }
                 else
                 {
-                    reject(new Error(ErrorMsg.authorizationFail));
+                    reject(new Error(errormsg.authorizationFail));
                 }
             }
             else
             {
-                reject(new Error(ErrorMsg.authorizationFail));
+                reject(new Error(errormsg.authorizationFail));
             }
         })
     }
@@ -155,7 +155,7 @@ function MemberInit(sequelize)
         },
         {
             sequelize,
-            modelName:"Member",
+            modelName:`${Member.name}`,
         }
     )
 }

@@ -1,7 +1,7 @@
 import '../tailwind.css'
 
 
-function SeriesModule({isMovie, animeTitle, streamTitle, streamImageSrc, streamDescription, dateReleased, href, seasonNum = 0, episodeNum = 0})
+function SeriesModule({isMovie, animeTitle, streamTitle, streamImageSrc, streamDescription, dateReleased, href, seasonNum, episodeNum})
 {
     const episodeInfo = (isMovie) ? `` : `S${seasonNum} | E${episodeNum}`;
     const streamInfo = (isMovie) ? `${streamTitle}` : `${episodeInfo} - ${streamTitle}`;

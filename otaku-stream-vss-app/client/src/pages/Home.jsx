@@ -1,5 +1,5 @@
 import '../tailwind.css'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import NavbarOS from '../components/NavbarOS.jsx'
 import FooterOS from '../components/FooterOS.jsx'
 
@@ -14,56 +14,125 @@ import StreamModule from '../components/StreamModule.jsx';
 
 function Home()
 {
+  const [recentAnimeStreamWatchList, SetRecentAnimeStreamWatchList] = useState(null);
+  const [recentlyUploadedList, SetRecentlyUploadedList] = useState(null);
+  const [shuffledAnimeList, SetShuffledAnimeList] = useState(null);
+
   useEffect(() => {
     document.title = "Home - OtakuStream";
+
+    async function TryGetHistory()
+    {
+      try
+      {
+        const response = await fetch(`/api/authorize/member/anime/stream/history?latestStreamPerSeries=true`, {
+          method: 'GET',
+        });
+
+        if (response.ok)
+        {
+          if (response.status === 200)
+          { 
+            const newAnimeStreamHistory = await response.json();
+            SetRecentAnimeStreamWatchList(newAnimeStreamHistory);
+          }
+        }
+      }
+      catch(err){
+        console.log(err);
+      }
+    }
+    TryGetHistory();
+
+    async function TryGetCarousel()
+    {
+      try
+      {
+        const response = await fetch(`/api/anime?limit=7&getNewestReleases=true`, {
+          method: 'GET',
+        });
+
+        if (response.ok)
+        {
+          if (response.status === 200)
+          { 
+            const newRecentlyUploaded = await response.json();
+            SetRecentlyUploadedList(newRecentlyUploaded);
+          }
+        }
+      }
+      catch(err){
+        console.log(err);
+      }
+    }
+    TryGetCarousel();
+
+    async function TryGetSeriesShuffle()
+    {
+      try
+      {
+        const response = await fetch(`/api/anime?shuffle=true`, {
+          method: 'GET',
+        });
+
+        if (response.ok)
+        {
+          if (response.status === 200)
+          { 
+            const newAnimeShuffle = await response.json();
+            SetShuffledAnimeList(newAnimeShuffle);
+          }
+        }
+      }
+      catch(err){
+        console.log(err);
+      }
+    }
+    TryGetSeriesShuffle();
+
   }, []);
 
   return (
     <>
       <NavbarOS />
         <main>
+          
           <Slider 
-            title="Continue Watching..."
-            sliderList={[
-              <StreamModule isMovie={true} animeTitle="AnimeTitle" streamTitle="MovieTitle" streamImageSrc="/jpeg/Test.jpeg" streamDescription="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur" dateReleased="05/04/25" href="#"/>,
-              <StreamModule isMovie={false} animeTitle="AnimeTitle" streamTitle="EpisodeTitle" streamImageSrc="/jpeg/Test.jpeg" streamDescription="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur" dateReleased="05/04/25" href="#" seasonNum="2" episodeNum="7"/>,
-              <StreamModule isMovie={true} animeTitle="AnimeTitle" streamTitle="MovieTitle" streamImageSrc="/jpeg/Test.jpeg" streamDescription="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur" dateReleased="05/04/25" href="#"/>,
-              <StreamModule isMovie={false} animeTitle="AnimeTitle" streamTitle="EpisodeTitle" streamImageSrc="/jpeg/Test.jpeg" streamDescription="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur" dateReleased="05/04/25" href="#" seasonNum="2" episodeNum="7"/>,
-              <StreamModule isMovie={true} animeTitle="AnimeTitle" streamTitle="MovieTitle" streamImageSrc="/jpeg/Test.jpeg" streamDescription="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur" dateReleased="05/04/25" href="#"/>,
-              <StreamModule isMovie={false} animeTitle="AnimeTitle" streamTitle="EpisodeTitle" streamImageSrc="/jpeg/Test.jpeg" streamDescription="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur" dateReleased="05/04/25" href="#" seasonNum="2" episodeNum="7"/>,
-              <StreamModule isMovie={true} animeTitle="AnimeTitle" streamTitle="MovieTitle" streamImageSrc="/jpeg/Test.jpeg" streamDescription="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur" dateReleased="05/04/25" href="#"/>,
-              <StreamModule isMovie={false} animeTitle="AnimeTitle" streamTitle="EpisodeTitle" streamImageSrc="/jpeg/Test.jpeg" streamDescription="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur" dateReleased="05/04/25" href="#" seasonNum="2" episodeNum="7"/>,
-              <StreamModule isMovie={true} animeTitle="AnimeTitle" streamTitle="MovieTitle" streamImageSrc="/jpeg/Test.jpeg" streamDescription="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur" dateReleased="05/04/25" href="#"/>,
-              <StreamModule isMovie={false} animeTitle="AnimeTitle" streamTitle="EpisodeTitle" streamImageSrc="/jpeg/Test.jpeg" streamDescription="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur" dateReleased="05/04/25" href="#" seasonNum="2" episodeNum="7"/>,
-              <StreamModule isMovie={true} animeTitle="AnimeTitle" streamTitle="MovieTitle" streamImageSrc="/jpeg/Test.jpeg" streamDescription="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur" dateReleased="05/04/25" href="#"/>,
-              <StreamModule isMovie={false} animeTitle="AnimeTitle" streamTitle="EpisodeTitle" streamImageSrc="/jpeg/Test.jpeg" streamDescription="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur" dateReleased="05/04/25" href="#" seasonNum="2" episodeNum="7"/>,
-            ]}
+            title="Continue Watching"
+            sliderList={  (recentAnimeStreamWatchList) ? recentAnimeStreamWatchList.map((streamAnime, index) => { 
+              return ( <StreamModule 
+                          key={streamAnime.streamID} 
+                          isMovie={streamAnime.isMovie} 
+                          animeTitle={streamAnime.animeTitle} 
+                          streamTitle={streamAnime.title} 
+                          streamImageSrc={"/png/ImageNotFound.png"} 
+                          streamDescription={streamAnime.synopsis} 
+                          dateReleased={(() => { if(streamAnime) { return `${new Date(streamAnime.releaseDate).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})}`} else { return ''} })()} 
+                          href={`/stream/${streamAnime.streamID}/${streamAnime.title}`}
+                          seasonNum={ streamAnime.installmentSeasonNum }
+                          episodeNum={streamAnime.streamNumber}  /> ) }) : [] }
           />
+
           <Carousel 
-            carouselList={[        
-              new CarouselItemObject("TestName", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur", "/jpeg/Test.jpeg", "#"), 
-              new CarouselItemObject("TestName", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur", "/bed-svgrepo-com.svg", "#"), 
-              new CarouselItemObject("TestName", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur", "/dashboard-alt-3-svgrepo-com.svg", "#"), 
-              new CarouselItemObject("TestName", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur", "/jpeg/Test.jpeg", "#"), 
-              new CarouselItemObject("TestName", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur", "/bed-svgrepo-com.svg", "#"), 
-              new CarouselItemObject("TestName", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur", "/dashboard-alt-3-svgrepo-com.svg", "#"), 
-            ]}
+            key={recentlyUploadedList ? recentlyUploadedList.length : 0} 
+            carouselList={ (recentlyUploadedList) ? recentlyUploadedList.map((recentlyUploaded) => {
+                const object = new CarouselItemObject(recentlyUploaded.coverFilename, recentlyUploaded.description, "/png/ImageNotFound.png", `/series/${recentlyUploaded.id}/${recentlyUploaded.title}`);
+                return object;
+              }) : []}
           />
-          <Slider 
-            title="New For You..."
-            sliderList={[
-              <SeriesModule title="Clouds" imageSrc="/jpeg/Test.jpeg" seasonNum="3" episodeNum="47" movieNum="1" description="clouds shows all the possible cloud formations on earth. there are so many clouds that can produce rain and make a foggy experience. we all should love clouds for their ability to bring us shade when stretching over the sun on hot summer days." href="#"/>,
-              <SeriesModule title="Tree" imageSrc="/jpeg/Test.jpeg" seasonNum="3" episodeNum="47" movieNum="1" description="clouds shows all the possible cloud formations on earth. there are so many clouds that can produce rain and make a foggy experience. we all should love clouds for their ability to bring us shade when stretching over the sun on hot summer days." href="#"/>,
-              <SeriesModule title="Clouds" imageSrc="/jpeg/Test.jpeg" seasonNum="3" episodeNum="47" movieNum="1" description="clouds shows all the possible cloud formations on earth. there are so many clouds that can produce rain and make a foggy experience. we all should love clouds for their ability to bring us shade when stretching over the sun on hot summer days." href="#"/>,
-              <SeriesModule title="Clouds" imageSrc="/jpeg/Test.jpeg" seasonNum="3" episodeNum="47" movieNum="1" description="clouds shows all the possible cloud formations on earth. there are so many clouds that can produce rain and make a foggy experience. we all should love clouds for their ability to bring us shade when stretching over the sun on hot summer days." href="#"/>,
-              <SeriesModule title="Clouds" imageSrc="/jpeg/Test.jpeg" seasonNum="3" episodeNum="47" movieNum="1" description="clouds shows all the possible cloud formations on earth. there are so many clouds that can produce rain and make a foggy experience. we all should love clouds for their ability to bring us shade when stretching over the sun on hot summer days." href="#"/>,
-              <SeriesModule title="Clouds" imageSrc="/jpeg/Test.jpeg" seasonNum="3" episodeNum="47" movieNum="1" description="clouds shows all the possible cloud formations on earth. there are so many clouds that can produce rain and make a foggy experience. we all should love clouds for their ability to bring us shade when stretching over the sun on hot summer days." href="#"/>,
-              <SeriesModule title="Clouds" imageSrc="/jpeg/Test.jpeg" seasonNum="3" episodeNum="47" movieNum="1" description="clouds shows all the possible cloud formations on earth. there are so many clouds that can produce rain and make a foggy experience. we all should love clouds for their ability to bring us shade when stretching over the sun on hot summer days." href="#"/>,
-              <SeriesModule title="Clouds" imageSrc="/jpeg/Test.jpeg" seasonNum="3" episodeNum="47" movieNum="1" description="clouds shows all the possible cloud formations on earth. there are so many clouds that can produce rain and make a foggy experience. we all should love clouds for their ability to bring us shade when stretching over the sun on hot summer days." href="#"/>,
-              <SeriesModule title="Clouds" imageSrc="/jpeg/Test.jpeg" seasonNum="3" episodeNum="47" movieNum="1" description="clouds shows all the possible cloud formations on earth. there are so many clouds that can produce rain and make a foggy experience. we all should love clouds for their ability to bring us shade when stretching over the sun on hot summer days." href="#"/>,
-              <SeriesModule title="Clouds" imageSrc="/jpeg/Test.jpeg" seasonNum="3" episodeNum="47" movieNum="1" description="clouds shows all the possible cloud formations on earth. there are so many clouds that can produce rain and make a foggy experience. we all should love clouds for their ability to bring us shade when stretching over the sun on hot summer days." href="#"/>,            
-            ]}
+
+          <Slider key={1} 
+            title="Series Shuffle"
+            sliderList={  (shuffledAnimeList) ? shuffledAnimeList.map((anime, index) => { return ( <SeriesModule 
+                                                                                                      key={anime.id} 
+                                                                                                      animeID={anime.id} 
+                                                                                                      title={anime.title} 
+                                                                                                      imageSrc={"/png/ImageNotFound.png"} 
+                                                                                                      seasonNum={anime.installments.seasons} 
+                                                                                                      episodeNum={anime.installments.list.reduce((accum, installment) => accum + installment.episodes, 0)} 
+                                                                                                      movieNum={anime.installments.movies} description={anime.description} href={`/series/${anime.id}/${anime.title}`}/> ) }) : "" }
           />
+
         </main>
       <FooterOS />
     </>

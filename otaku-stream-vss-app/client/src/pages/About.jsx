@@ -2,7 +2,6 @@ import '../tailwind.css'
 import { useEffect } from 'react'
 import NavbarOS from '../components/NavbarOS.jsx'
 import FooterOS from '../components/FooterOS.jsx';
-import tvlogo from '../assets/images/brand-tv-logo.png'
 
 function About()
 {
@@ -18,7 +17,7 @@ function About()
           {/* Title */}
           <div className="mt-8 w-full flex flex-col items-center">
             <a className="flex flex-row items-center gap-x-1" href="/">
-              <img src={tvlogo} className="w-10 h-10 md:w-16 md:h-16"></img>
+              <img src={'/png/brand-tv-logo.png'} className="w-10 h-10 md:w-16 md:h-16"></img>
               <p className="text-os-white font-bold text-xl md:text-5xl pb-1.5">OtakuStream<span className="text-xs md:text-xl font-semibold">/About</span></p>
             </a>
           </div>

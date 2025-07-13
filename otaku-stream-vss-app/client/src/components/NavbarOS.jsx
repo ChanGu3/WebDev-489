@@ -1,5 +1,4 @@
 import '../tailwind.css'
-import tvLogo from '../assets/images/brand-tv-logo.png'
 import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom';
 
@@ -51,11 +50,12 @@ function NavbarOS()
     const profileDropdownRef = useRef(null);
     const profileTabRef = useRef(null);
     const [isProfileDropped, SetIsProfileDropped] = useState(false);
+    const [genreList, SetGenreList] = useState(null);
 
     const [isMember, SetIsMember] = useState(false);
-    let email = null;
+    const [isAdmin, SetIsAdmin] = useState(false);
+    const [email, SetEmail] = useState(false);
 
-    
     useEffect(() => {
         fetch('/api/authorize/member/navbar', {
             method: 'GET',
@@ -68,8 +68,22 @@ function NavbarOS()
         }).then((data) => {
             if (data)
             {
-                email = data.user.email;
+                SetEmail(data.user.email);
                 SetIsMember(true);
+            }
+        }).catch();
+
+        fetch('/api/anime/genre', {
+            method: 'GET',
+        }).then((response) => {
+            if(response.ok)
+            {
+                return response.json();
+            }
+        }).then((data) => {
+            if (data)
+            {
+                SetGenreList(data);
             }
         }).catch();
 
@@ -112,7 +126,7 @@ function NavbarOS()
 
                     {/* Logo Tab */}
                     <a id="logo" className="mx-2 px-1 flex flex-row items-center justify-center hover:brightness-0 hover:invert" href="/">
-                        <img className="min-w-6 w-6 mx-1 mt-1" type="image/png" src={tvLogo} alt="os-tv-logo"/>
+                        <img className="min-w-6 w-6 mx-1 mt-1" type="image/png" src={'/png/brand-tv-logo.png'} alt="os-tv-logo"/>
                         <p className="text-os-blue-primary font-bold text-md hidden md:block">OtakuStream</p>
                     </a>
 
@@ -132,34 +146,20 @@ function NavbarOS()
                         {/* --- Categories Dropdown --- */}
                         <div ref={categoryDropdownRef} id="categoriesdropdown" name="categoriesdropdown" className={`absolute bg-os-blue-tertiary p-2 flex-col gap-y-2  lg:gap-y-0 lg:flex-row ${((isCategoryDropped) ? "flex" : "hidden" )}`}>
                             <div id="genres" className="flex flex-col justify-start">
-                                <a className="font-semibold hover:underline text-xs" href="/discover/genres">Genres</a>
+                                <a className="font-semibold text-xs" >Genres</a> {/* hover:underline href="/discover/genres" */}
                                 <div className="my-1 border-os-white rounded-sm border-b-2 w-[95%]"></div>
                                 <div className="grid grid-flow-col grid-rows-5 gap-y-2 gap-x-1">
-                                    <Category categoryName="Action" href="#"/>
-                                    <Category categoryName="Adventure" href="#" />
-                                    <Category categoryName="Comedy" href="#" />
-                                    <Category categoryName="Drama" href="#" />
-                                    <Category categoryName="Fantasy" href="#" />
-                                    <Category categoryName="Music" href="#" />
-                                    <Category categoryName="Romance" href="#" />
-                                    <Category categoryName="Slice of life" href="#" />
-                                    <Category categoryName="Sports" href="#" />
-                                    <Category categoryName="Seinen" href="#" />
-                                    <Category categoryName="Shonen" href="#" />
-                                    <Category categoryName="Shojo" href="#" />
-                                    <Category categoryName="Sci-Fi" href="#" />
-                                    <Category categoryName="Supernatural" href="#" />
-                                    <Category categoryName="Thriller" href="#" />
+                                    {  (genreList) ? genreList.map((genreData, index) => { return ( <Category key={index} categoryName={genreData.name} href={`/discover/genre/${genreData.name}`}/> ) }) : "" }
                                 </div>
                             </div>
 
                             <div className="m-6 my-0 border-os-white border-l-2 rounded-xs w-auto"></div>
 
                             <div id="other" className="flex flex-col justify-start">
-                                <a className="font-semibold hover:underline text-xs" href="/discover/other">Other</a>
+                                <a className="font-semibold text-xs">Other</a> {/* hover:underline href="/discover/other" */}
                                 <div className="my-1 border-os-white rounded-sm border-b-2 w-[95%]"></div>
                                 <div className="grid grid-flow-col lg:grid-rows-5 grid-rows-2 gap-y-2 gap-x-1">
-                                    <Category categoryName="Browse [A-Z]" href="#"/>
+                                    <Category categoryName="Browse [A-Z]" href="/discover/other/A-Z"/>
                                 </div>
                             </div>
                         </div>
@@ -180,8 +180,9 @@ function NavbarOS()
                 <div className="relative h-full ml-auto z-100">
 
                     {/* Profile Tab */}
-                    <button ref={profileTabRef} id="profiletab" name="profiletab" className={`px-4 ${((isProfileDropped) ? "bg-os-blue-tertiary" : "" )} flex flex-row items-center justify-center cursor-pointer hover:bg-gray-800 active:bg-gray-700 h-full`} type="button" onClick={() => SetIsProfileDropped(!isProfileDropped)}>
-                        <img className="min-w-7 w-7 mr-1 rounded-full border-1 border-os-white" type="image/png" src={tvLogo} alt="os-tv-logo"/>
+                    <button ref={profileTabRef} id="profiletab" name="profiletab" className={`px-4 ${((isProfileDropped) ? "bg-os-blue-tertiary" : "" )} flex flex-row items-center justify-center gap-x-2 cursor-pointer hover:bg-gray-800 active:bg-gray-700 h-full`} type="button" onClick={() => SetIsProfileDropped(!isProfileDropped)}>
+                        <p className={`text-os-white  text-[8px] md:text-sm font-semibold ${(isMember) ? '' : 'hidden'}`}>{email}</p>
+                        <img className="min-w-7 w-7 mr-1 rounded-full border-1 border-os-white" type="image/png" src={(isMember) ? '/png/Signed-In-ProfileLogo.png' : '/png/Signed-Out-ProfileLogo.png'} alt="os-tv-logo"/>
                         <img className="w-2" src="/triangle-filled-svgrepo-com.svg" alt="dropdown-icon"></img>
                     </button>
 
@@ -198,12 +199,14 @@ function NavbarOS()
                     </div>
 
                     {/* --- Member Profile Dropdown --- */}
-                    <div ref={(el) => { (isMember) ? profileDropdownRef.current = el : null }} id="memberprofiledropdown" name="memberprofiledropdown" className={`absolute right-0 w-60 bg-os-blue-tertiary py-4 px-2 ${((isProfileDropped && isMember) ? "flex" : "hidden" )} flex-col space-y-4`}>
+                    <div ref={(el) => { (isMember) ? profileDropdownRef.current = el : null }} id="memberprofiledropdown" name="memberprofiledropdown" className={`absolute right-0 w-[100%] bg-os-blue-tertiary py-4 px-2 ${((isProfileDropped && isMember) ? "flex" : "hidden" )} flex-col space-y-4`}>
                         <div className="flex flex-col space-y-2">
+                            {/*
                             <a className="flex flex-row items-center hover:bg-os-blue-secondary active:bg-os-blue-secondary rounded-xs space-x-1 px-1 py-1.5 w-[60%]" href="#">
                                 <img className="w-5" src="/bed-svgrepo-com.svg" alt="safespace-icon"></img>
                                 <p className="text-sm font-semibold">Safe Space</p>
                             </a>
+                            */}
                             <a className="flex flex-row items-center hover:bg-os-blue-secondary active:bg-os-blue-secondary rounded-xs space-x-1 px-1 py-1.5 w-[60%]" href="#">
                                 <img className="w-5" src="/star-sharp-svgrepo-com.svg" alt="safespace-icon"></img>
                                 <p className="text-sm font-semibold">Favorites</p>
@@ -220,6 +223,17 @@ function NavbarOS()
                                 <p className="text-sm font-semibold">Settings</p>
                             </a>
                         </div>
+
+                        {/* ------------ADMIN ONLY-------------- */}
+                        <div className={`flex flex-col space-y-2 ${(isAdmin) ? '': 'hidden'}`}>
+                            <p className="border-b-2 border-os-white text-os-white">Admin</p>
+                            <a className="flex flex-row items-center hover:bg-os-blue-secondary active:bg-os-blue-secondary rounded-xs space-x-1 px-1 py-1.5 w-[60%]" href="#">
+                                <img className="w-5" src="/dashboard-alt-3-svgrepo-com.svg" alt="dashboard-icon"></img>
+                                <p className="text-sm font-semibold">Dashboard</p>
+                            </a>
+                        </div>
+                        {/* ----------------------------------- */}
+
                         <div className="flex flex-row justify-end">
                             <button type="button" onClick={() => { SignOut(navigate); }} className="flex flex-row hover:bg-os-blue-secondary active:bg-os-blue-secondary rounded-xs px-3 py-2 cursor-pointer">
                                 <img className="w-5" src="/logout-svgrepo-com.svg" alt="safespace-icon"></img>
@@ -227,43 +241,6 @@ function NavbarOS()
                             </button>
                         </div>
                     </div>
-                    
-                    {/* --- Admin Profile Dropdown --- */}
-                    <div id="adminprofiledropdown" name="adminprofiledropdown" className="absolute right-0 w-60 bg-os-blue-tertiary py-4 px-2 flex flex-col space-y-4 hidden">
-                        <div className="flex flex-col space-y-2">
-                            <a className="flex flex-row items-center hover:bg-os-blue-secondary active:bg-os-blue-secondary rounded-xs space-x-1 px-1 py-1.5 w-[60%]" href="#">
-                                <img className="w-5" src="/bed-svgrepo-com.svg" alt="bed-icon"></img>
-                                <p className="text-sm font-semibold">Safe Space</p>
-                            </a>
-                            <a className="flex flex-row items-center hover:bg-os-blue-secondary active:bg-os-blue-secondary rounded-xs space-x-1 px-1 py-1.5 w-[60%]" href="#">
-                                <img className="w-5" src="/star-sharp-svgrepo-com.svg" alt="favorite-icon"></img>
-                                <p className="text-sm font-semibold">Favorites</p>
-                            </a>
-                        </div>
-                        <div className="flex flex-col space-y-2">
-                            <p className="border-b-2 border-os-white text-os-white">Account</p>
-                            <a className="flex flex-row items-center hover:bg-os-blue-secondary active:bg-os-blue-secondary rounded-xs space-x-1 px-1 py-1.5 w-[60%]" href="#">
-                                <img className="w-5" src="/profile-1335-svgrepo-com.svg" alt="profile-icon"></img>
-                                <p className="text-sm font-semibold">Profile</p>
-                            </a>
-                            <a className="flex flex-row items-center hover:bg-os-blue-secondary active:bg-os-blue-secondary rounded-xs space-x-1 px-1 py-1.5 w-[60%]" href="#">
-                                <img className="w-5" src="/gear-1-svgrepo-com.svg" alt="setting-icon"></img>
-                                <p className="text-sm font-semibold">Settings</p>
-                            </a>
-                        </div>
-                        <div className="flex flex-col space-y-2">
-                            <p className="border-b-2 border-os-white text-os-white">Admin</p>
-                            <a className="flex flex-row items-center hover:bg-os-blue-secondary active:bg-os-blue-secondary rounded-xs space-x-1 px-1 py-1.5 w-[60%]" href="#">
-                                <img className="w-5" src="/dashboard-alt-3-svgrepo-com.svg" alt="dashboard-icon"></img>
-                                <p className="text-sm font-semibold">Dashboard</p>
-                            </a>
-                        </div>
-                        <div className="flex flex-row justify-end">
-                                <img className="w-5" src="/logout-svgrepo-com.svg" alt="safespace-icon"></img>
-                                <p className="text-sm font-semibold">Sign Out</p>
-                        </div>
-                    </div>
-                    
                 </div>
 
             </nav>

@@ -19,6 +19,7 @@
     "express": "^5.1.0",
     "express-session": "^1.18.1",
     "minimist": "^1.2.8",
+    "multer": "^2.0.1",
     "node-cron": "^4.2.0",
     "sequelize": "^6.37.7",
     "sqlite3": "^5.1.7"

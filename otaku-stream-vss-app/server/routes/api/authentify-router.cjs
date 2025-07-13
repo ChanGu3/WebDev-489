@@ -1,6 +1,6 @@
 const express = require('express');
 const authentifyRouter = express.Router()
-const controller = require('../../controllers/authentify-controller.cjs');
+const controller = require('../../controllers/api-controllers/authentify-controller.cjs');
 
 //
 // Sign In

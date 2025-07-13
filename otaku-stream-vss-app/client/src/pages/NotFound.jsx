@@ -2,7 +2,6 @@ import '../tailwind.css'
 import { useEffect } from 'react'
 import NavbarOS from '../components/NavbarOS.jsx'
 import FooterOS from '../components/FooterOS.jsx';
-import tvlogo from '../assets/images/brand-tv-logo.png'
 
 function NotFound()
 {
@@ -17,7 +16,7 @@ function NotFound()
         <div className="min-w-65 flex flex-row justify-center gap-x-8">
           <div className="flex flex-col items-center">
             <div className="w-4 h-4 md:w-12 md:h-12 animate-bounce bg-os-blue-tertiary inset-ring inset-ring-os-white rounded-full flex items-center justify-center text-os-white text-xs md:text-3xl font-semibold select-none">?</div>
-            <img src={tvlogo} className="w-24 h-24 md:w-64 md:h-64 pointer-events-none select-none"></img>
+            <img src={'/png/brand-tv-logo.png'} className="w-24 h-24 md:w-64 md:h-64 pointer-events-none select-none"></img>
           </div>
           <div className="mt-6 md:mt-36 flex flex-col justify-between">
             <div className="">
