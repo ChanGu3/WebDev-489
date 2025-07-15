@@ -11,6 +11,11 @@ import SafeSpace from './pages/SafeSpace.jsx'
 import CategoryResult from './pages/CategoryResult.jsx'
 import Categories from './pages/Categories.jsx'
 
+import AdminDashboard from './pages/Admin/AdminDashboard.jsx';
+import AnimeManagement from './pages/Admin/AnimeManagement.jsx';
+import Analytics from './pages/Admin/Analytics.jsx';
+import UserManagement from './pages/Admin/UserManagement.jsx';
+
 function App() {
   return (
     <Router>
@@ -43,6 +48,14 @@ function App() {
 
         <Route path="profile">
           <Route path="safespace" element={<SafeSpace />} />
+        </Route>
+
+        {/* Admin */}
+        <Route path="admin">
+          <Route path="" element={<AdminDashboard />} />
+          <Route path="animeManagement" element={<AnimeManagement />} />
+          <Route path="analytics" element={<Analytics />} />
+          <Route path="userManagement" element={<UserManagement />} />
         </Route>
 
       </Routes>
