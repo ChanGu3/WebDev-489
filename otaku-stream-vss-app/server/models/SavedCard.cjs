@@ -66,7 +66,9 @@ function SavedCardInit(sequelize) {
                 references: {
                     model: 'Members',
                     key: 'email'
-                }
+                },
+                onUpdate: 'CASCADE',
+                onDelete: 'CASCADE'
             },
             cardType: {
                 type: DataTypes.STRING,

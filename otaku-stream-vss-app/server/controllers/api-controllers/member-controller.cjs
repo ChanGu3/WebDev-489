@@ -253,10 +253,13 @@ async function UpdateEmail(req, res)
     const { newEmail, currentPassword } = req.body;
     const currentEmail = req.session.user.email;
 
+    console.log(currentEmail, newEmail, currentPassword);
+
     try
     {
         await Member.UpdateEmail(currentEmail, newEmail, currentPassword);
-        res.status(200).json({success: "Email updated successfully"});
+        req.session.user.email = newEmail.toLowerCase();
+        res.status(200).json({email: req.session.user.email});
     }
     catch(err)
     {

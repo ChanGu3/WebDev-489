@@ -41,7 +41,7 @@ async function SignOut(navigate)
     }
 }
 
-function NavbarOS()
+function NavbarOS({reLoad})
 {
     const navigate = useNavigate();
 
@@ -93,7 +93,7 @@ function NavbarOS()
         return () => {
             document.removeEventListener('mousedown', OnMouseDown)
         };
-    }, []);
+    }, [reLoad]);
     
     useEffect(() => {
         if(isCategoryDropped || isProfileDropped)

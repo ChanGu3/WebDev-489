@@ -70,7 +70,9 @@ function BillingHistoryInit(sequelize) {
                 references: {
                     model: 'Members',
                     key: 'email'
-                }
+                },
+                onUpdate: 'CASCADE',
+                onDelete: 'CASCADE'
             },
             description: {
                 type: DataTypes.TEXT,

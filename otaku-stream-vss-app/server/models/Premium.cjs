@@ -64,7 +64,9 @@ function PremiumInit(sequelize) {
                 references: {
                     model: 'Members',
                     key: 'email'
-                }
+                },
+                onUpdate: 'CASCADE',
+                onDelete: 'CASCADE'
             },
             expDate: {
                 type: DataTypes.DATEONLY,

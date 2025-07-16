@@ -180,7 +180,8 @@ function SessionInit(sequelize)
                     model: Member,
                     key: 'email',  
                 },
-                onDelete: 'CASCADE',
+                onUpdate: 'CASCADE',
+                onDelete: 'CASCADE'
             },
             expDate: {
                 type: DataTypes.DATE,

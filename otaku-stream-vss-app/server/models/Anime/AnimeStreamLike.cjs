@@ -158,7 +158,8 @@ function AnimeStreamLikeInit(sequelize)
                     model: Member,
                     key: 'email',  
                 },
-                onDelete: 'CASCADE',
+                onUpdate: 'CASCADE',
+                onDelete: 'CASCADE'
             },
             streamID: {
                 type: DataTypes.STRING,

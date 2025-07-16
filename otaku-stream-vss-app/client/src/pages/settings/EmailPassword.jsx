@@ -68,12 +68,12 @@ function EmailPassword() {
         setEmailMessage('Email updated successfully!');
         setNewEmail('');
         setCurrentPasswordEmail('');
-        setEmail(data.user.email); // Update the displayed email
+        setEmail(data.email); // Update the displayed email
       } else {
         setEmailMessage(data.error || 'Failed to update email');
       }
     } catch (err) {
-      setEmailMessage('Network error. Please try again.');
+      setEmailMessage(`Network error. Please try again.`);
     } finally {
       setEmailLoading(false);
     }
@@ -143,7 +143,7 @@ function EmailPassword() {
 
   return (
     <>
-      <NavbarOS />
+      <NavbarOS reLoad={email} />
       <main className="main-ep manage-membership-layout">
         <aside className="settings-sidebar-fixed">
           <SettingsSidebar />

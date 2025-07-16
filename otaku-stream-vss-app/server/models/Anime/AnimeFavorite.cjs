@@ -151,7 +151,8 @@ function AnimeFavoriteInit(sequelize)
                     model: Member,
                     key: 'email',  
                 },
-                onDelete: 'CASCADE',
+                onUpdate: 'CASCADE',
+                onDelete: 'CASCADE'
             },
             animeID: {
                 type: DataTypes.UUID,

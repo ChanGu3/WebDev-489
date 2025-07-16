@@ -223,7 +223,8 @@ function AnimeWatchHistoryInit(sequelize)
                     model: Member,
                     key: 'email',  
                 },
-                onDelete: 'CASCADE',
+                onUpdate: 'CASCADE',
+                onDelete: 'CASCADE'
             },
             streamID: {
                 type: DataTypes.UUIDV4,

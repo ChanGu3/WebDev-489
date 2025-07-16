@@ -1,6 +1,6 @@
 const {Model, DataTypes} = require('sequelize');
 const bcrypt = require('bcrypt');
-const { errormsg } = require('../../server-logging.cjs');
+const { Logging, errormsg } = require('../../server-logging.cjs');
 const saltRounds = 12;
 
 function HashPassword(password, saltRounds){
@@ -147,6 +147,7 @@ class Member extends Model
                 // Check if old email exists and password is correct
                 if (!(await Member.Exists(oldEmailLower)))
                 {
+                    Logging.LogError(`User not found ${oldEmail} to ${newEmail}`);
                     reject(new Error("User not found"));
                     return;
                 }
@@ -154,6 +155,7 @@ class Member extends Model
                 const existingUser = await Member.findByPk(oldEmailLower);
                 if (!(await bcrypt.compare(password, existingUser.password)))
                 {
+                    Logging.LogError(`Current password is incorrect ${oldEmail} to ${newEmail}`);
                     reject(new Error("Current password is incorrect"));
                     return;
                 }
@@ -161,19 +163,26 @@ class Member extends Model
                 // Check if new email already exists
                 if (await Member.Exists(newEmailLower))
                 {
+                    Logging.LogError(`New email already exists ${oldEmail} to ${newEmail}`);
                     reject(new Error("New email already exists"));
                     return;
                 }
 
                 // Update email
-                existingUser.email = newEmailLower;
-                await existingUser.save();
+                await Member.update({
+                        email: newEmail
+                    },
+                    {
+                        where: {
+                            email: oldEmail
+                        },
+                    });
 
                 resolve(existingUser);
             }
             catch(err)
             {
-                console.error(`Could Not Update Email ${oldEmail} to ${newEmail} --- ${err.message}`);
+                Logging.LogError(`Could Not Update Email ${oldEmail} to ${newEmail} --- ${err.message}`);
                 reject(new Error(errormsg.fallback));
             }
         })
