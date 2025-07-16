@@ -131,6 +131,97 @@ class Member extends Model
             }
         })
     }
+
+    //
+    // reject --> string: error msg
+    // resolve --> instance: updated Member
+    //
+    static UpdateEmail(oldEmail, newEmail, password)
+    {
+        return new Promise(async (resolve, reject) => {
+            const oldEmailLower = oldEmail.toLowerCase();
+            const newEmailLower = newEmail.toLowerCase();
+            
+            try
+            {
+                // Check if old email exists and password is correct
+                if (!(await Member.Exists(oldEmailLower)))
+                {
+                    reject(new Error("User not found"));
+                    return;
+                }
+
+                const existingUser = await Member.findByPk(oldEmailLower);
+                if (!(await bcrypt.compare(password, existingUser.password)))
+                {
+                    reject(new Error("Current password is incorrect"));
+                    return;
+                }
+
+                // Check if new email already exists
+                if (await Member.Exists(newEmailLower))
+                {
+                    reject(new Error("New email already exists"));
+                    return;
+                }
+
+                // Update email
+                existingUser.email = newEmailLower;
+                await existingUser.save();
+
+                resolve(existingUser);
+            }
+            catch(err)
+            {
+                console.error(`Could Not Update Email ${oldEmail} to ${newEmail} --- ${err.message}`);
+                reject(new Error(errormsg.fallback));
+            }
+        })
+    }
+
+    //
+    // reject --> string: error msg
+    // resolve --> instance: updated Member
+    //
+    static UpdatePassword(email, currentPassword, newPassword)
+    {
+        return new Promise(async (resolve, reject) => {
+            const emailLower = email.toLowerCase();
+            
+            try
+            {
+                // Check if user exists
+                if (!(await Member.Exists(emailLower)))
+                {
+                    reject(new Error("User not found"));
+                    return;
+                }
+
+                const existingUser = await Member.findByPk(emailLower);
+                
+                // Verify current password
+                if (!(await bcrypt.compare(currentPassword, existingUser.password)))
+                {
+                    reject(new Error("Current password is incorrect"));
+                    return;
+                }
+
+                // Hash new password
+                const newHash = await HashPassword(newPassword, saltRounds);
+                
+                // Update password
+                existingUser.password = newHash;
+                await existingUser.save();
+
+                resolve(existingUser);
+            }
+            catch(err)
+            {
+                console.error(`Could Not Update Password for ${email} --- ${err.message}`);
+                reject(new Error(errormsg.fallback));
+            }
+        })
+    }
 }
 
 function MemberInit(sequelize)
