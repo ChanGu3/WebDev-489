@@ -4,6 +4,7 @@ const { AnimeFavorite } = require('../../models/Anime/AnimeFavorite.cjs');
 const { AnimeWatchHistory } = require('../../models/Anime/AnimeWatchHistory.cjs');
 const { AnimeStreamLike } = require('../../models/Anime/AnimeStreamLike.cjs');
 const { AnimeRate } = require('../../models/Anime/AnimeRate.cjs');
+const { Member } = require('../../models/Accounts/member.cjs');
 
 async function SetupNavbar(req, res, next) 
 {
@@ -247,6 +248,38 @@ async function RemoveAnimeRating(req, res)
     }
 }
 
+async function UpdateEmail(req, res)
+{
+    const { newEmail, currentPassword } = req.body;
+    const currentEmail = req.session.user.email;
+
+    try
+    {
+        await Member.UpdateEmail(currentEmail, newEmail, currentPassword);
+        res.status(200).json({success: "Email updated successfully"});
+    }
+    catch(err)
+    {
+        res.status(400).json({error: err.message});
+    }
+}
+
+async function UpdatePassword(req, res)
+{
+    const { currentPassword, newPassword } = req.body;
+    const email = req.session.user.email;
+
+    try
+    {
+        await Member.UpdatePassword(email, currentPassword, newPassword);
+        res.status(200).json({success: "Password updated successfully"});
+    }
+    catch(err)
+    {
+        res.status(400).json({error: err.message});
+    }
+}
+
 const MemberController = {
     SetupNavbar,
     GetAllAnimeFavorite,
@@ -263,6 +296,8 @@ const MemberController = {
     AddAnimeRating,
     UpdateAnimeRating,
     RemoveAnimeRating,
+    UpdateEmail,
+    UpdatePassword,
 };
 
 module.exports = MemberController;
