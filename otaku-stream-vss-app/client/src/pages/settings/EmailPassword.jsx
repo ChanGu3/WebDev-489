@@ -144,7 +144,7 @@ function EmailPassword() {
   return (
     <>
       <NavbarOS />
-      <main className="manage-membership-layout">
+      <main className="main-ep manage-membership-layout">
         <aside className="settings-sidebar-fixed">
           <SettingsSidebar />
         </aside>

@@ -1,4 +1,5 @@
-body {
+/* changed body to the main also made a unique identifier for it  */
+.main-pi {
   background-color: #1A1A1A;
   font-family: system-ui, sans-serif;
   color: #ffffff;

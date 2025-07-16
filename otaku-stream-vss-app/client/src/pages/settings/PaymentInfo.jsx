@@ -144,7 +144,7 @@ function PaymentInfo() {
   return (
     <>
       <NavbarOS />
-      <main className="manage-membership-layout">
+      <main className="main-pi manage-membership-layout">
         <aside className="settings-sidebar-fixed">
           <SettingsSidebar />
         </aside>
