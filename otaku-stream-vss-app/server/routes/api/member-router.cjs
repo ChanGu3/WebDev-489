@@ -7,6 +7,11 @@ const controller = require('../../controllers/api-controllers/member-controller.
 //
 memberRouter.get('/', (req, res) => { res.status(200).json({success: "authorized"})} );
 
+// EMAIL/PASSWORD UPDATES
+
+memberRouter.put('/email', controller.UpdateEmail);
+
+memberRouter.put('/password', controller.UpdatePassword);
 
 // FAVORITE
 
