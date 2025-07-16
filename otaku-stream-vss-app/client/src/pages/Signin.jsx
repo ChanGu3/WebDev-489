@@ -103,7 +103,7 @@ function Signin()
                             <p className="px-2 text-os-dark-secondary text-[10px] md:text-xs">don't have an account or need help?</p>
                         <div className="w-[10%] mt-0.5 border-b-1 border-os-white"></div>
                     </div>
-                    <a className="text-os-blue-tertiary hover:text-os-blue-secondary active:text-os-blue-secondary text-sm" href="#">Forgot Password?</a>
+                    <a className="text-os-blue-tertiary hover:text-os-blue-secondary active:text-os-blue-secondary text-sm" href="/auth/forgot-password">Forgot Password?</a>
                     <a className="text-os-blue-tertiary hover:text-os-blue-secondary active:text-os-blue-secondary text-sm" href="/auth/signup">Sign Up?</a>
                 </div>
             </main>
