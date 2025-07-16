@@ -5,9 +5,6 @@ const { Member } = require('./member.cjs');
 const cron = require('node-cron');
 const { Logging, errormsg } = require('../../server-logging.cjs');
 
-//
-// Returns Date 31 Days In The Future at time-stamp 00:00:00
-//
 function GetNewExpDate()
 {
     newDate = new Date();
@@ -21,7 +18,7 @@ class Session extends Model
     static async #Exists(id)
     {
        const instance = await Session.findByPk(id);
-       return (instance) ? true : (() => { return false; })(); //console.error(chalk.red(`session with id:{${id}} is not in database`));
+       return (instance) ? true : (() => { return false; })();
     }
 
     //
@@ -44,6 +41,7 @@ class Session extends Model
                 const newSession = Session.build({
                     id: id,
                     email: email,
+                    expDate: GetNewExpDate(),
                 });
 
                 newSession.validate();
