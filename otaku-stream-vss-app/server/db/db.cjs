@@ -16,6 +16,10 @@ const { AnimeFavorite, AnimeFavoriteInit } = require('../models/Anime/AnimeFavor
 const { AnimeStream, AnimeStreamInit } = require('../models/Anime/AnimeStream.cjs');
 const { AnimeStreamLike, AnimeStreamLikeInit } = require('../models/Anime/AnimeStreamLike.cjs');
 const { AnimeWatchHistory, AnimeWatchHistoryInit } = require('../models/Anime/AnimeWatchHistory.cjs');
+const { BillingHistory, BillingHistoryInit } = require('../models/BillingHistory.cjs');
+const { Premium, PremiumInit } = require('../models/Premium.cjs');
+const { SavedCard, SavedCardInit } = require('../models/SavedCard.cjs');
+
 const dbFileName =  (isDev) ? 'Dev-OtakuStream.db' : 'OtakuStream.db';
 const sequelize = new Sequelize({
     dialect: 'sqlite',
@@ -35,6 +39,9 @@ AnimeFavoriteInit(sequelize);
 AnimeStreamInit(sequelize);
 AnimeStreamLikeInit(sequelize);
 AnimeWatchHistoryInit(sequelize);
+BillingHistoryInit(sequelize);
+PremiumInit(sequelize);
+SavedCardInit(sequelize);
 
 const Database = {
     sequelize,
@@ -50,6 +57,9 @@ const Database = {
     AnimeStream,
     AnimeStreamLike,
     AnimeWatchHistory,
+    BillingHistory,
+    Premium,
+    SavedCard,
 }
 
 async function Setup()
