@@ -14,6 +14,13 @@ import CategoryResult from './pages/CategoryResult.jsx'
 //import Categories from './pages/Categories.jsx'
 import AnimeDetails from './pages/AnimeDetails.jsx'
 import AnimeStream from './pages/AnimeStream.jsx'
+import ForgotPassword from './pages/forgotpassword/ForgotPassword';
+import ManageMembership from './pages/settings/ManageMembership';
+import EmailPassword from './pages/settings/EmailPassword';
+import PreferredLanguage from './pages/settings/PreferredLanguage';
+import PaymentInfo from './pages/settings/PaymentInfo';
+import BillingHistory from './pages/settings/BillingHistory';
+import Favorites from './pages/Favorites';
 
 function MemberAuthorization({children, hideFromMember=false, redirectURL='/404'})
 {
@@ -71,12 +78,10 @@ function App() {
         <Route path="/Example" element={<Example />} />
 
         {/*Root URL*/}
-        <Route path="">
-          <Route path="" element={<Home />} />
-          <Route path="404" element={<NotFound />} />
-          <Route path="about" element={<About />} />
-          <Route path="*" element={ <Navigate to='/404' replace/>} />
-        </Route>
+        <Route path="/" element={<Home />} />
+        <Route path="/404" element={<NotFound />} />
+        <Route path="/about" element={<About />} />
+        <Route path="*" element={<Navigate to="/404" replace />} />
 
         <Route path="discover">
           <Route path="" element={<Navigate to='/404' replace/>} />
@@ -119,7 +124,15 @@ function App() {
                 <SignupSuccess />
               </MemberAuthorization>
             } />
+          <Route path="forgot-password" element={<ForgotPassword />} />
         </Route>
+
+        <Route path="/settings/membership" element={<ManageMembership />} />
+        <Route path="/settings/email-password" element={<EmailPassword />} />
+        <Route path="/settings/language" element={<PreferredLanguage />} />
+        <Route path="/settings/payment-info" element={<PaymentInfo />} />
+        <Route path="/settings/billing-history" element={<BillingHistory />} />
+        <Route path="/favorites" element={<Favorites />} />
 
         <Route path="profile">
           <Route path="" element={<Navigate to='/404' replace/>} />
