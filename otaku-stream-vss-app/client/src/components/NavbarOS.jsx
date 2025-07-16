@@ -1,6 +1,7 @@
 import '../tailwind.css'
 import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 function Category({categoryName, href})
 {
@@ -207,10 +208,10 @@ function NavbarOS()
                                 <p className="text-sm font-semibold">Safe Space</p>
                             </a>
                             */}
-                            <a className="flex flex-row items-center hover:bg-os-blue-secondary active:bg-os-blue-secondary rounded-xs space-x-1 px-1 py-1.5 w-[60%]" href="#">
+                            <Link className="flex flex-row items-center hover:bg-os-blue-secondary active:bg-os-blue-secondary rounded-xs space-x-1 px-1 py-1.5 w-[60%]" to="/favorites">
                                 <img className="w-5" src="/star-sharp-svgrepo-com.svg" alt="safespace-icon"></img>
                                 <p className="text-sm font-semibold">Favorites</p>
-                            </a>
+                            </Link>
                         </div>
                         <div className="flex flex-col space-y-2">
                             <p className="border-b-2 border-os-white text-os-white">Account</p>
@@ -218,10 +219,10 @@ function NavbarOS()
                                 <img className="w-5" src="/profile-1335-svgrepo-com.svg" alt="safespace-icon"></img>
                                 <p className="text-sm font-semibold">Profile</p>
                             </a>
-                            <a className="flex flex-row items-center hover:bg-os-blue-secondary rounded-xs space-x-1 px-1 py-1.5 w-[60%]" href="#">
-                                <img className="w-5" src="/gear-1-svgrepo-com.svg" alt="safespace-icon"></img>
+                            <Link className="flex flex-row items-center hover:bg-os-blue-secondary rounded-xs space-x-1 px-1 py-1.5 w-[60%]" to="/settings/membership">
+                                <img className="w-5" src="/gear-1-svgrepo-com.svg" alt="safespace-icon" />
                                 <p className="text-sm font-semibold">Settings</p>
-                            </a>
+                            </Link>
                         </div>
 
                         {/* ------------ADMIN ONLY-------------- */}
