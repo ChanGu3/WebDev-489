@@ -3,10 +3,38 @@ import NavbarOS from '../../components/NavbarOS';
 import FooterOS from '../../components/FooterOS';
 import SettingsSidebar from '../../components/SettingsSidebar';
 import './ManageMembership.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function ManageMembership() {
   const [loading, setLoading] = useState(false);
+  const [downgradeLoading, setDowngradeLoading] = useState(false);
+  const [isPremium, setIsPremium] = useState(false);
+  const [premiumData, setPremiumData] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchPremiumStatus();
+  }, []);
+
+  const fetchPremiumStatus = async () => {
+    try {
+      const response = await fetch('/api/premium/status', {
+        method: 'GET',
+        credentials: 'include',
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setIsPremium(data.isPremium);
+        setPremiumData(data.premium);
+      } else {
+        console.error('Failed to fetch premium status');
+      }
+    } catch (error) {
+      console.error('Error fetching premium status:', error);
+    }
+  };
 
   const handleUpgrade = async () => {
     setLoading(true);
@@ -18,14 +46,54 @@ function ManageMembership() {
       const data = await res.json();
       if (res.ok && data.success) {
         alert('Premium upgrade successful!');
+        await fetchPremiumStatus();
       } else {
-        alert(data.error || 'Upgrade failed');
+        if (data.error === 'No primary card found') {
+          alert('Please add a payment method first to upgrade to Premium.');
+          navigate('/settings/payment-info');
+        } else {
+          alert(data.error || 'Upgrade failed');
+        }
       }
     } catch (err) {
       alert('Network error. Please try again.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDowngrade = async () => {
+    if (!confirm('Are you sure you want to cancel your Premium membership? Your subscription will be cancelled at the end of your current billing period.')) {
+      return;
+    }
+
+    setDowngradeLoading(true);
+    try {
+      const res = await fetch('/api/premium/downgrade', {
+        method: 'POST',
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        alert('Your Premium membership has been cancelled. You will have access to Premium features until the end of your current billing period.');
+        await fetchPremiumStatus();
+      } else {
+        alert(data.error || 'Downgrade failed');
+      }
+    } catch (err) {
+      alert('Network error. Please try again.');
+    } finally {
+      setDowngradeLoading(false);
+    }
+  };
+
+  const formatExpiryDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric',      month: 'long', 
+      day: 'numeric'
+    });
   };
 
   return (
@@ -41,11 +109,26 @@ function ManageMembership() {
             <div className="membership-current-box">
               <div>
                 <div className="current-label">Current Subscription</div>
-                <div className="current-plan">Free Plan</div>
-                <div className="current-desc">HD quality, Limited content, With ads</div>
-                <div className="current-note">Upgrade anytime to unlock premium features</div>
+                <div className="current-plan">{isPremium ? 'Premium Plan' : 'Free Plan'}</div>
+                <div className="current-desc">
+                  {isPremium 
+                    ? '4K Ultra HD quality, Full library access, Ad-free experience'
+                    : 'HD quality, Limited content, With ads'
+                  }
+                </div>
+                {isPremium && premiumData && (
+                  <div className="current-expiry">
+                    Expires: {formatExpiryDate(premiumData.expDate)}
+                  </div>
+                )}
+                <div className="current-note">
+                  {isPremium 
+                    ? 'You have access to all premium features'
+                    : 'Upgrade anytime to unlock premium features'
+                  }
+                </div>
               </div>
-              <div className="current-price">Free</div>
+              <div className="current-price">{isPremium ? '$9.99/month' : 'Free'}</div>
             </div>
           </section>
           <section className="membership-plan-section">
@@ -58,20 +141,38 @@ function ManageMembership() {
                 <li>With advertisements</li>
                 <li>Limited anime library</li>
               </ul>
-              <button className="current-btn" disabled>Current Plan</button>
+              {isPremium ? (
+                <button 
+                  className="downgrade-btn" 
+                  onClick={handleDowngrade} 
+                  disabled={downgradeLoading}
+                >
+                  {downgradeLoading ? 'Processing...' : 'Downgrade'}
+                </button>
+              ) : (
+                <button className="current-btn" disabled>Current Plan</button>
+              )}
             </div>
             <div className="membership-plan-card premium">
               <div className="plan-title">Premium</div>
-              <div className="plan-price">$ 999</div>
+              <div className="plan-price">$ 9.99</div>
               <ul>
                 <li>4K Ultra HD quality</li>
                 <li>4 devices streaming</li>
                 <li>Full anime library access</li>
                 <li>Ad-free experience</li>
               </ul>
-              <button className="upgrade-btn" onClick={handleUpgrade} disabled={loading}>
-                {loading ? 'Upgrading...' : 'Upgrade Now'}
-              </button>
+              {isPremium ? (
+                <button className="current-btn" disabled>Current Plan</button>
+              ) : (
+                <button 
+                  className="upgrade-btn" 
+                  onClick={handleUpgrade} 
+                  disabled={loading}
+                >
+                  {loading ? 'Upgrading...' : 'Upgrade Now'}
+                </button>
+              )}
             </div>
           </section>
         </div>

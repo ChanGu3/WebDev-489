@@ -149,10 +149,50 @@ async function upgradeToPremium(req, res) {
     }
 }
 
+async function downgradeToFree(req, res) {
+    try {
+        const memberEmail = req.session?.user?.email;
+        if (!memberEmail) {
+            return res.status(401).json({ error: 'User not authenticated' });
+        }
+
+        const premium = await Premium.getByEmail(memberEmail);
+        if (!premium) {
+            return res.status(400).json({ error: 'No premium subscription found' });
+        }
+
+        // 현재 날짜를 기준으로 한 달 후로 만료일 설정 (즉시 취소가 아닌 다음 결제일까지 유지)
+        const now = new Date();
+        const nextMonth = new Date(now);
+        nextMonth.setMonth(nextMonth.getMonth() + 1);
+        
+        await premium.update({ expDate: nextMonth });
+
+        await BillingHistory.create({
+            email: memberEmail,
+            description: 'Premium Membership Cancellation',
+            amount:0,
+            payment_method: 'N/A',
+            status: 'Cancelled',
+            billing_date: now
+        });
+
+        res.json({ 
+            success: true, 
+            message: 'Premium membership cancelled. You will have access until the end of your current billing period.',
+            premium 
+        });
+    } catch (error) {
+        console.error('Error downgrading to free:', error);
+        res.status(500).json({ error: 'Failed to downgrade to free' });
+    }
+}
+
 module.exports = {
     getPremiumStatus,
     createPremium,
     updatePremium,
     deletePremium,
-    upgradeToPremium
+    upgradeToPremium,
+    downgradeToFree
 }; 

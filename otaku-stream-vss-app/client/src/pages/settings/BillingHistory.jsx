@@ -51,7 +51,7 @@ function BillingHistory() {
             <SettingsSidebar />
           </aside>
           <div className="manage-membership-main-centered">
-            <h1 className="page-title">Billing History</h1>
+            <h1 className="billing-history-title">Billing History</h1>
             <div className="loading-message">Loading billing history...</div>
           </div>
         </main>
@@ -69,7 +69,7 @@ function BillingHistory() {
             <SettingsSidebar />
           </aside>
           <div className="manage-membership-main-centered">
-            <h1 className="page-title">Billing History</h1>
+            <h1 className="billing-history-title">Billing History</h1>
             <div className="error-message">{error}</div>
           </div>
         </main>
@@ -86,7 +86,7 @@ function BillingHistory() {
           <SettingsSidebar />
         </aside>
         <div className="manage-membership-main-centered">
-          <h1 className="page-title">Billing History</h1>
+          <h1 className="billing-history-title">Billing History</h1>
           <section className="billing-history-section">
             <h2>Recent Billing History</h2>
             {billingHistory.length > 0 ? (

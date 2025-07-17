@@ -6,49 +6,131 @@ import { useNavigate } from 'react-router-dom';
 import './PaymentInfo.css';
 import './PaymentInfoModal.css';
 
-const initialCards = [
-  {
-    id: 1,
-    type: 'Visa',
-    number: '**** **** **** 1234',
-    expiry: '11/11',
-    name: 'John Doe',
-    primary: true,
-  },
-  {
-    id: 2,
-    type: 'Master Card',
-    number: '**** **** **** 5678',
-    expiry: '12/12',
-    name: 'John Doe',
-    primary: false,
-  },
-];
-
 function PaymentInfo() {
   const navigate = useNavigate();
-  const [cards, setCards] = useState(initialCards);
+  const [cards, setCards] = useState([]);
   const [billingHistory, setBillingHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState('add');
   const [editCard, setEditCard] = useState(null);
   const [form, setForm] = useState({ type: '', number: '', expiry: '', name: '', cvc: '' });
+  const [errors, setErrors] = useState({});
+  const [isFormValid, setIsFormValid] = useState(false);
 
   useEffect(() => {
+    fetchCards();
     fetchBillingHistory();
   }, []);
 
-  const fetchBillingHistory = async () => {
+  useEffect(() => {
+    validateForm();
+  }, [form]);
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    // Card Type validation
+    if (!form.type) {
+      newErrors.type = 'Please select a card type';
+    }
+    
+    // Card Number validation - simplified to just 16 digits
+    if (!form.number) {
+      newErrors.number = 'Card number is required';
+    } else if (!/^\d{16}$/.test(form.number.replace(/\s/g, ''))) {
+      newErrors.number = 'Card number must be 16 digits';
+    }
+    
+    // Expiry Date validation
+    if (!form.expiry) {
+      newErrors.expiry = 'Expiry date is required';
+    } else if (!/^\d{2}\/\d{2}$/.test(form.expiry)) {
+      newErrors.expiry = 'Use MM/YY format';
+    } else {
+      const [month, year] = form.expiry.split('/');
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear() % 100;
+      const currentMonth = currentDate.getMonth() + 1;
+      
+      if (parseInt(month) < 1 || parseInt(month) > 12) {
+        newErrors.expiry = 'Invalid month';
+      } else if (parseInt(year) < currentYear || (parseInt(year) === currentYear && parseInt(month) < currentMonth)) {
+        newErrors.expiry = 'Card has expired';
+      }
+    }
+    
+    // Name validation
+    if (!form.name.trim()) {
+      newErrors.name = 'Name is required';
+    } else if (form.name.trim().length < 2) {
+      newErrors.name = 'Name must be at least 2 characters';
+    }
+    
+    // CVC validation
+    if (!form.cvc) {
+      newErrors.cvc = 'CVC is required';
+    } else if (!/^\d{3,4}$/.test(form.cvc)) {
+      newErrors.cvc = 'CVC must be 3-4 digits';
+    }
+    
+    setErrors(newErrors);
+    setIsFormValid(Object.keys(newErrors).length === 0);
+  };
+
+  const formatCardNumber = (value) => {
+    // Remove all non-digits
+    const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+    // Limit to 16 digits
+    const limited = v.substring(0, 16);
+    // Add spaces every 4 digits
+    const parts = [];
+    
+    for (let i = 0; i < limited.length; i += 4) {
+      parts.push(limited.substring(i, i + 4));
+    }
+    
+    return parts.join(' ');
+  };
+
+  const formatExpiry = (value) => {
+    // Remove all non-digits
+    const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+    
+    if (v.length >= 2) {
+      return v.substring(0, 2) + '/' + v.substring(2, 4);
+    }
+    return v;
+  };
+
+  const fetchCards = async () => {
     try {
-      const response = await fetch('/api/billing/recent?limit=10', {
+      const response = await fetch('/api/saved-cards', {
         method: 'GET',
         credentials: 'include',
       });
       
       if (response.ok) {
         const data = await response.json();
-        setBillingHistory(data.data || []);
+        setCards(data.cards || []);
+      } else {
+        console.error('Failed to fetch saved cards');
+      }
+    } catch (error) {
+      console.error('Error fetching saved cards:', error);
+    }
+  };
+
+  const fetchBillingHistory = async () => {
+    try {
+      const response = await fetch('/api/billing/all', {
+        method: 'GET',
+        credentials: 'include',
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setBillingHistory(data.billingHistory || []);
       } else {
         console.error('Failed to fetch billing history');
       }
@@ -62,6 +144,8 @@ function PaymentInfo() {
   const openAddModal = () => {
     setModalType('add');
     setForm({ type: '', number: '', expiry: '', name: '', cvc: '' });
+    setErrors({});
+    setIsFormValid(false);
     setShowModal(true);
     setEditCard(null);
   };
@@ -69,12 +153,14 @@ function PaymentInfo() {
   const openEditModal = (card) => {
     setModalType('edit');
     setForm({
-      type: card.type,
-      number: card.number.replace(/\*{4} \*{4} \*{4} /, ''),
-      expiry: card.expiry,
-      name: card.name,
+      type: card.cardType,
+      number: card.cardNumber,
+      expiry: card.expiryDate,
+      name: card.cardHolderName,
       cvc: '',
     });
+    setErrors({});
+    setIsFormValid(false);
     setEditCard(card);
     setShowModal(true);
   };
@@ -82,53 +168,123 @@ function PaymentInfo() {
   const closeModal = () => {
     setShowModal(false);
     setEditCard(null);
+    setErrors({});
+    setIsFormValid(false);
   };
   
   const handleFormChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    let formattedValue = value;
+    
+    // Format card number with spaces
+    if (name === 'number') {
+      formattedValue = formatCardNumber(value);
+    }
+    
+    // Format expiry date
+    if (name === 'expiry') {
+      formattedValue = formatExpiry(value);
+    }
+    
+    // Only allow digits for CVC
+    if (name === 'cvc') {
+      formattedValue = value.replace(/\D/g, '');
+    }
+    
+    setForm({ ...form, [name]: formattedValue });
   };
   
-  const handleSave = () => {
-    if (!form.type || !form.number || !form.expiry || !form.name) return;
-    if (modalType === 'add') {
-      setCards([
-        ...cards,
-        {
-          id: Date.now(),
-          type: form.type,
-          number: '**** **** **** ' + form.number.slice(-4),
-          expiry: form.expiry,
-          name: form.name,
-          primary: false,
-        },
-      ]);
-    } else if (modalType === 'edit' && editCard) {
-      setCards(cards.map(card =>
-        card.id === editCard.id
-          ? { ...card, type: form.type, number: '**** **** **** ' + form.number.slice(-4), expiry: form.expiry, name: form.name }
-          : card
-      ));
+  const handleSave = async () => {
+    if (!isFormValid) {
+      alert('Please fix the errors before saving');
+      return;
     }
-    closeModal();
-  };
-
-  const setAsPrimary = (cardId) => {
-    setCards(cards.map(card => ({
-      ...card,
-      primary: card.id === cardId
-    })));
-  };
-
-  const removeCard = (cardId) => {
-    const cardToRemove = cards.find(card => card.id === cardId);
-    if (cardToRemove.primary && cards.length > 1) {
-      const remainingCards = cards.filter(card => card.id !== cardId);
-      if (remainingCards.length > 0) {
-        remainingCards[0].primary = true;
-        setCards(remainingCards);
+    
+    try {
+      if (modalType === 'add') {
+        const response = await fetch('/api/saved-cards', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            cardType: form.type,
+            cardNumber: form.number.replace(/\s/g, ''),
+            expiryDate: form.expiry,
+            cardHolderName: form.name.trim(),
+            isPrimary: cards.length === 0 ? true : false,
+          }),
+        });
+        
+        if (response.ok) {
+          await fetchCards();
+          closeModal();
+        } else {
+          alert('Failed to add card');
+        }
+      } else if (modalType === 'edit' && editCard) {
+        const response = await fetch(`/api/saved-cards/${editCard.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            cardType: form.type,
+            cardNumber: form.number.replace(/\s/g, ''),
+            expiryDate: form.expiry,
+            cardHolderName: form.name.trim(),
+            isPrimary: editCard.isPrimary
+          }),
+        });
+        
+        if (response.ok) {
+          await fetchCards();
+          closeModal();
+        } else {
+          alert('Failed to update card');
+        }
       }
-    } else {
-      setCards(cards.filter(card => card.id !== cardId));
+    } catch (error) {
+      console.error('Error saving card:', error);
+      alert('Error saving card');
+    }
+  };
+
+  const setAsPrimary = async (cardId) => {
+    try {
+      const response = await fetch(`/api/saved-cards/${cardId}/primary`, {
+        method: 'PUT',
+        credentials: 'include',
+      });
+      
+      if (response.ok) {
+        await fetchCards();
+      } else {
+        alert('Failed to set primary card');
+      }
+    } catch (error) {
+      console.error('Error setting primary card:', error);
+      alert('Error setting primary card');
+    }
+  };
+
+  const removeCard = async (cardId) => {
+    try {
+      const response = await fetch(`/api/saved-cards/${cardId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      
+      if (response.ok) {
+        await fetchCards();
+      } else {
+        alert('Failed to remove card');
+      }
+    } catch (error) {
+      console.error('Error removing card:', error);
+      alert('Error removing card');
     }
   };
 
@@ -149,7 +305,7 @@ function PaymentInfo() {
           <SettingsSidebar />
         </aside>
         <div className="manage-membership-main-centered">
-          <h1 className="page-title">Payment Info</h1>
+          <h1 className="payment-info-title">Payment Info</h1>
           <section className="payment-methods-section">
             <div className="section-header">
               <h2>Payment Methods</h2>
@@ -157,22 +313,28 @@ function PaymentInfo() {
             </div>
             <div className="card-grid">
               {cards.map((card) => (
-                <div className={`card${card.primary ? ' card-primary' : ''}`} key={card.id}>
+                <div className={`card${card.isPrimary ? ' card-primary' : ''}`} key={card.id}>
                   <div className="card-header">
-                    <span className={`card-type ${card.type.toLowerCase().replace(' ', '-')}`}>{card.type}</span>
+                    <span className={`card-type ${card.cardType.toLowerCase().replace(' ', '-')}`}>{card.cardType}</span>
                   </div>
                   <div className="card-details">
-                    <div>{card.number}</div>
-                    <div>Expires: {card.expiry}</div>
-                    <div>{card.name}</div>
+                    <div>**** **** **** {card.cardNumber.slice(-4)}</div>
+                    <div>Expires: {card.expiryDate}</div>
+                    <div>{card.cardHolderName}</div>
                   </div>
                   <div className="card-actions">
                     <button className="btn edit" onClick={() => openEditModal(card)}>Edit</button>
                     <button className="btn remove" onClick={() => removeCard(card.id)}>Remove</button>
-                    {!card.primary && <button className="btn blue" onClick={() => setAsPrimary(card.id)}>Set as Primary</button>}
+                    {!card.isPrimary && <button className="btn blue" onClick={() => setAsPrimary(card.id)}>Set as Primary</button>}
                   </div>
                 </div>
               ))}
+              {cards.length === 0 && (
+                <div className="no-cards-message">
+                  <p>No payment methods added yet.</p>
+                  <p>Add a payment method to enable premium features.</p>
+                </div>
+              )}
             </div>
           </section>
           <section className="billing-history-section">
@@ -200,7 +362,7 @@ function PaymentInfo() {
                           <td>{billing.description}</td>
                           <td>{billing.payment_method}</td>
                           <td>${billing.amount}</td>
-                          <td className="paid">{billing.status}</td>
+                          <td className={billing.status.toLowerCase()}>{billing.status}</td>
                           <td>
                             <button className="btn download" onClick={() => handleDownload(billing.id)}>
                               Download
@@ -235,22 +397,58 @@ function PaymentInfo() {
                   <option value="Master Card">Master Card</option>
                   <option value="Amex">Amex</option>
                 </select>
+                {errors.type && <div style={{ color: '#dc3545', fontSize: '0.85rem', marginTop: '2px' }}>{errors.type}</div>}
               </label>
               <label>Card Number
-                <input name="number" type="text" maxLength="16" value={form.number} onChange={handleFormChange} required placeholder="1234 5678 9012 3456" />
+                <input 
+                  name="number" 
+                  type="text" 
+                  maxLength="19" 
+                  value={form.number} 
+                  onChange={handleFormChange} 
+                  required 
+                  placeholder="1234 5678 9012 3456" 
+                />
+                {errors.number && <div style={{ color: '#dc3545', fontSize: '0.85rem', marginTop: '2px' }}>{errors.number}</div>}
               </label>
               <label>Expiry
-                <input name="expiry" type="text" maxLength="5" value={form.expiry} onChange={handleFormChange} required placeholder="MM/YY" />
+                <input 
+                  name="expiry" 
+                  type="text" 
+                  maxLength="5" 
+                  value={form.expiry} 
+                  onChange={handleFormChange} 
+                  required 
+                  placeholder="MM/YY" 
+                />
+                {errors.expiry && <div style={{ color: '#dc3545', fontSize: '0.85rem', marginTop: '2px' }}>{errors.expiry}</div>}
               </label>
               <label>Name on Card
-                <input name="name" type="text" value={form.name} onChange={handleFormChange} required placeholder="John Doe" />
+                <input 
+                  name="name" 
+                  type="text" 
+                  value={form.name} 
+                  onChange={handleFormChange} 
+                  required 
+                  placeholder="John Doe" 
+                />
+                {errors.name && <div style={{ color: '#dc3545', fontSize: '0.85rem', marginTop: '2px' }}>{errors.name}</div>}
               </label>
               <label>CVC
-                <input name="cvc" type="password" maxLength="4" value={form.cvc} onChange={handleFormChange} required placeholder="123" />
+                <input 
+                  name="cvc" 
+                  type="password" 
+                  maxLength="4" 
+                  value={form.cvc} 
+                  onChange={handleFormChange} 
+                  required 
+                  placeholder="123" 
+                />
+                {errors.cvc && <div style={{ color: '#dc3545', fontSize: '0.85rem', marginTop: '2px' }}>{errors.cvc}</div>}
               </label>
               <div className="payment-modal-actions">
                 <button type="button" className="btn cancel" onClick={closeModal}>Cancel</button>
-                <button type="submit" className="btn save">Save</button>
+                <button type="submit" className="btn save" disabled={!isFormValid}>Save</button>
               </div>
             </form>
           </div>
