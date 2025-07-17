@@ -17,6 +17,10 @@ class SavedCard extends Model {
         });
     }
 
+    static async createCard(cardData) {
+        return await SavedCard.create(cardData);
+    }
+
     static async updateById(id, cardData) {
         const card = await SavedCard.findByPk(id);
         if (card) {
