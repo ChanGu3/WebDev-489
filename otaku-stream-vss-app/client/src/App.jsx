@@ -21,6 +21,10 @@ import PreferredLanguage from './pages/settings/PreferredLanguage';
 import PaymentInfo from './pages/settings/PaymentInfo';
 import BillingHistory from './pages/settings/BillingHistory';
 import Favorites from './pages/Favorites';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminMembers from './pages/admin/AdminMembers';
+import AdminAnime from './pages/admin/AdminAnime';
+import AdminAnalytics from './pages/admin/AdminAnalytics';
 
 function MemberAuthorization({children, hideFromMember=false, redirectURL='/404'})
 {
@@ -176,6 +180,12 @@ function App() {
         <Route path="/settings/payment-info" element={<PaymentInfo />} />
         <Route path="/settings/billing-history" element={<BillingHistory />} />
         <Route path="/favorites" element={<Favorites />} />
+
+        <Route path="/admin" element={<AdminDashboard />}>
+          <Route index element={<AdminMembers />} />
+          <Route path="anime" element={<AdminAnime />} />
+          <Route path="analytics" element={<AdminAnalytics />} />
+        </Route>
 
         <Route path="profile">
           <Route path="" element={<Navigate to='/404' replace/>} />
