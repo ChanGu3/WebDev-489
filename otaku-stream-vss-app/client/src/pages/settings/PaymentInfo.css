@@ -1,4 +1,3 @@
-/* changed body to the main also made a unique identifier for it  */
 .main-pi {
   background-color: #1A1A1A;
   font-family: system-ui, sans-serif;
@@ -12,6 +11,15 @@
   color: #87CEEB;
   font-size: 2.2rem;
   margin-top: -40px;
+  margin-bottom: 32px;
+  font-weight: semibold;
+}
+
+.payment-info-title {
+  text-align: center;
+  color: #87CEEB;
+  font-size: 2.2rem;
+  margin-top: 40px;
   margin-bottom: 32px;
   font-weight: semibold;
 }
@@ -161,4 +169,23 @@
 .billing-table .paid {
   color: #87CEEB;
   font-weight: 600;
+} 
+.no-cards-message {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px 20px;
+  color: #888;
+  background: #3A3939;
+  border-radius: 10px;
+  border: 2px dashed #555;
+}
+
+.no-cards-message p {
+  margin: 8px 0;
+  font-size: 1.1em;
+}
+
+.no-cards-message p:first-child {
+  font-weight: 600;
+  color: #aaa;
 } 
