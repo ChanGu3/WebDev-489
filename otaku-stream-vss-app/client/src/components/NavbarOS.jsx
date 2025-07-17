@@ -220,10 +220,10 @@ function NavbarOS({reLoad})
                         {/* ------------ADMIN ONLY-------------- */}
                         <div className={`flex flex-col space-y-2 ${(isAdmin) ? '': 'hidden'}`}>
                             <p className="border-b-2 border-os-white text-os-white">Admin</p>
-                            <a className="flex flex-row items-center hover:bg-os-blue-secondary active:bg-os-blue-secondary rounded-xs space-x-1 px-1 py-1.5 w-[85%]" href="#">
+                            <Link className="flex flex-row items-center hover:bg-os-blue-secondary active:bg-os-blue-secondary rounded-xs space-x-1 px-1 py-1.5 w-[85%]" to="/admin">
                                 <img className="w-5" src="/dashboard-alt-3-svgrepo-com.svg" alt="dashboard-icon"></img>
                                 <p className="text-xs md:text-sm font-semibold">Dashboard</p>
-                            </a>
+                            </Link>
                         </div>
                         {/* ----------------------------------- */}
 
