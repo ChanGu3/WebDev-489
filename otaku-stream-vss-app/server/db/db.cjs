@@ -1,10 +1,11 @@
-const chalk = require('chalk');
 const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
 const isDev = (argv.dev === true || argv.d === true);
+const { Logging } = require('../server-logging.cjs');
 
 const { Sequelize } = require('sequelize');
 const { Member, MemberInit } = require('../models/Accounts/member.cjs');
+const { Admin, AdminInit } = require('../models/Accounts/admin.cjs');
 const { Session, SessionInit } = require('../models/Accounts/session.cjs');
 const { Anime, AnimeInit } = require('../models/Anime/Anime.cjs');
 const { Genre, GenreInit } = require('../models/Anime/Genre.cjs');
@@ -28,6 +29,7 @@ const sequelize = new Sequelize({
 });
 
 MemberInit(sequelize);
+AdminInit(sequelize);
 SessionInit(sequelize);
 GenreInit(sequelize);
 AnimeInit(sequelize);
@@ -46,6 +48,7 @@ SavedCardInit(sequelize);
 const Database = {
     sequelize,
     Member,
+    Admin,
     Session,
     Anime,
     Genre,
@@ -64,17 +67,20 @@ const Database = {
 
 async function Setup()
 {
-    const isForce = (isDev);
     await sequelize.sync({force: isDev });
 
     if(isDev)
     {
         const { DevSetup } = require('../models/DevSetup.cjs');
-        DevSetup().then();
+        await DevSetup();
     }
+
+
+    await Admin.SetupRootAdmin();
+
 }
 
-Setup().then();
-console.log(chalk.cyan("[otakustream] database has been setup (="));
+Setup().then().catch((err) => { Logging.LogError(`(something went wrong setting up development) ${err}`) });
+Logging.LogProcess("database has been setup (=");
 
 module.exports = Database;

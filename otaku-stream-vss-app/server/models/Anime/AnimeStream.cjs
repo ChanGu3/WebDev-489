@@ -149,12 +149,21 @@ class AnimeStream extends Model
         });
     }
 
-    static GetAll()
+    static GetAll(query)
     {
         return new Promise(async (resolve, reject) => {
             try
-            {
-                const animeStreamList = await AnimeStream.findAll()
+            {   
+                const querys = {}
+                if(query.limit)
+                {
+                    querys.limit = query.limit;
+                }
+                if(query.offset)
+                {
+                    querys.offset = query.offset;
+                }
+                const animeStreamList = await AnimeStream.findAll(querys)
                 resolve(animeStreamList.map((element) => { const {createdAt, updatedAt, ...rest} = element.toJSON(); return rest; }));
             }
             catch(err)

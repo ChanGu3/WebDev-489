@@ -14,7 +14,7 @@ async function AttemptSignIn(req, res) {
 
     try
     {
-      const user = await db.Member.Authorization(email, password);
+      const user = await db.Member.Authentification(email, password);
       req.session.user = user.toJSON();
       req.session.member_id = user.id;
       const newSession = await db.Session.AddToDB(req.sessionID, user.email);

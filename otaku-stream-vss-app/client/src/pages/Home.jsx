@@ -33,8 +33,11 @@ function Home()
         {
           if (response.status === 200)
           { 
-            const newAnimeStreamHistory = await response.json();
-            SetRecentAnimeStreamWatchList(newAnimeStreamHistory);
+            const data = await response.json();
+            if(data.error === undefined)
+            {
+              SetRecentAnimeStreamWatchList(data);
+            }
           }
         }
       }

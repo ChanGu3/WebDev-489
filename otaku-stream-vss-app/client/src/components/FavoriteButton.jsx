@@ -28,17 +28,20 @@ function FavoriteButton({animeID})
         }).then((data) => {
             if(data)
             {
-                if(theMethod === 'GET')
+                if(data.error === undefined)
                 {
-                    SetIsFavorited(true);
-                }
-                else if(theMethod === 'POST')
-                {
-                    SetIsFavorited(true);
-                }
-                else if(theMethod === 'DELETE')
-                {
-                    SetIsFavorited(false);
+                    if(theMethod === 'GET')
+                    {
+                        SetIsFavorited(true);
+                    }
+                    else if(theMethod === 'POST')
+                    {
+                        SetIsFavorited(true);
+                    }
+                    else if(theMethod === 'DELETE')
+                    {
+                        SetIsFavorited(false);
+                    }
                 }
             }
         }).catch((err) => {

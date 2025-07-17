@@ -209,6 +209,24 @@ class AnimeWatchHistory extends Model
             }
         })
     }
+
+    static GetWatchHistoryCountByStreamID(streamID)
+    {
+        return new Promise( async (resolve, reject) => {
+            try
+            {
+                const query = {}
+                query.where = { streamID: streamID };
+                const animeWatchHistory = await AnimeWatchHistory.findAll(query);
+                resolve(animeWatchHistory.length)
+            }
+            catch(err)
+            {
+                Logging.LogError(`could not get steamID:${streamID} AnimeWatchHistory count from database --- ${err.message}`);
+                reject(new Error(errormsg.fallback));
+            }
+        })
+    }
 }
 
 function AnimeWatchHistoryInit(sequelize)

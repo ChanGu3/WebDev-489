@@ -106,7 +106,7 @@ async function GetAnimeFavorite(req, res)
     }
     catch(err)
     {
-        res.status(500).json({error: err.message});
+        res.status(200).json({error: err.message});
     }
 }
 

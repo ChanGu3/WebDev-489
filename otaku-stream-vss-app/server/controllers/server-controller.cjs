@@ -1,4 +1,4 @@
-const chalk = require('chalk');
+const { Logging } = require('../server-logging.cjs');
 const db = require('../db/db.cjs');
 
 //
@@ -12,7 +12,7 @@ async function CookieChecker (req, res, next) {
       const session = await db.Session.UpdateSessionID(req.signedCookies['connect.sid'], req.sessionID);
       req.session.user = await db.Member.GetByEmail(session.email);
       await db.Session.LogExistingSession(req.sessionID);
-      console.log(chalk.magenta(`[otakustream] reset session for ${session.email}`));
+      Logging.LogSuccess(`reset session for ${session.email}`);
     }
     catch(err)
     {
@@ -20,13 +20,13 @@ async function CookieChecker (req, res, next) {
         req.session.destroy((err) => {
           if(err)
           {
-            console.error(chalk.red(`[otakustream] session could not be destroyed for id:{${req.sessionID}}`));
+            Logging.LogError(`session could not be destroyed for id:{${req.sessionID}}`);
             reject();
           }
           else
           {
             res.clearCookie('connect.sid');
-            console.log(chalk.magenta(`[otakustream] successfully cleaned up client and server cookies`));
+            Logging.LogSuccess(`successfully cleaned up client and server cookies`);
             resolve();
           }
         });
@@ -44,7 +44,7 @@ async function CookieChecker (req, res, next) {
     }
     catch(err)
     {
-      console.error(chalk.red(`[otakustream] ${err}`));
+      Logging.LogError(`error checking cookies ${err}`);
     }
   }
 
