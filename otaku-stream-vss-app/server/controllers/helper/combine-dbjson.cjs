@@ -4,6 +4,9 @@ const { AnimeInstallment } = require('../../models/Anime/AnimeInstallment.cjs');
 const { AnimeOtherTranslation } = require('../../models/Anime/AnimeOtherTranslation.cjs');
 const { AnimeRate } = require('../../models/Anime/AnimeRate.cjs');
 const { AnimeStream } = require('../../models/Anime/AnimeStream.cjs');
+const { Premium } = require('../../models/Premium.cjs');
+const { AnimeStreamLike } = require('../../models/Anime/AnimeStreamLike.cjs');
+const { AnimeWatchHistory } = require('../../models/Anime/AnimeWatchHistory.cjs');
 
 async function CombineAnimeData(animeDBJSON)
 {
@@ -38,10 +41,29 @@ async function CombineAnimeStreamData(animeStreamDBJSON)
     return animeStreamDBJSON
 }
 
+async function CombineAnalyticAnimeStreamData(animeStreamDBJSON)
+{
+    animeStreamDBJSON = await CombineAnimeStreamData(animeStreamDBJSON)
+    const animeStreamViewCount = await AnimeWatchHistory.GetWatchHistoryCountByStreamID(animeStreamDBJSON.id);
+    animeStreamDBJSON.views = animeStreamViewCount;
+    const animeStreamLikeCount = await AnimeStreamLike.GetCountByStreamID(animeStreamDBJSON.id);
+    animeStreamDBJSON.likes = animeStreamLikeCount;
+
+    return animeStreamDBJSON
+}
+
+async function CombineMemberData(memberDBJSON)
+{
+    memberDBJSON.isPremium = await Premium.isPremium(memberDBJSON.email);
+    return memberDBJSON;
+}
+
 const CombineDBJSON = {
     CombineAnimeData,
     CombineInstallmentData,
     CombineAnimeStreamData,
+    CombineMemberData,
+    CombineAnalyticAnimeStreamData,
 }
 
 module.exports = CombineDBJSON;

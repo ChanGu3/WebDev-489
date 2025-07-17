@@ -31,6 +31,35 @@ class Member extends Model
        return (instance) ? true : false;
     }
 
+    static GetAllMembers(query)
+    {
+        return new Promise(async (resolve, reject) => {
+            try
+            {
+                const querys = {}
+                if(query.limit)
+                {
+                    querys.limit = query.limit;
+                }
+                if(query.offset)
+                {
+                    querys.offset = query.offset;
+                }
+                const animeList = await Member.findAll(querys);
+                
+                resolve(animeList.map((element) => {
+                    const {password, ...rest} = element.toJSON()
+                    return rest;
+                }));                
+            }
+            catch(err)
+            {
+                Logging.LogError(`could not get all members --- ${err}`);
+                reject({error: err.message})
+            }
+        })
+    }
+
     //
     // reject --> null
     // resolve --> instance: Member
@@ -92,7 +121,7 @@ class Member extends Model
     // reject --> string: error msg
     // resolve --> instance: authorized Member
     //
-    static Authorization(email, password)
+    static Authentification(email, password)
     {
         return new Promise(async (resolve, reject) => {
             const emailLower = email.toLowerCase();
@@ -111,7 +140,7 @@ class Member extends Model
                         else
                         {
                             
-                            reject(new Error(errormsg.authorizationFail));
+                            reject(new Error(errormsg.authentificationFail));
                         }
                     }
                     catch(err)
@@ -122,12 +151,12 @@ class Member extends Model
                 }
                 else
                 {
-                    reject(new Error(errormsg.authorizationFail));
+                    reject(new Error(errormsg.authentificationFail));
                 }
             }
             else
             {
-                reject(new Error(errormsg.authorizationFail));
+                reject(new Error(errormsg.authentificationFail));
             }
         })
     }
@@ -231,6 +260,47 @@ class Member extends Model
             }
         })
     }
+
+        //
+    // reject --> string: error msg
+    // resolve --> instance: Member
+    //
+    static UpdateBan(email, isBanned)
+    {
+        return new Promise(async (resolve, reject) => {
+            const emailLower = email.toLowerCase();
+            
+            try
+            {
+                // Check if user exists
+                if (!(await Member.Exists(emailLower)))
+                {
+                    reject(new Error("User not found"));
+                    return;
+                }
+
+                const existingUser = await Member.findByPk(emailLower);
+
+                Member.update(
+                    {
+                        banned: isBanned,
+                    },
+                    {
+                        where: {
+                            email: emailLower,
+                        }
+                    }
+                )
+
+                resolve(existingUser);
+            }
+            catch(err)
+            {
+                console.error(`Could Not Update Password for ${email} --- ${err.message}`);
+                reject(new Error(errormsg.fallback));
+            }
+        })
+    }
 }
 
 function MemberInit(sequelize)
@@ -251,6 +321,11 @@ function MemberInit(sequelize)
                 validate: {
                     len: [7, Infinity],
                 },
+            },
+            banned: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+                defaultValue: false,
             }
         },
         {

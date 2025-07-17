@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import '../tailwind.css'
+import { useNavigate } from 'react-router-dom';
 
 function LinksTitle({titleName})
 {
@@ -11,7 +12,7 @@ function LinksTitle({titleName})
 function Link({linkName, href})
 {
     return (
-        <a className="text-[6px] md:text-xs text-os-dark-secondary hover:text-os-blue-tertiary active:text-os-blue-tertiary visited:text-os-visited-purple" href={href}>{linkName}</a>
+        <a className="text-[6px] md:text-xs text-os-dark-secondary hover:text-os-blue-tertiary active:text-os-blue-tertiary visited:text-os-visited-purple cursor-pointer" href={href}>{linkName}</a>
     )
 }
 
@@ -29,9 +30,10 @@ function LinkTab({titleName, links})
 
 function FooterOS()
 {
+    const navigate = useNavigate;
     const [isMember, SetIsMember] = useState(false);
     const [isAdmin, SetIsAdmin] = useState(false);
-
+    
     useEffect(() => {
         fetch('/api/authorize/member', {
             method: 'GET',
@@ -39,7 +41,28 @@ function FooterOS()
         }).then((response) => {
             if(response.ok)
             {
+                return response.json();
+            }
+        }).then((data) => {
+            if(data.error === undefined)
+            {
                 SetIsMember(true);
+            }
+        }).catch();
+
+
+        fetch('/api/authorize/member', {
+            method: 'GET',
+            credentials: 'include',
+        }).then((response) => {
+            if(response.ok)
+            {
+                return response.json();
+            }
+        }).then((data) => {
+            if(data.error === undefined)
+            {
+                SetIsAdmin(true);
             }
         }).catch();
     }, [])
@@ -50,34 +73,29 @@ function FooterOS()
             <div className="bg-linear-to-b from-transparent to-os-blue-tertiary/40 w-full flex flex-col justify-end items-center">
                 <div className="flex flex-row space-x-2 md:space-x-16 mb-16 md:mb-18">
                     {/* {id: 2, name: "Genres", href:"/discover/genres"}, {id: 3, name: "Other", href:"/discover/other"} */}
-                    <LinkTab titleName="Navigation" links={[{id: 1, name: "Go Home", href:"/"}]} />
-                    <LinkTab titleName="Socials" links={[{id: 1, name: "Twitter", href:"#"}]} />
-                    <LinkTab titleName="OtakuStream" links={[{id: 1, name: "About Us", href:"#"}]} />
-                    <LinkTab titleName="General" links={[{id: 1, name: "Support", href:"#"}]} />
+                    <LinkTab titleName="General" links={[{id: 1, name: "Home", href:"/"}]} />
+                    <LinkTab titleName="OtakuStream" links={[{id: 1, name: "About Us", href:"/about"}]} />
                     {/* <LinkTab titleName="Socials" links={[{id: 1, name: "Twitter", href:"#"}]} /> */}
 
-                    {/* --- Guest Account --- */}
-                    <div className={`${(isMember) ? 'hidden' : ''}`}>
-                        <LinkTab titleName="Account" links={[{id: 1, name: "Sign In", href:"/auth/signin"}, {id: 2, name: "Sign Up", href:"/auth/signup"}]} />
-                    </div>
-                    
-                    {/* --- Member Account --- */}
-                    {/* {id: 1, name: "Safe Space", href:"#"}, */}
-                    <div className={`${(isMember) ? '': 'hidden'}`}>
-                        <LinkTab titleName="Account" links={[ 
-                            {id: 1, name: "Favorites", href:"#"},
-                            {id: 2, name: "Profile", href:"#"},
-                            {id: 3, name: "Settings", href:"#"},
-                            {id: 4, name: "Sign Out", href:"/auth/signout"},
-                        ]}/>
-                    </div>
-
                     {/* --- Admin Account --- */}
-                    <div className="hidden">
-                        <LinkTab titleName="Admin" links={[
+                    <div className={`${(isAdmin) ? '': 'hidden'}`}>
+                        <LinkTab titleName="Administration" links={[
                             {id: 1, name: "Dashboard", href:"#"},
                         ]}/>
                     </div>
+
+                    {/* {id: 1, name: "Safe Space", href:"#"}, */}
+                    {
+                        (isMember) ? <LinkTab titleName="Account" links={[ 
+                                        {id: 1, name: "Favorites", href:"/favorites"},
+                                        {id: 2, name: "Settings", href:"/settings/membership"},
+                                        {id: 3, name: "Sign Out", href:"/auth/signout"},]}
+                                    /> :
+                                    <LinkTab titleName="Account" links={[
+                                        {id: 1, name: "Sign In", href:"/auth/signin"}, 
+                                        {id: 2, name: "Sign Up", href:"/auth/signup"}]} 
+                                    />
+                    }
 
                 </div>
                 <div className="p-2 w-full flex flex-col items-center">

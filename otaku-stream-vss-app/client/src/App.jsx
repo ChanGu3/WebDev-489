@@ -34,6 +34,15 @@ function MemberAuthorization({children, hideFromMember=false, redirectURL='/404'
     }).then((response) => {
       if(response.ok)
       {
+        return response.json();
+      }
+      else
+      {
+        setAuth(false);
+      }
+    }).then((data) => {
+      if(data.success)
+      {
         setAuth(true); 
       }
       else
@@ -67,9 +76,42 @@ function MemberAuthorization({children, hideFromMember=false, redirectURL='/404'
   }
 }
 
+function SignOut()
+{
+  const [navigateURL, SetIsNavigate] = useState(null)
+
+  useEffect(() => {
+    fetch('/api/authentify/signout', {
+      method: 'POST',
+      headers: { 'Content-type': 'application/json' },
+      credentials: 'include',
+  }).then((response) => {
+    if (response.ok)
+    {
+      if (response.status === 200)
+      { 
+        SetIsNavigate('/auth/signin');
+      }
+    }
+    else
+    {
+      SetIsNavigate('/');
+    }
+  }).catch((err) => {
+    SetIsNavigate('/');  
+  });
+  }, [])
+
+  if(navigateURL !== null)
+  {
+    return (<Navigate to={navigateURL} replace/>)
+  }
+
+  return ( <div>Loading...</div> )
+}
+
+
 function App() {
-
-
   return (
     <Router>
       <Routes>
@@ -124,6 +166,7 @@ function App() {
                 <SignupSuccess />
               </MemberAuthorization>
             } />
+            <Route path="signout" element={<SignOut />}/>
           <Route path="forgot-password" element={<ForgotPassword />} />
         </Route>
 

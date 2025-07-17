@@ -3,7 +3,7 @@ const chalk = require('chalk')
 
 const fallback = "Server Error - please try again later";
 const emailExists = "Email Already Exists - please sign in or use a different email";
-const authorizationFail = "email or password is invalid please try again";
+const authentificationFail = "email or password is invalid please try again";
 const sessionDoesNotExist = "session does not exists so could not retrieve email"
 const genreDoesNotExist = "genre does not exists so could not retrieve it"
 const animeGenreDoesNotExist = "AnimeGenre does not exists so could not retrieve it";
@@ -37,7 +37,7 @@ function LogDev(msg)
 const errormsg = {
     fallback,
     emailExists,
-    authorizationFail,
+    authentificationFail,
     sessionDoesNotExist,
     genreDoesNotExist,
     animeGenreDoesNotExist,

@@ -10,37 +10,6 @@ function Category({categoryName, href})
     )
 }
 
-async function SignOut(navigate)
-{
-    try
-    {
-        const response = await fetch('/api/authentify/signout', {
-            method: 'POST',
-            headers: { 'Content-type': 'application/json' },
-            credentials: 'include',
-        });
-
-        if (response.ok)
-        {
-            if (response.status === 200)
-            { 
-                navigate('/auth/signin');
-            }
-        }
-        else
-        {
-            if (response.status === 200)
-            { 
-                navigate('/');
-            }
-        }
-    }
-    catch(err)
-    {    
-        navigate('/');    
-    }
-}
-
 function NavbarOS({reLoad})
 {
     const navigate = useNavigate();
@@ -69,10 +38,28 @@ function NavbarOS({reLoad})
         }).then((data) => {
             if (data)
             {
-                SetEmail(data.user.email);
-                SetIsMember(true);
+                if(data.error === undefined)
+                {
+                    SetEmail(data.user.email);
+                    SetIsMember(true);
+                }
             }
         }).catch();
+
+        fetch('/api/authorize/admin', {
+            method: 'GET',
+            credentials: 'include',
+        }).then((response) => {
+            if(response.ok)
+            {
+                return response.json();
+            }
+        }).then((data) => {
+            if(data.success)
+            {
+                SetIsAdmin(true);
+            }
+        } ).catch();
 
         fetch('/api/anime/genre', {
             method: 'GET',
@@ -167,11 +154,14 @@ function NavbarOS({reLoad})
 
                     </div>
 
-                    {/* Support Tab */}
                     <div className="border-os-dark-secondary border-l-2 ml-[14px] rounded-xs h-1/2 w-4"></div>
+
+                    {/* Support Tab */}
+                    {/*
                     <a id="support" name="support" className="px-3 flex flex-row items-center justify-center space-x-1 cursor-pointer hover:bg-gray-800 active:bg-gray-700 h-full" href="/support">
                         <p className="text-os-white text-sm">Support</p>
                     </a>
+                    */}
 
                     {/* About Us Tab */}
                     <a id="aboutus" name="aboutus" className="px-3 flex-row items-center justify-center space-x-1 cursor-pointer hover:bg-gray-800 active:bg-gray-700 h-full hidden md:flex" href="/about">
@@ -202,43 +192,45 @@ function NavbarOS({reLoad})
                     {/* --- Member Profile Dropdown --- */}
                     <div ref={(el) => { (isMember) ? profileDropdownRef.current = el : null }} id="memberprofiledropdown" name="memberprofiledropdown" className={`absolute right-0 w-[100%] bg-os-blue-tertiary py-4 px-2 ${((isProfileDropped && isMember) ? "flex" : "hidden" )} flex-col space-y-4`}>
                         <div className="flex flex-col space-y-2">
+                            <p className="border-b-2 border-os-white text-os-white">Account</p>
+
                             {/*
                             <a className="flex flex-row items-center hover:bg-os-blue-secondary active:bg-os-blue-secondary rounded-xs space-x-1 px-1 py-1.5 w-[60%]" href="#">
                                 <img className="w-5" src="/bed-svgrepo-com.svg" alt="safespace-icon"></img>
                                 <p className="text-sm font-semibold">Safe Space</p>
                             </a>
                             */}
-                            <Link className="flex flex-row items-center hover:bg-os-blue-secondary active:bg-os-blue-secondary rounded-xs space-x-1 px-1 py-1.5 w-[60%]" to="/favorites">
+                            <Link className="flex flex-row items-center hover:bg-os-blue-secondary active:bg-os-blue-secondary rounded-xs space-x-1 px-1 py-1.5 w-[85%]" to="/favorites">
                                 <img className="w-5" src="/star-sharp-svgrepo-com.svg" alt="safespace-icon"></img>
-                                <p className="text-sm font-semibold">Favorites</p>
+                                <p className="text-xs md:text-sm font-semibold">Favorites</p>
                             </Link>
-                        </div>
-                        <div className="flex flex-col space-y-2">
-                            <p className="border-b-2 border-os-white text-os-white">Account</p>
-                            <a className="flex flex-row items-center hover:bg-os-blue-secondary rounded-xs space-x-1 px-1 py-1.5 w-[60%]" href="#">
+
+                            {/*
+                            <a className="flex flex-row items-center hover:bg-os-blue-secondary rounded-xs space-x-1 px-1 py-1.5 w-[85%]" href="#">
                                 <img className="w-5" src="/profile-1335-svgrepo-com.svg" alt="safespace-icon"></img>
-                                <p className="text-sm font-semibold">Profile</p>
+                                <p className="text-xs md:text-sm font-semibold">Profile</p>
                             </a>
-                            <Link className="flex flex-row items-center hover:bg-os-blue-secondary rounded-xs space-x-1 px-1 py-1.5 w-[60%]" to="/settings/membership">
+                            */}
+                            <Link className="flex flex-row items-center hover:bg-os-blue-secondary rounded-xs space-x-1 px-1 py-1.5 w-[85%]" to="/settings/membership">
                                 <img className="w-5" src="/gear-1-svgrepo-com.svg" alt="safespace-icon" />
-                                <p className="text-sm font-semibold">Settings</p>
+                                <p className="text-xs md:text-sm font-semibold">Settings</p>
                             </Link>
                         </div>
 
                         {/* ------------ADMIN ONLY-------------- */}
                         <div className={`flex flex-col space-y-2 ${(isAdmin) ? '': 'hidden'}`}>
                             <p className="border-b-2 border-os-white text-os-white">Admin</p>
-                            <a className="flex flex-row items-center hover:bg-os-blue-secondary active:bg-os-blue-secondary rounded-xs space-x-1 px-1 py-1.5 w-[60%]" href="#">
+                            <a className="flex flex-row items-center hover:bg-os-blue-secondary active:bg-os-blue-secondary rounded-xs space-x-1 px-1 py-1.5 w-[85%]" href="#">
                                 <img className="w-5" src="/dashboard-alt-3-svgrepo-com.svg" alt="dashboard-icon"></img>
-                                <p className="text-sm font-semibold">Dashboard</p>
+                                <p className="text-xs md:text-sm font-semibold">Dashboard</p>
                             </a>
                         </div>
                         {/* ----------------------------------- */}
 
                         <div className="flex flex-row justify-end">
-                            <button type="button" onClick={() => { SignOut(navigate); }} className="flex flex-row hover:bg-os-blue-secondary active:bg-os-blue-secondary rounded-xs px-3 py-2 cursor-pointer">
-                                <img className="w-5" src="/logout-svgrepo-com.svg" alt="safespace-icon"></img>
-                                <p className="text-sm font-semibold">Sign Out</p>
+                            <button type="button" onClick={() => { navigate('/auth/signout') }} className="flex flex-row hover:bg-os-blue-secondary active:bg-os-blue-secondary rounded-xs px-3 py-2 cursor-pointer">
+                                <img className="w-5" src="/logout-svgrepo-com.svg" alt="signout-icon"></img>
+                                <p className="text-xs md:text-sm font-semibold">Sign Out</p>
                             </button>
                         </div>
                     </div>

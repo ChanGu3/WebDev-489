@@ -53,6 +53,11 @@ app.use(express.json());
 app.use('/uploads', uploadsRouter);
 
 //
+// - API Routing -
+//
+app.use('/api', apiRouter);
+
+//
 // - Serves Static Files From Build -
 //
 app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
@@ -61,11 +66,6 @@ app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
 // - Resets Session Based On Session Existence In Database - 
 //
 app.use(controller.CookieChecker);
-
-//
-// - API Routing -
-//
-app.use('/api', apiRouter);
 
 //
 // - Serves URL Routes From Build -

@@ -117,6 +117,34 @@ class AnimeStreamLike extends Model
         })
     }
 
+    static GetCountByStreamID(streamID)
+    {
+        return new Promise( async (resolve, reject) => {
+            try
+            {
+                const animeStreamLikes = await AnimeStreamLike.findAll({
+                        where: {
+                            streamID: streamID,
+                        }
+                });
+
+                if (animeStreamLikes)
+                {
+                    resolve(animeStreamLikes.length);
+                }
+                else
+                {
+                    reject(new Error(`no likes exist for the streamID:${streamID}`));
+                }
+            }
+            catch(err)
+            {
+                Logging.LogError(`could not get list of animeStreamLikes from database using streamID:${streamID} --- ${err.message}`);
+                reject(new Error(errormsg.fallback));
+            }
+        })
+    }
+
     static GetByEmailANDStreamID(email, streamID)
     {
         return new Promise( async (resolve, reject) => {
