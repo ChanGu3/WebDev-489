@@ -108,7 +108,7 @@ function Home()
                           isMovie={streamAnime.isMovie} 
                           animeTitle={streamAnime.animeTitle} 
                           streamTitle={streamAnime.title} 
-                          streamImageSrc={"/png/ImageNotFound.png"} 
+                          streamImageSrc={streamAnime.coverHREF} 
                           streamDescription={streamAnime.synopsis} 
                           dateReleased={(() => { if(streamAnime) { return `${new Date(streamAnime.releaseDate).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})}`} else { return ''} })()} 
                           href={`/stream/${streamAnime.streamID}/${streamAnime.title}`}
@@ -119,7 +119,7 @@ function Home()
           <Carousel 
             key={recentlyUploadedList ? recentlyUploadedList.length : 0} 
             carouselList={ (recentlyUploadedList) ? recentlyUploadedList.map((recentlyUploaded) => {
-                const object = new CarouselItemObject(recentlyUploaded.coverFilename, recentlyUploaded.description, "/png/ImageNotFound.png", `/series/${recentlyUploaded.id}/${recentlyUploaded.title}`);
+                const object = new CarouselItemObject(recentlyUploaded.title, recentlyUploaded.description, recentlyUploaded.coverHREF, `/series/${recentlyUploaded.id}/${recentlyUploaded.title}`);
                 return object;
               }) : []}
           />
@@ -130,7 +130,7 @@ function Home()
                                                                                                       key={anime.id} 
                                                                                                       animeID={anime.id} 
                                                                                                       title={anime.title} 
-                                                                                                      imageSrc={"/png/ImageNotFound.png"} 
+                                                                                                      imageSrc={anime.coverHREF} 
                                                                                                       seasonNum={anime.installments.seasons} 
                                                                                                       episodeNum={anime.installments.list.reduce((accum, installment) => accum + installment.episodes, 0)} 
                                                                                                       movieNum={anime.installments.movies} description={anime.description} href={`/series/${anime.id}/${anime.title}`}/> ) }) : "" }

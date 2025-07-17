@@ -1,6 +1,8 @@
 const path = require('path');
 const fs = require('fs').promises;
 const { Logging, errormsg } = require('./server-logging.cjs');
+const pathDev = path.join(__dirname, 'dev');
+const pathImages = path.join(pathDev, 'images')
 const pathUploads = path.join(__dirname, "uploads");
 const pathAnime = path.join(pathUploads, "anime");
 
@@ -150,8 +152,21 @@ async function clearAnimeFolder()
     }
 }
 
+async function CopyImageFileToAnimePath(existingFileName, relativePath)
+{
+    try
+    {
+        await fs.copyFile(path.join(pathImages, existingFileName), path.join(pathAnime, relativePath));
+    }
+    catch(err)
+    {
+        Logging.LogError(`could not copy file to anime path:${relativePath} | ${err}`);
+    }
+}
+
 const uploadsDev = {
     clearAnimeFolder,
+    CopyImageFileToAnimePath,
 }
 
 module.exports.uploads = uploads;

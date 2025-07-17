@@ -270,7 +270,7 @@ function AnimeDetails()
             <NavbarOS/>
                 <main>
                     <div className="relative w-full h-[34vw]">
-                        <img src="/png/ImageNotFound.png" className="object-cover w-full h-[100%] mask-b-from-55% mask-b-to-100%" />
+                        <img src={(anime) ? anime.coverHREF : ''} className="object-cover w-full h-[100%] mask-b-from-55% mask-b-to-100%" />
 
                         {/* Rating */}
                         <div className="absolute flex flex-row justify-center md:justify-end w-full h-[100%] md:h-auto top-0 left-0">
@@ -382,7 +382,7 @@ function AnimeDetails()
                                                                                                             episodeNum={streamAnime.streamNumber} 
                                                                                                             isMovie={streamAnime.isMovie} 
                                                                                                             streamTitle={streamAnime.title} 
-                                                                                                            streamImageSrc="/png/ImageNotFound.png" 
+                                                                                                            streamImageSrc={streamAnime.coverHREF} 
                                                                                                             dateReleased={(() => { if(streamAnime) { return `${new Date(streamAnime.releaseDate).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})}`} else { return ''} })()} 
                                                                                                             href={`/stream/${streamAnime.id}/${streamAnime.title}`}/>} ) : ''}
                             </div>

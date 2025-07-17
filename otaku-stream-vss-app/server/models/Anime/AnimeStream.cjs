@@ -51,7 +51,7 @@ class AnimeStream extends Model
         })
     }
 
-    static AddToDB(animeID, installmentID, title, isMovie, streamNumber, synopsis, releaseDate)
+    static AddToDB(animeID, installmentID, title, isMovie, streamNumber, synopsis, releaseDate, coverFileName)
     {
         return new Promise(async (resolve, reject) => { 
             try
@@ -64,6 +64,7 @@ class AnimeStream extends Model
                     synopsis: synopsis,
                     releaseDate: releaseDate,
                     animeID: animeID,
+                    coverHREF: `/uploads/anime/${animeID}/${installmentID}/${title}/${coverFileName}`
                 });
 
                 await animeStream.validate();
@@ -251,6 +252,10 @@ function AnimeStreamInit(sequelize)
                 type: DataTypes.DATE,
                 allowNull: false,
             },
+            coverHREF : {
+                type: DataTypes.STRING,
+                allowNull: false
+            }
         },
         {
             sequelize,

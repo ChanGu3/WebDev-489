@@ -158,7 +158,9 @@ function Favorites() {
               const itemId = item.animeID || item.id || item.anime_id || item.animeId;
               return (
                 <div className="favorites-card" key={itemId}>
-                  <div className="favorites-card-image" />
+                  <div className="favorites-card-image">
+                    <img className='w-full h-full object-cover' src={item.coverHREF}></img>
+                  </div>
                   <div className="favorites-card-content">
                     <div className="favorites-card-header">
                       <span className="favorites-card-title">{item.title}</span>

@@ -61,12 +61,23 @@ class Anime extends Model
                     description: description, 
                     copyright: copyright, 
                     originalTranslation: originalTranslation, 
-                    coverFilename: coverFilename,
+                    coverHREF: `temp`,
                 });
 
                 await anime.validate();
 
                 await anime.save();
+
+                Anime.update(
+                    {
+                        coverHREF: `/uploads/anime/${anime.id}/${coverFilename}`,
+                    },
+                    {
+                        where: {
+                            id: anime.id,
+                        },
+                    }
+                );
 
                 await this.#CreateDirectory(anime);
                 resolve(anime);
@@ -214,7 +225,7 @@ function AnimeInit(sequelize)
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            coverFilename: {
+            coverHREF: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },

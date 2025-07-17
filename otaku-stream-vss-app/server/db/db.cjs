@@ -65,6 +65,7 @@ const Database = {
     SavedCard,
 }
 
+
 async function Setup()
 {
     await sequelize.sync({force: isDev });
@@ -74,8 +75,7 @@ async function Setup()
         const { DevSetup } = require('../models/DevSetup.cjs');
         await DevSetup();
     }
-
-
+    await Genre.Setup();
     await Admin.SetupRootAdmin();
 
 }

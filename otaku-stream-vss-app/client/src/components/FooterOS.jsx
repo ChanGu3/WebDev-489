@@ -51,7 +51,7 @@ function FooterOS()
         }).catch();
 
 
-        fetch('/api/authorize/member', {
+        fetch('/api/authorize/admin', {
             method: 'GET',
             credentials: 'include',
         }).then((response) => {
@@ -78,7 +78,7 @@ function FooterOS()
                     {/* <LinkTab titleName="Socials" links={[{id: 1, name: "Twitter", href:"#"}]} /> */}
 
                     {/* --- Admin Account --- */}
-                    <div className={`${(isAdmin) ? '': 'hidden'}`}>
+                    <div className={`${(isAdmin) ? '' : 'hidden'}`}>
                         <LinkTab titleName="Administration" links={[
                             {id: 1, name: "Dashboard", href:"#"},
                         ]}/>

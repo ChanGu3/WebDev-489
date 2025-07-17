@@ -95,7 +95,7 @@ function AnimeStream()
                         <div className="absolute top-0 left-0 z-11 w-full h-full flex justify-start items-center px-8">
                             <p className="text-lg md:text-4xl font-semibold text-os-white">{(animeStream) ? animeStream.animeTitle : ''}</p>
                         </div>
-                        <img src="/png/ImageNotFound.png" className="absolute top-0 left-0 object-cover w-full h-[100%] mask-b-from-55% mask-b-to-100% z-10" />
+                        <img src={(animeStream) ? animeStream.coverHREF : ''} className="absolute top-0 left-0 object-cover w-full h-[100%] mask-b-from-55% mask-b-to-100% z-10" />
                     </div>
                 </a>
 
@@ -161,7 +161,7 @@ function AnimeStream()
                                 {(prevAnimeStream) ? <StreamModule2 
                                                         isMovie={prevAnimeStream.isMovie} 
                                                         streamTitle={prevAnimeStream.title} 
-                                                        streamImageSrc="/png/ImageNotFound.png" 
+                                                        streamImageSrc={prevAnimeStream.coverHREF}
                                                         dateReleased={(() => { if(prevAnimeStream) { return `${new Date(prevAnimeStream.releaseDate).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})}`} else { return ''} })()} 
                                                         href={`/stream/${prevAnimeStream.id}/${prevAnimeStream.title}`} 
                                                         episodeNum={prevAnimeStream.streamNumber}/> : '' }
@@ -175,7 +175,7 @@ function AnimeStream()
                                 {(nextAnimeStream) ? <StreamModule2 
                                                         isMovie={nextAnimeStream.isMovie} 
                                                         streamTitle={nextAnimeStream.title} 
-                                                        streamImageSrc="/png/ImageNotFound.png" 
+                                                        streamImageSrc={nextAnimeStream.coverHREF}
                                                         dateReleased={(() => { if(nextAnimeStream) { return `${new Date(nextAnimeStream.releaseDate).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})}`} else { return ''} })()} 
                                                         href={`/stream/${nextAnimeStream.id}/${nextAnimeStream.title}`} 
                                                         episodeNum={nextAnimeStream.streamNumber}/> : '' }

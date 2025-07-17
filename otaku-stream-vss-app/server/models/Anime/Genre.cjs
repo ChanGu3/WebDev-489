@@ -96,16 +96,24 @@ class Genre extends Model
         return new Promise((resolve, reject) => {
             try
             {
-                const genres = [
-                    'Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy',
-                    'Music', 'Romance', 'Slice-Of-Life', 'Sports', 'Seinen',
-                    'Shonen', 'Shojo', 'Sci-Fi', 'Supernatural', 'Thriller'];
+                if(this.isSetup)
+                {
+                    resolve(this.GetAll());
+                }
+                else
+                {
+                    const genres = [
+                        'Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy',
+                        'Music', 'Romance', 'Slice-Of-Life', 'Sports', 'Seinen',
+                        'Shonen', 'Shojo', 'Sci-Fi', 'Supernatural', 'Thriller'];
 
-                genres.forEach(async (value, index) => {
-                    await this.#AddToDB(value);
-                });
+                    genres.forEach(async (value, index) => {
+                        await this.#AddToDB(value);
+                    });
 
-                resolve(this.GetAll());
+                    this.isSetup = true;
+                    resolve(this.GetAll());
+                }
             }
             catch(err)
             {

@@ -75,7 +75,7 @@ function Search()
                         <div className="flex flex-col justify-center">
                             <p className="w-full text-os-blue-tertiary text-xs md:text-2xl font-semibold">Search Results</p>
                             <div className="my-2 grid grid-flow-row grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 md:gap-x-6 gap-y-3 md:gap-y-6">
-                                {  (animeList) ? animeList.map((anime, index) => { return ( <SeriesModule key={anime.id} animeID={anime.id} title={anime.title} imageSrc={"/png/ImageNotFound.png"} seasonNum={anime.installments.seasons} episodeNum={anime.installments.list.reduce((accum, installment) => accum + installment.episodes, 0)} movieNum={anime.installments.movies} description={anime.description} href={`/series/${anime.id}/${anime.title}`}/> ) }) : "" }
+                                {  (animeList) ? animeList.map((anime, index) => { return ( <SeriesModule key={anime.id} animeID={anime.id} title={anime.title} imageSrc={anime.coverHREF} seasonNum={anime.installments.seasons} episodeNum={anime.installments.list.reduce((accum, installment) => accum + installment.episodes, 0)} movieNum={anime.installments.movies} description={anime.description} href={`/series/${anime.id}/${anime.title}`}/> ) }) : "" }
                             </div>
                         </div>
                         <div className={`my-4 w-full flex flex-row justify-center ${(animeList) ? ((animeList.length < limit) ? 'hidden': '') : ''}`}>
