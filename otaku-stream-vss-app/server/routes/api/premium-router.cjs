@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getPremiumStatus, createPremium, updatePremium, deletePremium, upgradeToPremium } = require('../../controllers/api-controllers/premium-controller.cjs');
+const { getPremiumStatus, createPremium, updatePremium, deletePremium, upgradeToPremium, downgradeToFree } = require('../../controllers/api-controllers/premium-controller.cjs');
 
 // Get premium status
 router.get('/status', getPremiumStatus);
@@ -16,5 +16,8 @@ router.delete('/', deletePremium);
 
 // POST /api/premium/upgrade
 router.post('/upgrade', upgradeToPremium);
+
+// POST /api/premium/downgrade
+router.post('/downgrade', downgradeToFree);
 
 module.exports = router; 
