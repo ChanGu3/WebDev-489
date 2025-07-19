@@ -16,21 +16,25 @@ async function CookieChecker (req, res, next) {
     }
     catch(err)
     {
-      await new Promise((resolve, reject) => {
-        req.session.destroy((err) => {
-          if(err)
-          {
-            Logging.LogError(`session could not be destroyed for id:{${req.sessionID}}`);
-            reject();
-          }
-          else
-          {
-            res.clearCookie('connect.sid');
-            Logging.LogSuccess(`successfully cleaned up client and server cookies`);
-            resolve();
-          }
+      try
+      {
+        await new Promise((resolve, reject) => {
+          req.session.destroy((err) => {
+            if(err)
+            {
+              Logging.LogError(`session could not be destroyed for id:{${req.sessionID}}`);
+              reject();
+            }
+            else
+            {
+              res.clearCookie('connect.sid');
+              Logging.LogSuccess(`successfully cleaned up client and server cookies`);
+              resolve();
+            }
+          })
         });
-      })
+      }
+      catch(err){}
     }
   }
   else

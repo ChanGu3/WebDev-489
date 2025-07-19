@@ -54,17 +54,25 @@ class Admin extends Model
 
     static async SetupRootAdmin()
     {
-        const adminList = await Admin.findAll()
+        try
+        {
+            const adminList = await Admin.findAll()
 
-        if(adminList.length <= 0)
-        {
-            const admin = await Member.AddToDB(adminDefault.email, adminDefault.password);
-            await this.#AddToDB(admin.email);
-            Logging.LogProcess(`admin account created using default`);
+            if(adminList.length <= 0)
+            {
+                const admin = await Member.AddToDB(adminDefault.email, adminDefault.password);
+                await this.#AddToDB(admin.email);
+                Logging.LogProcess(`admin account created using default`);
+            }
+            else
+            {
+                Logging.LogProcess(`attempted to create default admin account but it already exists [only one admin is allowed]`);
+            }
         }
-        else
+        catch(err)
         {
-            Logging.LogProcess(`attempted to create default admin account but it already exists [only one admin is allowed]`);
+            Logging.LogError(`${err}`);
+            throw new Error(err.message);
         }
 
         Logging.LogProcess(`|default admin credentials| email: ${adminDefault.email} - password: ${adminDefault.password}`);

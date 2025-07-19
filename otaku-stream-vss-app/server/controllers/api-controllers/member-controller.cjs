@@ -253,8 +253,6 @@ async function UpdateEmail(req, res)
     const { newEmail, currentPassword } = req.body;
     const currentEmail = req.session.user.email;
 
-    console.log(currentEmail, newEmail, currentPassword);
-
     try
     {
         await Member.UpdateEmail(currentEmail, newEmail, currentPassword);

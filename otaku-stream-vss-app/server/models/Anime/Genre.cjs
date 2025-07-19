@@ -26,7 +26,7 @@ class Genre extends Model
             if (await this.#Exists(name))
             {
                 Logging.LogWarning(`genre exists no need to add ${name} to database with the same name`);
-                reject();
+                reject(`genre exists no need to add ${name} to database with the same name`);
                 return;
             }
 
@@ -93,10 +93,11 @@ class Genre extends Model
 
     static Setup()
     {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             try
             {
-                if(this.isSetup)
+                const list = await this.GetAll();
+                if(list.length > 0)
                 {
                     resolve(this.GetAll());
                 }
@@ -108,10 +109,9 @@ class Genre extends Model
                         'Shonen', 'Shojo', 'Sci-Fi', 'Supernatural', 'Thriller'];
 
                     genres.forEach(async (value, index) => {
-                        await this.#AddToDB(value);
+                        this.#AddToDB(value).then().catch();
                     });
 
-                    this.isSetup = true;
                     resolve(this.GetAll());
                 }
             }
