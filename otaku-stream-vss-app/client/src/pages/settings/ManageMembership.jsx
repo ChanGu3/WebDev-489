@@ -14,6 +14,10 @@ function ManageMembership() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    document.title = "Settings - OtakuStream"
+    document.body.classList.remove('bg-os-dark-primary');
+    document.body.classList.add('bg-[#181a1b]');
+    
     fetchPremiumStatus();
   }, []);
 

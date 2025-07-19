@@ -90,6 +90,41 @@ class Anime extends Model
         });
     }
 
+    static UpdateInDB(id, update, transaction = null)
+    {
+        return new Promise(async (resolve, reject) => { 
+            try
+            {
+                const updateValues = {}
+                if(update.title) { updateValues.title = update.title; }
+                if(update.description) { updateValues.description = update.description; }
+                if(update.copyright) { updateValues.copyright = update.copyright; }
+                if(update.originalTranslation) { updateValues.originalTranslation = update.originalTranslation; }
+                if(update.coverFilename) { updateValues.coverHREF = `/uploads/anime/${id}/${update.coverFilename}`; }
+
+                const query = {}
+                query.where = {}
+                query.where.id = id;
+                if(transaction)
+                {
+                    query.transaction = transaction;
+                }
+
+                await Anime.update(
+                    updateValues,
+                    query,
+                );
+
+                resolve();
+            }
+            catch(err)
+            {
+                Logging.LogError(`Could Not Update Anime In Database ${id} --- ${err.message}`);
+                reject(new Error(errormsg.fallback));
+            }
+        });
+    }
+
     static RemoveFromDB(id)
     {
         return new Promise(async (resolve, reject) => { 

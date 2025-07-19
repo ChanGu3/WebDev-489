@@ -7,7 +7,7 @@ const { AnimeRate } = require('../../models/Anime/AnimeRate.cjs');
 const { Member } = require('../../models/Accounts/member.cjs');
 
 async function SetupNavbar(req, res, next) 
-{
+{   
     res.status(200).json({user: { email: req.session.user.email } });
 }
 

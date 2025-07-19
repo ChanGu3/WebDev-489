@@ -124,7 +124,7 @@ function Home()
               }) : []}
           />
 
-          <Slider key={1} 
+          <Slider  
             title="Series Shuffle"
             sliderList={  (shuffledAnimeList) ? shuffledAnimeList.map((anime, index) => { return ( <SeriesModule 
                                                                                                       key={anime.id} 
@@ -133,7 +133,7 @@ function Home()
                                                                                                       imageSrc={anime.coverHREF} 
                                                                                                       seasonNum={anime.installments.seasons} 
                                                                                                       episodeNum={anime.installments.list.reduce((accum, installment) => accum + installment.episodes, 0)} 
-                                                                                                      movieNum={anime.installments.movies} description={anime.description} href={`/series/${anime.id}/${anime.title}`}/> ) }) : "" }
+                                                                                                      movieNum={anime.installments.movies} description={anime.description} href={`/series/${anime.id}/${anime.title}`}/> ) }) : [] }
           />
 
         </main>

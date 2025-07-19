@@ -70,7 +70,9 @@ class Member extends Model
             const emailLower = email.toLowerCase();
             if (await Member.Exists(emailLower))
             {
-                resolve(await Member.findByPk(emailLower));
+                const member = await Member.findByPk(emailLower);
+                const {password, ...rest} = member.toJSON();
+                resolve(rest);
             }
             else
             {

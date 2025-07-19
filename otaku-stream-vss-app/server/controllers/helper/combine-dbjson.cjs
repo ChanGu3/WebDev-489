@@ -15,9 +15,9 @@ async function CombineAnimeData(animeDBJSON)
     const installments = await AnimeInstallment.GetAllByAnimeID(animeDBJSON.id);
     animeDBJSON.installments = installments;
     const otherTranslations = await AnimeOtherTranslation.GetAllByAnimeID(animeDBJSON.id);
-    animeDBJSON.otherTranslations = otherTranslations;
+    animeDBJSON.otherTranslations = otherTranslations.map((element) => { return element.translation});;
     const ratingData = await AnimeRate.GetAnimeIDRatingData(animeDBJSON.id);
-    animeDBJSON.ratingData = ratingData;
+    animeDBJSON.ratingData = ratingData
 
     return animeDBJSON;
 } 
@@ -35,6 +35,8 @@ async function CombineAnimeStreamData(animeStreamDBJSON)
 {
     const anime = await Anime.GetByID(animeStreamDBJSON.animeID);
     animeStreamDBJSON.animeTitle = anime.title;
+    const ratingData = await AnimeRate.GetAnimeIDRatingData(anime.id);
+    animeStreamDBJSON.ratingData = ratingData;
     const animeInstallment = await AnimeInstallment.GetByID(animeStreamDBJSON.installmentID);
     animeStreamDBJSON.installmentSeasonNum = animeInstallment.seasonNum;
 

@@ -8,13 +8,14 @@ class AnimeOtherTranslation extends Model
     //
     // Member Exists in DB true otherwise false
     //
-    static async #Exists(animeID, translation)
+    static async #Exists(animeID, translation, transaction = null)
     {
        const instance = await AnimeOtherTranslation.findOne({
             where: {
                 animeID: animeID,
                 translation: translation,
-            }
+            },
+            transaction
        });
        return (instance) ? true : false;
     }
@@ -23,11 +24,11 @@ class AnimeOtherTranslation extends Model
     // reject --> string: error msg
     // resolve --> instance: created Member
     //
-    static AddToDB(animeID, translation)
+    static AddToDB(animeID, translation, transaction = null)
     {
         return new Promise( async (resolve, reject) => {
 
-            if (await this.#Exists(animeID, translation))
+            if (await this.#Exists(animeID, translation, transaction))
             {
                 Logging.LogWarning(`animeID & translation pair exists`);
                 reject(new Error(`anime already has this translation`));
@@ -43,7 +44,14 @@ class AnimeOtherTranslation extends Model
 
                 await newAnimeOtherTranslation.validate();
 
-                await newAnimeOtherTranslation.save();
+                if (transaction)
+                {
+                    await newAnimeOtherTranslation.save({transaction});
+                }
+                else
+                {
+                    await newAnimeOtherTranslation.save();
+                }
 
                 resolve(newAnimeOtherTranslation);
             }
@@ -84,6 +92,35 @@ class AnimeOtherTranslation extends Model
             catch(err)
             {
                 Logging.LogError(`could not remove AnimeOtherTranslation from database ${animeID}|${translation} --- ${err.message}`);
+                reject(new Error(errormsg.fallback));
+            }
+        })
+    }
+
+
+    //
+    // reject --> string: error msg
+    // resolve --> nothing
+    //
+    static RemoveAllByAnimeIDFromDB(animeID, transaction = null)
+    {
+        return new Promise( async (resolve, reject) => {
+            try
+            {
+                const query = {}
+                query.where = {}
+                query.where.animeID = animeID;
+                if(transaction)
+                {
+                    query.transaction = transaction;
+                }
+
+                const deleted = await AnimeOtherTranslation.destroy(query);
+                resolve();
+            }
+            catch(err)
+            {
+                Logging.LogError(`could not remove all AnimeOtherTranslation from database by ${animeID} --- ${err.message}`);
                 reject(new Error(errormsg.fallback));
             }
         })

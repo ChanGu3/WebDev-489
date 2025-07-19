@@ -26,13 +26,13 @@ import AdminMembers from './pages/admin/AdminMembers';
 import AdminAnime from './pages/admin/AdminAnime';
 import AdminAnalytics from './pages/admin/AdminAnalytics';
 
-function MemberAuthorization({children, hideFromMember=false, redirectURL='/404'})
+function MemberAuthorization({children, hideFromMember=false, redirectURL='/404' , restrictIfBanned=false})
 {
   const [auth, setAuth] = useState(null);
 
   useEffect(() =>
   {
-    fetch('/api/authorize/member', {
+    fetch('/api/authorize/member?getData=true', {
       method: 'GET',
       credentials: 'include',
     }).then((response) => {
@@ -45,9 +45,16 @@ function MemberAuthorization({children, hideFromMember=false, redirectURL='/404'
         setAuth(false);
       }
     }).then((data) => {
-      if(data.success)
+      if(data.user)
       {
-        setAuth(true); 
+        setAuth(true);
+        if(restrictIfBanned)
+        {
+          if(data.user.banned === true)
+          {
+            setAuth(false);
+          }
+        }
       }
       else
       {
@@ -62,15 +69,70 @@ function MemberAuthorization({children, hideFromMember=false, redirectURL='/404'
 
   if (auth === null) {
     return (
-      <div>Loading...</div>
+      <div></div>
     )
   }
 
   if(auth && !hideFromMember) 
   {
+
       return children
   }
   else if(!auth  && hideFromMember)
+  {
+      return children
+  }
+  else
+  {
+    return ( <Navigate to={redirectURL} replace/> );
+  }
+}
+
+function AdminAuthorization({children, hideFromAdmin=false, redirectURL='/404'})
+{
+  const [auth, setAuth] = useState(null);
+
+  useEffect(() =>
+  {
+    fetch('/api/authorize/admin', {
+      method: 'GET',
+      credentials: 'include',
+    }).then((response) => {
+      if(response.ok)
+      {
+        return response.json();
+      }
+      else
+      {
+        setAuth(false);
+      }
+    }).then((data) => {
+      if(data.success)
+      {
+        setAuth(true);
+      }
+      else
+      {
+        setAuth(false);
+      }
+    }).catch((error) => {
+        setAuth(false);
+    });
+
+
+  }, []);
+
+  if (auth === null) {
+    return (
+      <div></div>
+    )
+  }
+
+  if(auth && !hideFromAdmin) 
+  {
+      return children
+  }
+  else if(!auth  && hideFromAdmin)
   {
       return children
   }
@@ -146,7 +208,9 @@ function App() {
         <Route path="stream">
           <Route path=":streamID/:title" element={
               <MemberAuthorization hideFromMember={false} redirectURL={"/auth/signin"}>
-                <AnimeStream />
+                <MemberAuthorization restrictIfBanned={true} redirectURL={"/"}>
+                  <AnimeStream />
+                </MemberAuthorization>
               </MemberAuthorization>
           }/>
         </Route>
@@ -166,32 +230,73 @@ function App() {
               </MemberAuthorization>
             } />
           <Route path="signup/success" element={
-              <MemberAuthorization>
                 <SignupSuccess />
-              </MemberAuthorization>
             } />
-            <Route path="signout" element={<SignOut />}/>
-          <Route path="forgot-password" element={<ForgotPassword />} />
+          <Route path="signout" element={
+                <SignOut />
+            } />
+          <Route path="forgot-password" element={
+                <ForgotPassword />
+            } />
         </Route>
 
-        <Route path="/settings/membership" element={<ManageMembership />} />
-        <Route path="/settings/email-password" element={<EmailPassword />} />
-        <Route path="/settings/language" element={<PreferredLanguage />} />
-        <Route path="/settings/payment-info" element={<PaymentInfo />} />
-        <Route path="/settings/billing-history" element={<BillingHistory />} />
-        <Route path="/favorites" element={<Favorites />} />
+        <Route path="/settings/membership" element={
+              <MemberAuthorization>
+                <ManageMembership/>
+              </MemberAuthorization>
+            }  />
+        <Route path="/settings/email-password" element={
+              <MemberAuthorization>
+                <EmailPassword/>
+              </MemberAuthorization>
+            }  />
+        <Route path="/settings/language" element={
+              <MemberAuthorization>
+                <PreferredLanguage/>
+              </MemberAuthorization>
+            }  />
+        <Route path="/settings/payment-info" element={
+              <MemberAuthorization>
+                <PaymentInfo/>
+              </MemberAuthorization>
+            }  />
+        <Route path="/settings/billing-history" element={
+              <MemberAuthorization>
+                <BillingHistory/>
+              </MemberAuthorization>
+            }  />
+        <Route path="/favorites" element={
+              <MemberAuthorization>
+                <Favorites/>
+              </MemberAuthorization>
+            }  />
 
-        <Route path="/admin" element={<AdminDashboard />}>
-          <Route index element={<AdminMembers />} />
-          <Route path="anime" element={<AdminAnime />} />
-          <Route path="analytics" element={<AdminAnalytics />} />
-        </Route>
 
-        <Route path="profile">
-          <Route path="" element={<Navigate to='/404' replace/>} />
-          {/*<Route path="safespace" element={<SafeSpace />} /> */}
-        </Route>
-
+          <Route path="/admin" element={
+                                <AdminAuthorization>
+                                  <AdminDashboard />
+                                </AdminAuthorization>
+                              }>
+            <Route index element={
+                <AdminAuthorization>
+                  <AdminMembers />
+                </AdminAuthorization>
+              } 
+            /> 
+            <Route path="anime" element={
+                <AdminAuthorization>
+                  <AdminAnime />
+                </AdminAuthorization>
+              } 
+            />
+            <Route path="analytics" element={
+                <AdminAuthorization>
+                  <AdminAnalytics />
+                </AdminAuthorization>
+              }  
+            />
+          </Route>
+          
       </Routes>
     </Router>
   )

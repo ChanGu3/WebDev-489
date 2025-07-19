@@ -46,7 +46,7 @@ function AnimeStream()
             {
                 SetAnimeStream(currentAnimeStream);
 
-                fetch(`/api/anime/installment/${currentAnimeStream.installmentID}`, {
+                fetch(`/api/anime/installment/${currentAnimeStream.installmentID}?isOldest=false`, {
                     method: 'GET',
                 }).then((response) => {
                     if(response.ok)
@@ -58,13 +58,14 @@ function AnimeStream()
                     {
                         if(installment.animeStreamList)
                         {
-                            const prevAnimeStream = installment.animeStreamList[(installment.animeStreamList.length-1) + 2 - currentAnimeStream.streamNumber];
+                            const prevAnimeStream = installment.animeStreamList[currentAnimeStream.streamNumber-2];
                             if (prevAnimeStream)
                             {
                                 SetPrevAnimeStream(prevAnimeStream);
                             }
+                            console.log(installment.animeStreamList);
 
-                            const nextAnimeStream = installment.animeStreamList[(installment.animeStreamList.length-1) - currentAnimeStream.streamNumber];
+                            const nextAnimeStream = installment.animeStreamList[(currentAnimeStream.streamNumber)];
                             if (nextAnimeStream)
                             {
                                 SetNextAnimeStream(nextAnimeStream);
@@ -95,7 +96,7 @@ function AnimeStream()
                         <div className="absolute top-0 left-0 z-11 w-full h-full flex justify-start items-center px-8">
                             <p className="text-lg md:text-4xl font-semibold text-os-white">{(animeStream) ? animeStream.animeTitle : ''}</p>
                         </div>
-                        <img src={(animeStream) ? animeStream.coverHREF : ''} className="absolute top-0 left-0 object-cover w-full h-[100%] mask-b-from-55% mask-b-to-100% z-10" />
+                        <img src={(animeStream) ? animeStream.coverHREF : '/png/ImageNotFound.png'} className="absolute top-0 left-0 object-cover w-full h-[100%] mask-b-from-55% mask-b-to-100% z-10" />
                     </div>
                 </a>
 
@@ -125,7 +126,7 @@ function AnimeStream()
 
                     {/* Stream Title */}
                     <p className="self-center flex flex-row justify-between text-os-white font-semibold">
-                        <span className="text-xs md:text-2xl font-semibold">{(animeStream) ? `Season ${animeStream.installmentSeasonNum} Episode ${animeStream.streamNumber}: ${animeStream.title}` : ''}</span>
+                        <span className="text-xs md:text-2xl font-semibold">{(animeStream) ? (animeStream.isMovie)  ? `${animeStream.title}` : `Season ${animeStream.installmentSeasonNum} Episode ${animeStream.streamNumber}: ${animeStream.title}` : ''}</span>
                         <span className="italic whitespace-nowrap text-[8px] md:text-lg">
                             <span className="text-os-blue-secondary">Release Date:</span> {(() => { if(animeStream) { return `${new Date(animeStream.releaseDate).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})}`} else { return ''} })()}
                         </span>
@@ -133,8 +134,8 @@ function AnimeStream()
 
                     {/* Like & Favorite */}
                     <div className="flex flex-row justify-between items-center py-2">
-                        <LikeButton streamID={(animeStream) ? animeStream.id : undefined}/>
-                        <FavoriteButton animeID={(animeStream) ? animeStream.animeID : undefined}/>
+                        { (animeStream) ? <LikeButton streamID={animeStream.id}/> : '' }
+                        { (animeStream) ? <FavoriteButton animeID={animeStream.animeID}/> : '' }
                     </div>
 
                     {/* Description */}

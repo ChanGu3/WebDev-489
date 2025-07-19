@@ -10,6 +10,10 @@ function BillingHistory() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    document.title = "Settings - OtakuStream"
+    document.body.classList.remove('bg-os-dark-primary');
+    document.body.classList.add('bg-[#181a1b]');
+    
     const fetchBillingHistory = async () => {
       try {
         const response = await fetch('/api/billing/all', {

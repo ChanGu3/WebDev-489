@@ -5,7 +5,7 @@ function AdminMembers() {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [limit] = useState(10);
+  const [limit] = useState(8);
   const [offset, setOffset] = useState(0);
 
   const fetchMembers = async () => {
@@ -13,13 +13,19 @@ function AdminMembers() {
     try {
       const res = await fetch(`/api/authorize/admin/members?limit=${limit}&offset=${offset}`, { credentials: 'include' });
       const data = await res.json();
-      setMembers(data.members || []);
+      setMembers(data || []);
     } catch (e) {
       setError('Failed to load members');
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    document.title = "Members [List & Ban] - OtakuStream"
+    document.body.classList.remove('bg-os-dark-primary');
+    document.body.classList.add('bg-[#181a1b]');
+  }, [])
 
   useEffect(() => {
     fetchMembers();
@@ -29,7 +35,7 @@ function AdminMembers() {
   const handleBan = async (email, isBanned) => {
     try {
       await fetch(`/api/authorize/admin/members/${email}/ban${isBanned === false ? '?isBanned=false' : ''}`, {
-        method: 'POST',
+        method: 'PUT',
         credentials: 'include',
       });
       fetchMembers();
@@ -70,7 +76,11 @@ function AdminMembers() {
           </tbody>
         </table>
       )}
-      <button className="admin-members-more-btn" onClick={() => setOffset(offset + limit)}>View more</button>
+      <div className='flex flex-row items-center justify-center'>
+        <button className={`admin-members-more-btn ${(offset > 0) ? ``: `hidden`}`} onClick={() => { if (offset > 0) { setOffset(offset - limit) }} }>Go Back</button>
+        <p className='flex flex-row gap-x-2 m-4 text-sm font-semibold text-center'>Page <span className='text-os-blue-tertiary'>{(offset/limit) + 1}</span></p>
+        <button className={`admin-members-more-btn ${(members.length < limit) ? 'hidden': ''}`} onClick={() => { if (!(members.length < limit)) { setOffset(offset + limit) } }}>View more</button>
+      </div>
     </div>
   );
 }

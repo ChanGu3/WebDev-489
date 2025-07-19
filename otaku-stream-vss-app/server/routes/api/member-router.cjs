@@ -1,11 +1,31 @@
 const express = require('express');
 const memberRouter = express.Router()
+const { Member } = require('../../models/Accounts/member.cjs');
 const controller = require('../../controllers/api-controllers/member-controller.cjs');
 
 //
 // success authorization
 //
-memberRouter.get('/', (req, res) => { res.status(200).json({success: "authorized"})} );
+memberRouter.get('/', async (req, res) => { 
+
+    const { getData } = req.query;
+
+    if(getData !== undefined && getData !== null && getData.toLowerCase() === 'true')
+    {   try
+        {
+            const member = await Member.GetByEmail(req.session.user.email);
+            res.status(200).json({user: member});
+        }
+        catch(err)
+        {
+            res.status(200).json({success: "authorized", errmsg: "could not get user data from database"});
+        }
+    }
+    else
+    {
+        res.status(200).json({success: "authorized"});
+    }
+});
 
 // EMAIL/PASSWORD UPDATES
 

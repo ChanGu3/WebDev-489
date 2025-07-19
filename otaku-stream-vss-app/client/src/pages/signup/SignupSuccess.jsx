@@ -22,7 +22,7 @@ function SignupSuccess()
                         <p className="md:w-[65%] text-center text-os-white  font-thin text-xs md:text-sm">Watch anime interrupted! ad free!!!</p>
                     </div>
 
-                    <a className="w-full bg-os-blue-primary hover:bg-os-blue-secondary active:bg-os-blue-tertiary rounded-sm p-1.5 font-semibold text-center" href="#">Go Premium?</a>
+                    <a className="w-full bg-os-blue-primary hover:bg-os-blue-secondary active:bg-os-blue-tertiary rounded-sm p-1.5 font-semibold text-center" href="/settings/membership">Go Premium?</a>
                     <a className="w-full bg-os-blue-primary hover:bg-os-blue-secondary active:bg-os-blue-tertiary rounded-sm p-1.5 font-semibold text-center" href="/">Skip</a>
                 </div>
             </main>

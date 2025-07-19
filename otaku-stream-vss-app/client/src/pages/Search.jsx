@@ -64,7 +64,7 @@ function Search()
                             <button id="searchicon" name="searchicon" type="submit" className="cursor-pointer">
                                 <img className="min-w-6 w-6 md:min-w-7 md:w-7" src="/magnifying-glass-zoom-svgrepo-com.svg" alt="search-icon"></img>
                             </button>
-                            <input ref={searchInputRef} id="search" name="search" className="p-1 md:p-2 w-[50%] border-os-blue-secondary border-1 md:border-2 rounded-sm text-os-white font-bold placeholder:text-os-white/80 placeholder:font-semibold" type="text" placeholder="Search"/>
+                            <input ref={searchInputRef} onChange={() => { SearchAndPopulateEpisodes(searchInputRef.current.value);}} id="search" name="search" className="p-1 md:p-2 w-[50%] border-os-blue-secondary border-1 md:border-2 rounded-sm text-os-white font-bold placeholder:text-os-white/80 placeholder:font-semibold" type="text" placeholder="Search"/>
                         </form>
                         <div className="flex flex-col justify-center items-center gap-y-1">
                             <p className='text-os-white text-sm md:text-md font-bold'>search our anime catolog!</p>
