@@ -27,7 +27,7 @@ function AnimeStream()
     }
 
     useEffect(() => {
-        document.title = `stream ${title} - Otaku Stream`;
+        document.title = `${title} - Otaku Stream`;
 
         // Anime For The Page Fetch
         fetch(`/api/anime/stream/${streamID}`, {

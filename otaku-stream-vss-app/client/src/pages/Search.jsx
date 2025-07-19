@@ -42,6 +42,10 @@ function Search()
     }
 
     useEffect(() => {
+        document.title = "Search - OtakuStream";
+    }, [])
+
+    useEffect(() => {
         if(animeList !== null)
         {
             SearchAndPopulateEpisodes(searchInputRef.current.value)

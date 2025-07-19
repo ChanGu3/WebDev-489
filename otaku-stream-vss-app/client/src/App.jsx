@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import Example from './pages/Example.jsx'
 import NotFound from './pages/NotFound.jsx'
 import Home from './pages/Home.jsx'
 import Signin from './pages/Signin.jsx'
@@ -181,9 +180,6 @@ function App() {
   return (
     <Router>
       <Routes>
-
-        {/* FOR EXAMPLE WE CAN REMOVE LATER */}
-        <Route path="/Example" element={<Example />} />
 
         {/*Root URL*/}
         <Route path="/" element={<Home />} />

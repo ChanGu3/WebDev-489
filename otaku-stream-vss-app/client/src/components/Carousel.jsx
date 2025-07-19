@@ -21,7 +21,7 @@ function CarouselItem({index, item, currCarouselIndex, prevCarouselIndex})
                 <p className="md:p-1 text-os-white font-bold text-lf md:text-4xl">{item.logoImage}</p>
                 <p className="p-0.5 md:p-2 text-os-white/95 font-semibold text-[6px] md:text-xs h-[30px] md:h-[60px] line-clamp-3 md:line-clamp-3">{item.description}</p>
             </div>
-            <div className="absolute block w-full h-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 z-30 [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)]">
+            <div className="absolute flex justify-center w-full h-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 z-30 [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)]">
                 <img src={item.src} className="absolute w-full h-full" alt={''} />
             </div>
         </a>
@@ -89,10 +89,10 @@ function Carousel({carouselList})
 
     return (
     <>
-        <div id="indicators-carousel" className="relative w-full" data-carousel="static">
+        <div id="indicators-carousel" className="relative w-full">
 
             {/* <!-- Carousel wrapper -->*/}
-            <div id="carousel-wrapper" className="relative w-full aspect-video md: overflow-hidden">
+            <div id="carousel-wrapper" className="relative w-full aspect-video md:overflow-hidden">
                 {
                     currentCarouselData.map((item, index) => {
                     return ( 

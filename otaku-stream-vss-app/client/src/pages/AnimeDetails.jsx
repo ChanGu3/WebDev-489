@@ -23,10 +23,9 @@ function AnimeDetails()
 
     const [isShowingDetails, SetIsShowingDetails] = useState(false);
 
-    useEffect(() => {
-        document.title = `${title} details - OtakuStream`;
-
-        // Anime For The Page Fetch
+    function FetchAndSetAnime()
+    {
+         // Anime For The Page Fetch
         fetch(`/api/anime/${animeID}`, {
             method: 'GET',
         }).then((response) => {
@@ -50,6 +49,12 @@ function AnimeDetails()
         }).catch((err) => {
             navigate('/404');
         });
+    }
+
+    useEffect(() => {
+        document.title = `${title} - OtakuStream`;
+
+        FetchAndSetAnime();
 
         // Set Default Start Watching
         function SetContinueWatchingToFirst()
@@ -177,30 +182,12 @@ function AnimeDetails()
         );
     }
 
-    // figured out better way for this
-    /*
-    function HoverRating(rating)
-    {
-        if(rating === 0 || rating <= isRatingClicked) { return } // ending condition
-
-
-        const ratingIndex = rating-1;
-        const ratingElement = ratingStarListRef.current[ratingIndex];
-
-        if (ratingElement.classList.contains('text-transparent'))
+    useEffect(() => {
+        if (isRatingClicked != null)
         {
-            ratingElement.classList.remove('text-transparent');
-            ratingElement.classList.add('text-os-blue-secondary');
+            FetchAndSetAnime();
         }
-        else
-        {
-            ratingElement.classList.remove('text-os-blue-secondary');
-            ratingElement.classList.add('text-transparent');
-        }
-
-        HoverRating(rating-1)
-    }
-    */
+    }, [isRatingClicked])
 
     function OnRatingClicked(rating)
     {
