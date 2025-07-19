@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import NavbarOS from '../../components/NavbarOS';
 import FooterOS from '../../components/FooterOS';
 import SettingsSidebar from '../../components/SettingsSidebar';
@@ -8,6 +8,12 @@ function PreferredLanguage() {
   const [interfaceLang, setInterfaceLang] = useState('English');
   const [subtitleLang, setSubtitleLang] = useState('English');
   const [subtitleOption, setSubtitleOption] = useState('auto-select');
+
+  useEffect(() => {
+    document.title = "Settings - OtakuStream"
+    document.body.classList.remove('bg-os-dark-primary');
+    document.body.classList.add('bg-[#181a1b]');
+  }, [])
 
   return (
     <>

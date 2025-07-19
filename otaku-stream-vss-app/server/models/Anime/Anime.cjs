@@ -61,12 +61,23 @@ class Anime extends Model
                     description: description, 
                     copyright: copyright, 
                     originalTranslation: originalTranslation, 
-                    coverFilename: coverFilename,
+                    coverHREF: `temp`,
                 });
 
                 await anime.validate();
 
                 await anime.save();
+
+                Anime.update(
+                    {
+                        coverHREF: `/uploads/anime/${anime.id}/${coverFilename}`,
+                    },
+                    {
+                        where: {
+                            id: anime.id,
+                        },
+                    }
+                );
 
                 await this.#CreateDirectory(anime);
                 resolve(anime);
@@ -74,6 +85,41 @@ class Anime extends Model
             catch(err)
             {
                 Logging.LogError(`Could Not Add Anime To Database ${title} --- ${err.message}`);
+                reject(new Error(errormsg.fallback));
+            }
+        });
+    }
+
+    static UpdateInDB(id, update, transaction = null)
+    {
+        return new Promise(async (resolve, reject) => { 
+            try
+            {
+                const updateValues = {}
+                if(update.title) { updateValues.title = update.title; }
+                if(update.description) { updateValues.description = update.description; }
+                if(update.copyright) { updateValues.copyright = update.copyright; }
+                if(update.originalTranslation) { updateValues.originalTranslation = update.originalTranslation; }
+                if(update.coverFilename) { updateValues.coverHREF = `/uploads/anime/${id}/${update.coverFilename}`; }
+
+                const query = {}
+                query.where = {}
+                query.where.id = id;
+                if(transaction)
+                {
+                    query.transaction = transaction;
+                }
+
+                await Anime.update(
+                    updateValues,
+                    query,
+                );
+
+                resolve();
+            }
+            catch(err)
+            {
+                Logging.LogError(`Could Not Update Anime In Database ${id} --- ${err.message}`);
                 reject(new Error(errormsg.fallback));
             }
         });
@@ -214,7 +260,7 @@ function AnimeInit(sequelize)
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            coverFilename: {
+            coverHREF: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },

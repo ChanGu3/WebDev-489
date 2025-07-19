@@ -87,6 +87,34 @@ class AnimeInstallment extends Model
         });
     }
 
+    static UpdateInDB(id, update, transaction = null)
+    {
+        return new Promise(async (resolve, reject) => { 
+            try
+            {
+                const updateValues = {}
+                if(update.title) { updateValues.title = update.title; }
+
+                const query = {}
+                query.where = {}
+                query.where.id = id;
+                if(transaction)
+                {
+                    query.transaction = transaction;
+                }
+
+                await AnimeInstallment.update(updateValues, query);
+
+                resolve();
+            }
+            catch(err)
+            {
+                Logging.LogError(`could not update animeInstallment in database ${id} --- ${err.message}`);
+                reject(new Error(errormsg.fallback));
+            }
+        });
+    }
+
     static RemoveFromDB(id)
     {
         return new Promise(async (resolve, reject) => { 

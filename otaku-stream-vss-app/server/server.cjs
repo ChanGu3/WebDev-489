@@ -58,14 +58,14 @@ app.use('/uploads', uploadsRouter);
 app.use('/api', apiRouter);
 
 //
-// - Serves Static Files From Build -
-//
-app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
-
-//
 // - Resets Session Based On Session Existence In Database - 
 //
 app.use(controller.CookieChecker);
+
+//
+// - Serves Static Files From Build -
+//
+app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
 
 //
 // - Serves URL Routes From Build -

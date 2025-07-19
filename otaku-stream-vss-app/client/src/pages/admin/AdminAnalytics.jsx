@@ -5,7 +5,7 @@ function AdminAnalytics() {
   const [analytics, setAnalytics] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [limit] = useState(10);
+  const [limit] = useState(8);
   const [offset, setOffset] = useState(0);
 
   const fetchAnalytics = async () => {
@@ -13,7 +13,7 @@ function AdminAnalytics() {
     try {
       const res = await fetch(`/api/authorize/admin/analytics/anime/streams?limit=${limit}&offset=${offset}`, { credentials: 'include' });
       const data = await res.json();
-      setAnalytics(data.analytics || []);
+      setAnalytics(data || []);
     } catch (e) {
       setError('Failed to load analytics');
     } finally {
@@ -22,6 +22,10 @@ function AdminAnalytics() {
   };
 
   useEffect(() => {
+    document.title = "Analytics - OtakuStream"
+    document.body.classList.remove('bg-os-dark-primary');
+    document.body.classList.add('bg-[#181a1b]');
+
     fetchAnalytics();
     // eslint-disable-next-line
   }, [offset]);
@@ -43,9 +47,9 @@ function AdminAnalytics() {
           <tbody>
             {analytics.map((a, i) => (
               <tr key={i}>
-                <td>{a.animeTitle}</td>
-                <td>{a.avgRating}</td>
-                <td>{a.movieTitle}</td>
+                <td><a className='hover:text-os-blue-tertiary' href={`/series/${a.animeID}/${a.animeTitle}`}>{a.animeTitle}</a></td>
+                <td>{a.ratingData.avg}</td>
+                <td><a className='hover:text-os-blue-tertiary' href={`/stream/${a.id}/${a.title}`}>{a.title}</a></td>
                 <td>{a.likes}</td>
                 <td>{a.views}</td>
               </tr>
@@ -53,7 +57,11 @@ function AdminAnalytics() {
           </tbody>
         </table>
       )}
-      <button className="admin-analytics-more-btn" onClick={() => setOffset(offset + limit)}>View more</button>
+      <div className='flex flex-row items-center justify-center'>
+        <button className={`admin-members-more-btn ${(offset > 0) ? ``: `hidden`}`} onClick={() => { if (offset > 0) { setOffset(offset - limit) }} }>Go Back</button>
+        <p className='flex flex-row gap-x-2 m-4 text-sm font-semibold text-center'>Page <span className='text-os-blue-tertiary'>{(offset/limit) + 1}</span></p>
+        <button className={`admin-members-more-btn ${(analytics.length < limit) ? 'hidden': ''}`} onClick={() => { if (!(analytics.length < limit)) { setOffset(offset + limit) } }}>View more</button>
+      </div>
     </div>
   );
 }

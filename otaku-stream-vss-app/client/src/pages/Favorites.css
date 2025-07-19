@@ -1,6 +1,5 @@
 .favorites-layout {
   min-height: 100vh;
-  background: #181a1b;
   padding: 0 2vw 40px 2vw;
 }
 .favorites-title {
@@ -20,7 +19,8 @@
   gap: 24px;
 }
 .favorites-search {
-  flex: 1 1 300px;
+  flex: 1 1 350px;
+  max-height: 40px;
   max-width: 350px;
   padding: 8px 14px;
   border-radius: 6px;
@@ -174,10 +174,15 @@
 @media (max-width: 700px) {
   .favorites-controls {
     flex-direction: column;
-    align-items: stretch;
+    justify-content: center;
+    align-items: center;
     gap: 16px;
   }
   .favorites-grid {
     grid-template-columns: 1fr;
+  }
+  .favorites-search {
+      width: 80%;
+      margin-right: 0px;
   }
 } 

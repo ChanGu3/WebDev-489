@@ -89,11 +89,19 @@ class Session extends Model
             {
                 try
                 {
-                    const session = await Session.findByPk(id);
-                    session.expDate = GetNewExpDate();
-                    await session.validate();
-                    await session.save();
+                    Session.update(
+                        {
+                            expDate: GetNewExpDate(),
+                        },
+                        {
+                            where: {
+                                id: id,
+                            }
+                        }
+                    )
 
+                    const session = await Session.findByPk(id);
+                    
                     resolve(session);
                 }
                 catch(err)
@@ -135,7 +143,6 @@ class Session extends Model
             }
             else
             {
-                console.error(chalk.red(`[otakustream] Could Not Update Session For ${oldID}`));
                 reject(new Error(errormsg.sessionDoesNotExist));
             }
         });

@@ -19,6 +19,10 @@ function EmailPassword() {
 
   // Load current user information
   useEffect(() => {
+    document.title = "Settings - OtakuStream"
+    document.body.classList.remove('bg-os-dark-primary');
+    document.body.classList.add('bg-[#181a1b]');
+
     async function fetchCurrentUser() {
       try {
         const res = await fetch('/api/authorize/member/navbar', {

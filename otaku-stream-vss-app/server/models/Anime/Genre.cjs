@@ -26,7 +26,7 @@ class Genre extends Model
             if (await this.#Exists(name))
             {
                 Logging.LogWarning(`genre exists no need to add ${name} to database with the same name`);
-                reject();
+                reject(`genre exists no need to add ${name} to database with the same name`);
                 return;
             }
 
@@ -93,19 +93,27 @@ class Genre extends Model
 
     static Setup()
     {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             try
             {
-                const genres = [
-                    'Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy',
-                    'Music', 'Romance', 'Slice-Of-Life', 'Sports', 'Seinen',
-                    'Shonen', 'Shojo', 'Sci-Fi', 'Supernatural', 'Thriller'];
+                const list = await this.GetAll();
+                if(list.length > 0)
+                {
+                    resolve(this.GetAll());
+                }
+                else
+                {
+                    const genres = [
+                        'Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy',
+                        'Music', 'Romance', 'Slice-Of-Life', 'Sports', 'Seinen',
+                        'Shonen', 'Shojo', 'Sci-Fi', 'Supernatural', 'Thriller'];
 
-                genres.forEach(async (value, index) => {
-                    await this.#AddToDB(value);
-                });
+                    genres.forEach(async (value, index) => {
+                        this.#AddToDB(value).then().catch();
+                    });
 
-                resolve(this.GetAll());
+                    resolve(this.GetAll());
+                }
             }
             catch(err)
             {

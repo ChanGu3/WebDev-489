@@ -65,19 +65,25 @@ const Database = {
     SavedCard,
 }
 
+
 async function Setup()
 {
-    await sequelize.sync({force: isDev });
-
-    if(isDev)
+    try
     {
-        const { DevSetup } = require('../models/DevSetup.cjs');
-        await DevSetup();
+        await sequelize.sync({force: isDev });
+
+        if(isDev)
+        {
+            const { DevSetup } = require('../models/DevSetup.cjs');
+            await DevSetup();
+        }
+        await Genre.Setup();
+        await Admin.SetupRootAdmin();
     }
-
-
-    await Admin.SetupRootAdmin();
-
+    catch(err)
+    {
+        //throw new Error(err.message);
+    }
 }
 
 Setup().then().catch((err) => { Logging.LogError(`(something went wrong setting up development) ${err}`) });

@@ -19,6 +19,10 @@ function PaymentInfo() {
   const [isFormValid, setIsFormValid] = useState(false);
 
   useEffect(() => {
+    document.title = "Settings - OtakuStream"
+    document.body.classList.remove('bg-os-dark-primary');
+    document.body.classList.add('bg-[#181a1b]');
+
     fetchCards();
     fetchBillingHistory();
   }, []);

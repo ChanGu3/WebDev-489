@@ -270,7 +270,7 @@ function AnimeDetails()
             <NavbarOS/>
                 <main>
                     <div className="relative w-full h-[34vw]">
-                        <img src="/png/ImageNotFound.png" className="object-cover w-full h-[100%] mask-b-from-55% mask-b-to-100%" />
+                        <img src={(anime) ? anime.coverHREF : ''} className="object-cover w-full h-[100%] mask-b-from-55% mask-b-to-100%" />
 
                         {/* Rating */}
                         <div className="absolute flex flex-row justify-center md:justify-end w-full h-[100%] md:h-auto top-0 left-0">
@@ -317,7 +317,7 @@ function AnimeDetails()
                                         c4.386-2.741,7.05-7.548,7.05-12.72c0-5.172-2.664-9.979-7.05-12.72L52.95,2.28c-4.625-2.891-10.453-3.043-15.222-0.4
                                         C32.959,4.524,30,9.547,30,15v300C30,320.453,32.959,325.476,37.728,328.12z"/>
                                 </svg>
-                                <p className="text-os-white text-sm lg:text-lg font-semibold"><span>{(continueWatchingStreamAnime) ? "Continue Watching": "Start Watching"}:</span> <span>{(continueWatchingStreamAnime) ? `S${continueWatchingStreamAnime.installmentSeasonNum}|E${continueWatchingStreamAnime.streamNumber} -  ${continueWatchingStreamAnime.title}`: (startWatchingStreamAnime) ? `S${startWatchingStreamAnime.installmentSeasonNum}|E${startWatchingStreamAnime.streamNumber} - ${(startWatchingStreamAnime.title.length > 20) ? `${startWatchingStreamAnime.title.slice(0,20)}...` : startWatchingStreamAnime.title}` : ''}</span></p>
+                                <p className="text-os-white text-sm lg:text-lg font-semibold"><span>{(continueWatchingStreamAnime) ? "Continue Watching": "Start Watching"}:</span> <span>{(continueWatchingStreamAnime) ? `${(!continueWatchingStreamAnime.isMovie) ? `S${continueWatchingStreamAnime.installmentSeasonNum}|E${continueWatchingStreamAnime.streamNumber} - ` : ''}${continueWatchingStreamAnime.title}`: (startWatchingStreamAnime) ? `${(!startWatchingStreamAnime.isMovie) ? `S${startWatchingStreamAnime.installmentSeasonNum}|E${startWatchingStreamAnime.streamNumber} - ` : ''}${(startWatchingStreamAnime.title.length > 20) ? `${startWatchingStreamAnime.title.slice(0,20)}...` : startWatchingStreamAnime.title}` : ''}</span></p>
                             </a>
 
                             {/* F */}
@@ -339,10 +339,10 @@ function AnimeDetails()
 
                             <div className={`w-[100%] flex flex-col justify-start gap-y-2 ${(isShowingDetails) ? "": "hidden"}`}>
                                 <p id="originaltranslation" className="text-os-dark-secondary text-xs  break-words whitespace-normal"><span className="text-os-white">Original Translation:</span> {(anime) ? anime.originalTranslation : ''}</p>
-                                <p id="othertranslation" className={`text-os-dark-secondary text-xs  break-words whitespace-normal`}><span className="text-os-white">Other Translation:</span> {(anime && anime.otherTranslations.length > 0) ? anime.otherTranslations.map((el, index) => { return <span key={index}> {el} </span> }) : 'None'}</p>
+                                <p id="othertranslation" className={`text-os-dark-secondary text-xs  break-words whitespace-normal`}><span className="text-os-white">Other Translation:</span> {(anime && anime.otherTranslations.length > 0) ? anime.otherTranslations.map((el, index) => { return <span className="mx-0.25" key={index}> {el} </span> }) : 'None'}</p>
                                 {/*<p id="subtitles" className="text-os-dark-secondary text-xs  break-words whitespace-normal"><span className="text-os-white">Subtitles:</span> Japanese, English, Español, Korean (Hangugeo), Mandarin</p>*/}
                                 {/*<p id="contentadvisory" className="text-os-dark-secondary text-xs  break-words whitespace-normal"><span className="text-os-white">Content Advisory:</span> 13+, None</p>*/}
-                                <p id="categories" className="text-os-blue-tertiary text-xs break-words whitespace-normal"><span className="text-os-white">Genres:</span> {(anime) ? anime.genres.map((genre, index) => { return <a key={index} className="active:text-os-blue-tertiary/80 hover:underline" href={`/discover/genre/${genre}`}>{genre}</a> }) : ''} </p>
+                                <p id="categories" className="text-os-dark-secondary text-xs break-words whitespace-normal"><span className="text-os-white">Genres:</span> {(anime && anime.genres.length > 0) ? anime.genres.map((genre, index) => { return <a key={index} className="text-os-blue-tertiary active:text-os-blue-tertiary/80 hover:underline mx-1" href={`/discover/genre/${genre}`}>{genre}</a> }) : 'None'} </p>
                                 <p id="seriescopyright" className="text-os-blue-primary text-xs break-words whitespace-normal">&copy; {(anime) ? anime.copyright : ''}</p>
                             </div>
                             <div className="w-full my-2 flex flex-row justify-end">
@@ -382,7 +382,7 @@ function AnimeDetails()
                                                                                                             episodeNum={streamAnime.streamNumber} 
                                                                                                             isMovie={streamAnime.isMovie} 
                                                                                                             streamTitle={streamAnime.title} 
-                                                                                                            streamImageSrc="/png/ImageNotFound.png" 
+                                                                                                            streamImageSrc={streamAnime.coverHREF} 
                                                                                                             dateReleased={(() => { if(streamAnime) { return `${new Date(streamAnime.releaseDate).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})}`} else { return ''} })()} 
                                                                                                             href={`/stream/${streamAnime.id}/${streamAnime.title}`}/>} ) : ''}
                             </div>

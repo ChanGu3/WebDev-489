@@ -8,13 +8,14 @@ class AnimeGenre extends Model
     //
     // Member Exists in DB true otherwise false
     //
-    static async #Exists(animeID, genre)
+    static async #Exists(animeID, genre, transaction = null)
     {
        const instance = await AnimeGenre.findOne({
             where: {
                 animeID: animeID,
                 genre: genre,
-            }
+            },
+            transaction: transaction
        });
        return (instance) ? true : false;
     }
@@ -23,11 +24,11 @@ class AnimeGenre extends Model
     // reject --> string: error msg
     // resolve --> instance: created Member
     //
-    static AddToDB(animeID, genre)
+    static AddToDB(animeID, genre, transaction = null)
     {
         return new Promise( async (resolve, reject) => {
 
-            if (await this.#Exists(animeID, genre))
+            if (await this.#Exists(animeID, genre, transaction))
             {
                 Logging.LogWarning(`animeID & genre pair exists`);
                 reject(new Error(`anime already has this genre`));
@@ -43,7 +44,14 @@ class AnimeGenre extends Model
 
                 await newAnimeGenre.validate();
 
-                await newAnimeGenre.save();
+                if (transaction)
+                {
+                    await newAnimeGenre.save({transaction});
+                }
+                else
+                {
+                    await newAnimeGenre.save();
+                }
 
                 resolve(newAnimeGenre);
             }
@@ -119,6 +127,34 @@ class AnimeGenre extends Model
             catch(err)
             {
                 Logging.LogError(`could not get AnimeGenre from database ${animeID}|${genre} --- ${err.message}`);
+                reject(new Error(errormsg.fallback));
+            }
+        })
+    }
+
+    //
+    // reject --> string: error msg
+    // resolve --> nothing
+    //
+    static RemoveAllByAnimeIDFromDB(animeID, transaction = null)
+    {
+        return new Promise( async (resolve, reject) => {
+            try
+            {
+                const query = {}
+                query.where = {}
+                query.where.animeID = animeID;
+                if(transaction)
+                {
+                    query.transaction = transaction;
+                }
+
+                const deleted = await AnimeGenre.destroy(query);
+                resolve();
+            }
+            catch(err)
+            {
+                Logging.LogError(`could not remove all genre from database by ${animeID} --- ${err.message}`);
                 reject(new Error(errormsg.fallback));
             }
         })

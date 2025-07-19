@@ -1,6 +1,10 @@
 const path = require('path');
 const fs = require('fs').promises;
 const { Logging, errormsg } = require('./server-logging.cjs');
+const multer = require('multer');
+
+const pathDev = path.join(__dirname, 'dev');
+const pathImages = path.join(pathDev, 'images')
 const pathUploads = path.join(__dirname, "uploads");
 const pathAnime = path.join(pathUploads, "anime");
 
@@ -21,6 +25,25 @@ async function mkDir(relativePath)
     catch(err)
     {
         Logging.LogError(`could not make directory for ${relativePath} ${err}`);
+        throw new Error(`${err}`);
+    }
+}
+
+async function rnDir(prevRelativePath, relativePath)
+{
+    try
+    {
+        if(!(await doesAnimePathExist(prevRelativePath)))
+        {
+            const oldFullPath = path.join(pathAnime, prevRelativePath);
+            const newFullPath = path.join(pathAnime, relativePath);
+            await fs.rename(oldFullPath, newFullPath);  mkdir(fullPath , {recursive: true});
+            return relativePath;
+        }
+    }
+    catch(err)
+    {
+        Logging.LogError(`could not rename directory from ${prevRelativePath} to ${relativePath} ${err}`);
         throw new Error(`${err}`);
     }
 }
@@ -95,9 +118,50 @@ function GetUploadPath(relativePath)
     return path.join(pathUploads, relativePath);
 }
 
-function GetImageNotFoundPathFile()
+//
+// deletes anime cover
+//
+async function DeleteAnimeFile(relativePath, fileName)
 {
-    return uploads.GetUploadPath('ImageNotFound');
+    try
+    {
+        if(!(await doesAnimePathExist(relativePath)))
+        {
+            const fullPath = path.join(pathAnime, relativePath, fileName);
+            await fs.rm(fullPath, {force: true})
+            return fullPath;
+        }
+        else
+        {
+            return "file does not exist"
+        }
+    }
+    catch(err)
+    {
+        Logging.LogError(`could not delete file:${fileName} from relativepath:${relativePath} --- ${err}`);
+        throw new Error(`${err}`);
+    } 
+}
+
+//
+// uploads anime cover
+//
+async function UploadAnimeFile(relativePath, fileName, buffer)
+{
+    try
+    {
+        if(await doesAnimePathExist(relativePath))
+        {
+            const fullPath = path.join(pathAnime, relativePath, fileName);
+            await fs.writeFile(fullPath, buffer, {flush: true}) 
+            return fullPath;
+        }
+    }
+    catch(err)
+    {
+        Logging.LogError(`could not upload file ${fileName} to relativepath:${relativePath} --- ${err}`);
+        throw new Error(`${err}`);
+    } 
 }
 
 /*
@@ -118,12 +182,14 @@ const animeCover = multer.diskStorage({
 
 const uploads = {
     mkDir,
+    rnDir,
     doesAnimePathExist,
     doesUploadPathExist,
     recursiveDirDeleteInAnime,
     GetUploadPath,
     GetAnimePath,
-    GetImageNotFoundPathFile,
+    DeleteAnimeFile,
+    UploadAnimeFile,
 }
 
 //
@@ -150,9 +216,23 @@ async function clearAnimeFolder()
     }
 }
 
+async function CopyImageFileToAnimePath(existingFileName, relativePath)
+{
+    try
+    {
+        await fs.copyFile(path.join(pathImages, existingFileName), path.join(pathAnime, relativePath));
+    }
+    catch(err)
+    {
+        Logging.LogError(`could not copy file to anime path:${relativePath} | ${err}`);
+    }
+}
+
 const uploadsDev = {
     clearAnimeFolder,
+    CopyImageFileToAnimePath,
 }
+
 
 module.exports.uploads = uploads;
 module.exports.uploadsDev = uploadsDev;

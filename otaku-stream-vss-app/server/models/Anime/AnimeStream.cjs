@@ -6,9 +6,9 @@ const { uploads } = require('../../server-uploads.cjs');
 
 class AnimeStream extends Model 
 {
-    static async #Exists(title)
+    static async #Exists(id)
     {
-        const stream = await AnimeStream.findByPk(title);
+        const stream = await AnimeStream.findByPk(id);
         return (stream) ? true : false;
     }
 
@@ -34,6 +34,24 @@ class AnimeStream extends Model
         })
     }
 
+    static #RenameDirectory(oldAnimeStream, newAnimeStream)
+    {
+        return new Promise(async (resolve, reject) => {
+            try
+            {
+                const oldRelativePath = this.#AnimeStreamDirPath(oldAnimeStream);
+                const newRelativePath = this.#AnimeStreamDirPath(newAnimeStream);
+                await uploads.rnDir(oldRelativePath, newRelativePath);
+                resolve(newRelativePath);
+            }
+            catch(err)
+            {
+                Logging.LogError(`animeStream directory renaming could not be resolved for title:${oldAnimeStream.title} --- ${err}`);
+                reject({error: err.message});
+            }
+        })
+    }
+
     static #DeleteDirectory(animeStream)
     {
         return new Promise(async (resolve, reject) => {
@@ -51,7 +69,7 @@ class AnimeStream extends Model
         })
     }
 
-    static AddToDB(animeID, installmentID, title, isMovie, streamNumber, synopsis, releaseDate)
+    static AddToDB(animeID, installmentID, title, isMovie, streamNumber, synopsis, releaseDate, coverFileName)
     {
         return new Promise(async (resolve, reject) => { 
             try
@@ -64,6 +82,7 @@ class AnimeStream extends Model
                     synopsis: synopsis,
                     releaseDate: releaseDate,
                     animeID: animeID,
+                    coverHREF: `/uploads/anime/${animeID}/${installmentID}/${title}/${coverFileName}`
                 });
 
                 await animeStream.validate();
@@ -76,6 +95,48 @@ class AnimeStream extends Model
             catch(err)
             {
                 Logging.LogError(`could not add animeStream to database ${title} --- ${err.message}`);
+                reject(new Error(errormsg.fallback));
+            }
+        });
+    }
+
+    static UpdateInDB(id, update, transaction = null)
+    {
+        return new Promise(async (resolve, reject) => { 
+            try
+            {
+                const oldAnimeStream = await AnimeStream.GetByID(id); 
+
+                const updateValues = {}
+                if(update.title) { updateValues.title = update.title; }
+                if(update.synopsis) { updateValues.synopsis = update.synopsis; }
+                if(update.releaseDate) { updateValues.releaseDate = update.releaseDate; }
+                if(update.coverFilename) 
+                {
+                    updateValues.coverHREF = `/uploads/anime/${oldAnimeStream.animeID}/${oldAnimeStream.installmentID}/${(updateValues.title) ? updateValues.title : oldAnimeStream.title}/${update.coverFilename}`; 
+                }
+
+                const query = {}
+                query.where = {}
+                query.where.id = id;
+                if(transaction)
+                {
+                    query.transaction = transaction;
+                }
+
+                await AnimeStream.update(updateValues, query);
+
+                if(updateValues.title)
+                {
+                    const newAnimeStream = await AnimeStream.GetByID(oldAnimeStream.id, transaction);
+                    await this.#RenameDirectory(oldAnimeStream, newAnimeStream);
+                }
+
+                resolve();
+            }
+            catch(err)
+            {
+                Logging.LogError(`could not update animeStream in database ${id} --- ${err.message}`);
                 reject(new Error(errormsg.fallback));
             }
         });
@@ -121,18 +182,23 @@ class AnimeStream extends Model
         });
     }
 
-    static GetByID(id)
+    static GetByID(id, transaction = null)
     {
         return new Promise(async (resolve, reject) => {
             try
             {
                 if(await this.#Exists(id))
                 {
-                    const animeStream = await AnimeStream.findOne({
-                        where : {
-                            id: id,
-                        }
-                    });
+
+                    const query = {}
+                    query.where = {}
+                    query.where.id = id;
+                    if(transaction)
+                    {
+                        query.transaction = transaction;
+                    }
+
+                    const animeStream = await AnimeStream.findOne(query);
                     const {createdAt, updatedAt, ...rest} = animeStream.toJSON();
                     resolve(rest);
                 }
@@ -155,11 +221,11 @@ class AnimeStream extends Model
             try
             {   
                 const querys = {}
-                if(query.limit)
+                if(query && query.limit)
                 {
                     querys.limit = query.limit;
                 }
-                if(query.offset)
+                if(query && query.offset)
                 {
                     querys.offset = query.offset;
                 }
@@ -251,6 +317,10 @@ function AnimeStreamInit(sequelize)
                 type: DataTypes.DATE,
                 allowNull: false,
             },
+            coverHREF : {
+                type: DataTypes.STRING,
+                allowNull: false
+            }
         },
         {
             sequelize,

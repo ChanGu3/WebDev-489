@@ -1,4 +1,5 @@
 const { Member } = require('../../models/Accounts/member.cjs');
+const { Admin } = require('../../models/Accounts/admin.cjs');
 const { AnimeStream } = require('../../models/Anime/AnimeStream.cjs');
 const CombineDBJSON = require('../helper/combine-dbjson.cjs');
 //
@@ -35,11 +36,19 @@ async function GetAllMembers(req, res)
     {
         const membersList = await Member.GetAllMembers(query);
         const combinedMembersList = await Promise.all( membersList.map(async (member) => {
-            return await CombineDBJSON.CombineMemberData(member);
+            if (await Admin.Exists(member.email))
+            {
+                return null;
+            }
+            else
+            {
+                return await CombineDBJSON.CombineMemberData(member);
+            }
         })
 
         );
-        res.status(200).json(combinedMembersList);
+        const filteredMembersList = combinedMembersList.filter((el) => el != null)
+        res.status(200).json(filteredMembersList);
     }
     catch
     {

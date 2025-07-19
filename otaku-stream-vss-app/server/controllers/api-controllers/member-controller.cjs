@@ -7,7 +7,7 @@ const { AnimeRate } = require('../../models/Anime/AnimeRate.cjs');
 const { Member } = require('../../models/Accounts/member.cjs');
 
 async function SetupNavbar(req, res, next) 
-{
+{   
     res.status(200).json({user: { email: req.session.user.email } });
 }
 
@@ -252,8 +252,6 @@ async function UpdateEmail(req, res)
 {
     const { newEmail, currentPassword } = req.body;
     const currentEmail = req.session.user.email;
-
-    console.log(currentEmail, newEmail, currentPassword);
 
     try
     {

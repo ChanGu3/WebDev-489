@@ -15,6 +15,11 @@ function Favorites() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    document.title = "My Favorites - OtakuStream"
+    document.body.classList.remove('bg-os-dark-primary');
+    document.body.classList.add('bg-[#181a1b]');
+
+
     async function fetchFavorites() {
       setLoading(true);
       setError(null);
@@ -124,7 +129,7 @@ function Favorites() {
   return (
     <>
       <NavbarOS />
-      <main className="favorites-layout">
+      <main className="mx-3 md:mx-0 favorites-layout">
         <h1 className="favorites-title">My Favorites</h1>
         <div className="favorites-controls">
           <input
@@ -146,7 +151,7 @@ function Favorites() {
             ))}
           </div>
         </div>
-        <div className="favorites-grid">
+        <div className="favorites-grid mx-10">
           {loading ? (
             <div className="favorites-empty">Loading...</div>
           ) : error ? (
@@ -158,13 +163,15 @@ function Favorites() {
               const itemId = item.animeID || item.id || item.anime_id || item.animeId;
               return (
                 <div className="favorites-card" key={itemId}>
-                  <div className="favorites-card-image" />
+                  <div className="favorites-card-image">
+                    <img className='w-full h-full object-cover' src={item.coverHREF}></img>
+                  </div>
                   <div className="favorites-card-content">
                     <div className="favorites-card-header">
                       <span className="favorites-card-title">{item.title}</span>
                       <span className={`favorites-card-type favorites-card-type-${(item.type || '').toLowerCase()}`}>{item.type}</span>
                     </div>
-                    <div className="favorites-card-desc">{item.description}</div>
+                    <div className="favorites-card-desc line-clamp-3 md:line-clamp-4">{item.description}</div>
                     <div className="favorites-card-actions">
                       <button className="favorites-watch-btn" onClick={() => handleWatchNow(item.animeID || item.id || item.anime_id || item.animeId)}>
                         <span className="favorites-watch-icon">▶</span> Watch Now
