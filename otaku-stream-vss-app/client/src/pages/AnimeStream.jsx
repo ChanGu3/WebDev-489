@@ -94,7 +94,7 @@ function AnimeStream()
                 <a href={(animeStream) ? `/series/${animeStream.animeID}/${animeStream.animeTitle}` : ''}>
                     <div className="relative w-full h-[10vw] ">
                         <div className="absolute top-0 left-0 z-11 w-full h-full flex justify-start items-center px-8">
-                            <p className="text-lg md:text-4xl font-semibold text-os-white">{(animeStream) ? animeStream.animeTitle : ''}</p>
+                            <p className="text-lg md:text-4xl font-semibold text-os-white bg-black/60 rounded-sm px-4 py-2">{(animeStream) ? animeStream.animeTitle : ''}</p>
                         </div>
                         <img src={(animeStream) ? animeStream.coverHREF : '/png/ImageNotFound.png'} className="absolute top-0 left-0 object-cover w-full h-[100%] mask-b-from-55% mask-b-to-100% z-10" />
                     </div>

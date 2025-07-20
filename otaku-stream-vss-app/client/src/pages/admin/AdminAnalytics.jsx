@@ -52,7 +52,7 @@ function AdminAnalytics() {
             {analytics.map((a, i) => (
               <tr key={i}>
                 <td><a className='hover:text-os-blue-tertiary' href={`/series/${a.animeID}/${a.animeTitle}`}>{a.animeTitle}</a></td>
-                <td>{a.ratingData.avg}</td>
+                <td>{a.ratingData.avg.toFixed(1)}</td>
                 <td><a className='hover:text-os-blue-tertiary' href={`/stream/${a.id}/${a.title}`}>{a.title}</a></td>
                 <td>{a.likes}</td>
                 <td>{a.views}</td>

@@ -8,7 +8,15 @@ const { uploads } = require('../../server-uploads.cjs');
 async function AddEpisodeCount(installment)
 {
     const animeStream = await AnimeStream.GetAllByInstallmentID(installment.id);
-    installment.episodes = animeStream.length;
+    let episodes = 0;
+    for(const episode in animeStream.episodes)
+    {
+        if(!episode.isMovie)
+        {
+            episodes = episodes + 1;
+        }
+    }
+    installment.episodes = episodes;
 
     return installment;
 }
@@ -92,6 +100,13 @@ class AnimeInstallment extends Model
         return new Promise(async (resolve, reject) => { 
             try
             {
+                const installment = await AnimeInstallment.GetByID(id);
+                if(!(await uploads.doesAnimePathExist(this.#AnimeDirPath(installment))))
+                {
+                    await this.#CreateDirectory(installment);
+                    Logging.LogWarning(`directory does not exist had to re-create directory for installment called ${installment.title}`);
+                }
+
                 const updateValues = {}
                 if(update.title) { updateValues.title = update.title; }
 
