@@ -61,7 +61,7 @@ async function DevSetup()
         const animeCloudsSeason2ep1 = await AnimeStream.AddToDB(animeClouds.id, animeCloudsSeason2.id, "The Next Cloud 1", false, 1, lorem, new Date(1990,0,1,0,0,0), 'cloudss2ep1.jpg');
         await uploadsDev.CopyImageFileToAnimePath('cloudss2ep1.jpg',`${animeClouds.id}/${animeCloudsSeason2.id}/${animeCloudsSeason2ep1.title}/cloudss2ep1.jpg`); //dev adding image
         const animeCloudsMovie1 = await AnimeInstallment.AddToDB(animeClouds.id, "Movie: The Cloud Up Above", false);
-        const animeCloudsMovie1part1 = await AnimeStream.AddToDB(animeClouds.id, animeCloudsMovie1.id, "The Cloud Up Above", false, 1, lorem, new Date(1990,0,1,0,0,0), 'cloudsmovie1part1.jpg');
+        const animeCloudsMovie1part1 = await AnimeStream.AddToDB(animeClouds.id, animeCloudsMovie1.id, "The Cloud Up Above", true, 1, lorem, new Date(1990,0,1,0,0,0), 'cloudsmovie1part1.jpg');
         await uploadsDev.CopyImageFileToAnimePath('cloudsmovie1part1.jpg',`${animeClouds.id}/${animeCloudsMovie1.id}/${animeCloudsMovie1part1.title}/cloudsmovie1part1.jpg`); //dev adding image
 
         const anime1 = await Anime.AddToDB("StarlitHorizon", lorem, "starlit.inc", "Japanese", 'starhorizon.jpg');

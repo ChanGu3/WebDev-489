@@ -13,7 +13,7 @@ function Search()
     const [ animeList, SetAnimeList ] = useState(null);
     const [ previousSearchQuery, SetPreviousSearchQuery ] = useState(null);
 
-    async function SearchAndPopulateEpisodes(searchQuery)
+    async function SearchAndPopulateAnime(searchQuery)
     {
         try
         {
@@ -48,7 +48,7 @@ function Search()
     useEffect(() => {
         if(animeList !== null)
         {
-            SearchAndPopulateEpisodes(searchInputRef.current.value)
+            SearchAndPopulateAnime(searchInputRef.current.value)
         }
     },[limit]);
 
@@ -64,11 +64,11 @@ function Search()
             <NavbarOS/>
                 <main className="w-full mt-24 flex flex-col items-center">
                     <div className="mb-12 w-full flex flex-col justify-center items-center gap-y-4">
-                        <form id="searchform" name="searchform" method="GET" onSubmit={(event) => { event.preventDefault(); SearchAndPopulateEpisodes(searchInputRef.current.value); }} className="flex flex-row justify-center items-center gap-x-2 md:gap-x-4 w-full">
+                        <form id="searchform" name="searchform" method="GET" onSubmit={(event) => { event.preventDefault(); SearchAndPopulateAnime(searchInputRef.current.value); }} className="flex flex-row justify-center items-center gap-x-2 md:gap-x-4 w-full">
                             <button id="searchicon" name="searchicon" type="submit" className="cursor-pointer">
                                 <img className="min-w-6 w-6 md:min-w-7 md:w-7" src="/magnifying-glass-zoom-svgrepo-com.svg" alt="search-icon"></img>
                             </button>
-                            <input ref={searchInputRef} onChange={() => { SearchAndPopulateEpisodes(searchInputRef.current.value);}} id="search" name="search" className="p-1 md:p-2 w-[50%] border-os-blue-secondary border-1 md:border-2 rounded-sm text-os-white font-bold placeholder:text-os-white/80 placeholder:font-semibold" type="text" placeholder="Search"/>
+                            <input ref={searchInputRef} onChange={() => { SearchAndPopulateAnime(searchInputRef.current.value);}} id="search" name="search" className="p-1 md:p-2 w-[50%] border-os-blue-secondary border-1 md:border-2 rounded-sm text-os-white font-bold placeholder:text-os-white/80 placeholder:font-semibold" type="text" placeholder="Search"/>
                         </form>
                         <div className="flex flex-col justify-center items-center gap-y-1">
                             <p className='text-os-white text-sm md:text-md font-bold'>search our anime catolog!</p>

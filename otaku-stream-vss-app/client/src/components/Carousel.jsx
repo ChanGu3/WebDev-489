@@ -101,7 +101,7 @@ function Carousel({carouselList})
                 }
             </div>
 
-            {/*<!-- Slider indicators -->*/}
+            {/*<!-- Carousel indicators -->*/}
             <div id="slider-indicators" className="py-1 px-2 absolute z-30 flex justify-between bottom-[3vw] left-[8vw] rounded-sm gap-x-1 min-w-48 min-h-4">
                 {
                     currentCarouselData.map((item, index) => {
@@ -111,7 +111,7 @@ function Carousel({carouselList})
                 }
             </div>
             
-            {/*<!-- Slider controls -->*/}
+            {/*<!-- Carousel controls -->*/}
             <button id="left-slider" type="button" onClick={SlideLeft} className="absolute top-0 start-0 z-30 flex items-center justify-center h-full pl-1 md:pl-5 pr-1 cursor-pointer group focus:outline-none ">
                 <span className="inline-flex items-center justify-center w-5 h-5  md:w-10 md:h-10 rounded-xs bg-os-blue-tertiary/50 group-hover:bg-os-blue-tertiary/80 group-focus:ring-2 md:group-focus:ring-4 group-focus:ring-os-white/80 group-focus:outline-none">
                     <svg className="w-2 h-2 md:w-4 md:h-4 text-os-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">

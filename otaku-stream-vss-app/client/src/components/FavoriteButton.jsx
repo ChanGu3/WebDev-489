@@ -49,15 +49,20 @@ function FavoriteButton({animeID})
     }
 
     useEffect(() => {
-        fetch(`/api/authorize/member/`, {
+        fetch(`/api/authorize/member`, {
             method: 'GET',
         }).then((response) => {
             if(response.ok)
             {
+                return response.json();
+            }
+
+        }).then((data) => {
+            if(data && data.success)
+            {
                 SetIsAuthorized(true);
                 SeriesFavoriteAPI({isGet: true});
             }
-
         }).catch((err) => {});
     }, []);
 

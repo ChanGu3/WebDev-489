@@ -15,7 +15,7 @@ authentifyRouter.post('/signout', controller.AttemptSignOut);
 //
 // Sign Up
 //
-authentifyRouter.use('/signup', controller.AttemptSignUp, controller.AttemptSignIn);
+authentifyRouter.post('/signup', controller.AttemptSignUp, controller.AttemptSignIn);
 
 
 module.exports = authentifyRouter;

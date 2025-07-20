@@ -174,8 +174,8 @@ function ConfirmDelete({onClose, editAnimeData})
           <h1 className='w-full text-center font-bold text-2xl py-1 px-2'>Delete Anime</h1>
           <p className='w-full text-center font-semibold text-sm py-1 px-2 max-w-64'>are you sure you want to delete this anime. all data will be erased likes, favorites, etc... <span className='text-red-500 font-bold'>THIS IS NOT REVERSIBLE</span>.</p>
           <div className='flex flex-row justify-between items-center mx-6 mt-6 mb-2'>
-            <button type="button" className='rounded-sm bg-red-700 hover:bg-red-700/80 active:bg-red-700/60 px-2 py-1 cursor-pointer' onClick={() => { DeleteAnime(); onClose(); }}>Yes</button>
-            <button type="button" className='rounded-sm bg-os-blue-tertiary hover:bg-os-blue-tertiary/80 active:bg-os-blue-tertiary/60 px-2 py-1 cursor-pointer' onClick={() => { onClose(); }}>No</button>
+            <button type="button" className='rounded-sm bg-red-700 hover:bg-red-700/80 active:bg-red-700/60 px-2 py-1 cursor-pointer' onClick={() => { DeleteAnime(); onClose(); document.body.classList.remove('overflow-hidden'); }}>Yes</button>
+            <button type="button" className='rounded-sm bg-os-blue-tertiary hover:bg-os-blue-tertiary/80 active:bg-os-blue-tertiary/60 px-2 py-1 cursor-pointer' onClick={() => { onClose(); document.body.classList.remove('overflow-hidden'); }}>No</button>
           </div>
       </div>
     </div>
