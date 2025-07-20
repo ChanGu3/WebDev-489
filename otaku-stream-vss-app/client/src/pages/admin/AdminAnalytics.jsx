@@ -25,6 +25,10 @@ function AdminAnalytics() {
     document.title = "Analytics - OtakuStream"
     document.body.classList.remove('bg-os-dark-primary');
     document.body.classList.add('bg-[#181a1b]');
+    
+  }, []);
+
+  useEffect(() => {
 
     fetchAnalytics();
     // eslint-disable-next-line

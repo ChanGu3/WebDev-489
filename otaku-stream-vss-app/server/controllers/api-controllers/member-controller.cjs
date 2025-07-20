@@ -208,7 +208,6 @@ async function AddAnimeRating(req, res)
     try
     {
         await AnimeRate.AddToDB(req.session.user.email, animeID, newRating);
-        console.log(newRating);
         res.status(200).json({success: `successfully added AnimeRate with ${animeID} and rating ${newRating}`});
     }
     catch(err)

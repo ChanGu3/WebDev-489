@@ -46,7 +46,7 @@ function CategoryResult({isGenre, isAZ})
     }
 
     useEffect(() => {
-        document.title = `discover ${genre} - OtakuStream`;
+        document.title = `Discover ${genre} - OtakuStream`;
 
         if(isGenre)
         {

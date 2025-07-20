@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from 'react-router-dom';
 import "./ForgotPassword.css";
 
 function ForgotPassword() {
+  useEffect(() => {
+    document.title = "Forgot Password - OtakuStream";
+  }, [])
+
   return (
     <main className="main-fp">
       <div className="main-container">

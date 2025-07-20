@@ -56,7 +56,7 @@ function Signup()
     const errorRef = useRef(null)
 
     useEffect(() => {
-        document.title = "SignIn - OtakuStream";
+        document.title = "Sign Up - OtakuStream";
     }, []);
 
     async function ValidateSignUp()

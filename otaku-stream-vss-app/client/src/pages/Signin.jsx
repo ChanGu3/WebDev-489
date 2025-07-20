@@ -58,7 +58,7 @@ function Signin()
     const navigate = useNavigate();
 
     useEffect(() => {
-        document.title = "SignIn - OtakuStream";
+        document.title = "Sign In - OtakuStream";
     }, []);
 
     async function ValidateSignin(email)
