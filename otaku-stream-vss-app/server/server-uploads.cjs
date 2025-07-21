@@ -17,7 +17,7 @@ const pathImages = path.join(pathDev, 'images');
 
 const pathDevAnime = path.join(pathDev, "anime");
 const relativePathDevAnime = path.join(relativePathDev, "anime");
-const hrefPathDevAnime = "dev/anime";
+const hrefPathDevAnime = "/dev/anime";
 
 //
 // production
@@ -25,7 +25,7 @@ const hrefPathDevAnime = "dev/anime";
 const pathUploads = path.join(__dirname, "uploads");
 const relativePathUpload = path.join("uploads");
 const pathAnime = path.join(pathUploads, "anime");
-const hrefPathAnime = "uploads/anime";
+const hrefPathAnime = "/uploads/anime";
 const relativePathAnime = path.join(relativePathUpload, "anime");
 
 const activeAnimePath = (isDev) ? pathDevAnime : pathAnime;
