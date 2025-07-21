@@ -2,9 +2,9 @@
 
 ## Collaborators
 
-> - Jongmin Kim
-> - Monica Kim
 > - Chandler Guthrie  
+> - Monica Kim
+> - Jongmin Kim 
 
 <br>
 
@@ -12,30 +12,15 @@
 
 ---
 >
-> #### Installing Existing Packages/Dependencies
+> #### Installation
 >
 > - Step1: Install NodeJS (Node Package Manager[npm] Should Come With It)
-> - Step2: While in the otaku-stream-vss-app directory of repo in terminal execute --> npm install
+> - Step2: in app root directory --> npm install
 >
 >
-> #### Running Scripts For Dev, Build, Starting Build, Clean Build
+> #### Scripts
 >
-> Look inside of the root package.json for more details...  --- Otherwise Below ---
->
-> - Development (To Run Development While Building [Note: will automatically run "npm run clean" first]) --> npm run dev
-> - Build (To Build The Distribution Static Folder [Note: will automatically run "npm run clean" first]) --> npm run build
-> - Clean (To Remove The Current Distribution Build) --> npm run clean
-> - Start (To Run The Server Using The Current Distribution Build) --> npm run start
-
-<br>
-
-### Collaboration Documentation Location
-
----
->
-> #### Google Drive
->
-> - [Link](https://drive.google.com/drive/folders/10vn7jZNH4iewhBU9jdoEg90wCQiyYmeq?usp=sharing) to google drive documents
+> Look inside of the root package.json for more details...
 >
 
 <br>
@@ -44,10 +29,14 @@
 
 ---
 
-> #### Service/Brand Name: Otaku Stream
+> #### [Brand Name: Otaku Stream]
 > #### Users
-> - Admin: Upload/Update/Remove Series/Movies and Manage Users
-> - Users: Stream anime as a free or premium user
+> - Admin: Upload, Update, Delete Movies. View Analytics. Manage Members.
+> - Users: Stream movies as a free or premium user
+> #### Anime
+> - Anime: the title itself
+> - Installment: the seasons or Movies
+> - Stream: the episode or movie themselves
 
 <br>
 
@@ -61,30 +50,28 @@
 > - Hyper Text Markup Language [HTML] (Markup)
 > - Cascade Styling Sheets [CSS] (Declarative)
 >
-> #### Runtime Environment
+> #### Server Runtime Environment
 >
 > - Node JS
 >
 > #### Frameworks/Libraries
 >
-> - Express JS (Routing/HTTP Requests)
-> - React JS (UI)
-> - TBA (RDBMS - Framework)
-> -
-> - [BootStrap](https://getbootstrap.com/) (Possible CSS Library)
+> - [JS] Look inside of the root package.json as well as the server and client workspaces package.json for more details...
+>
+> - [TailWind](https://tailwindcss.com/)
+> - [BootStrap](https://getbootstrap.com/)
 > - 
-> #### Relational Database Management System [RDBMS]
+> #### Relational Database Management System [RDBMS] 
 >
-> - TBA (SQL)
+> - SQLITE (SQL - used with Object Relational Mapper [ORM])
 >
-> #### Testing (At Least 1 For Mid Sumbmission)
->
-> - [Selenium](https://www.selenium.dev/)
 
 <br>
 <br>
+<br>
+<br>
 
-#### Resources From Syllabus
+#### Helpful Resources
 
 ---
 
@@ -99,10 +86,6 @@
 > ##### - Express: Web Framework for Node.js: [Link](https://expressjs.com/en/4x/api.html) to an external site
 >
 > ##### - bBootstrap front end toolkit: [Link](https://getbootstrap.com/docs/5.2/getting-started/introduction) to an external site
-
-#### Resources From Lecture
-
----
 
 > ##### - HTML: [General](https://www.w3.org/html/)
 >
