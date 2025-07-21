@@ -345,16 +345,16 @@ async function UpdateAnimeMovieFromDB(req, res)
         if(animeCover)
         {
             const animeRelativePath = `${animeData.id}`;
-
-            await uploads.DeleteAnimeFile(animeRelativePath, animeFileName);
+            const routeList = anime.coverHREF.split('/');
+            await uploads.DeleteAnimeFile(animeRelativePath, routeList[routeList.length-1]);
             await uploads.UploadAnimeFile(animeRelativePath, animeFileName, animeCover.buffer);
         }
 
         if(animeStreamCover)
         {
             const animeStreamRelativePath = path.join(`${animeData.id}`, `${animeStreamData.installmentID}`, `${animeStreamData.title}`);
-
-            await uploads.DeleteAnimeFile(animeStreamRelativePath, animeStreamFileName);
+            const routeList = stream.coverHREF.split('/');
+            await uploads.DeleteAnimeFile(animeStreamRelativePath, routeList[routeList.length-1]);
             await uploads.UploadAnimeFile(animeStreamRelativePath, animeStreamFileName, animeStreamCover.buffer);
         }
 

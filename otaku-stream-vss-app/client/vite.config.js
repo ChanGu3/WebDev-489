@@ -15,7 +15,7 @@ export default defineConfig({
         changeOrigin: true,
         secure: false
       },
-        '/uploads': {
+      '/dev': {
         target: `http://localhost:${PORT}`, // Your Express backend
         changeOrigin: true,
         secure: false

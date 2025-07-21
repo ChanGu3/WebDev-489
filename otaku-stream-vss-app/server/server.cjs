@@ -18,17 +18,6 @@ const sessionSecretKey = 'some-key'
 
 const app = express();
 
-//
-// - For Development
-//
-if (isDev)
-{
-  const cors = require('cors');
-  app.use(cors({
-    origin: 'http://localhost:5173',
-    credentials: true               
-  }));
-}
 app.use(cookieParser(sessionSecretKey));
 app.use(session({
   secret: sessionSecretKey,       
@@ -50,7 +39,20 @@ app.use(express.json());
 //
 // - Uploads Routing -
 //
-app.use('/uploads', uploadsRouter);
+if (isDev)
+{
+  const cors = require('cors');
+  app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true               
+  }));
+
+  app.use('/dev', uploadsRouter);
+}
+else
+{
+  app.use('/uploads', uploadsRouter);
+}
 
 //
 // - API Routing -

@@ -14,7 +14,7 @@ class AnimeStream extends Model
 
     static #AnimeStreamDirPath(animeStream)
     {
-        return path.join(animeStream.animeID, animeStream.installmentID, `${animeStream.title}`);
+        return path.join(animeStream.animeID, animeStream.installmentID, animeStream.title);
     }
 
     static #CreateDirectory(animeStream)
@@ -82,7 +82,7 @@ class AnimeStream extends Model
                     synopsis: synopsis,
                     releaseDate: releaseDate,
                     animeID: animeID,
-                    coverHREF: `/uploads/anime/${animeID}/${installmentID}/${title}/${coverFileName}`
+                    coverHREF: `${uploads.activeHREFPathAnime}/${animeID}/${installmentID}/${title}/${coverFileName}`
                 });
 
                 await animeStream.validate();
@@ -105,7 +105,12 @@ class AnimeStream extends Model
         return new Promise(async (resolve, reject) => { 
             try
             {
-                const oldAnimeStream = await AnimeStream.GetByID(id); 
+                const oldAnimeStream = await AnimeStream.GetByID(id);
+                if(!(await uploads.doesAnimePathExist(this.#AnimeStreamDirPath(oldAnimeStream))))
+                {
+                    await this.#CreateDirectory(oldAnimeStream);
+                    Logging.LogWarning(`directory does not exist had to re-create directory for stream called ${oldAnimeStream.title}`);
+                }
 
                 const updateValues = {}
                 if(update.title) { updateValues.title = update.title; }
@@ -113,7 +118,7 @@ class AnimeStream extends Model
                 if(update.releaseDate) { updateValues.releaseDate = update.releaseDate; }
                 if(update.coverFilename) 
                 {
-                    updateValues.coverHREF = `/uploads/anime/${oldAnimeStream.animeID}/${oldAnimeStream.installmentID}/${(updateValues.title) ? updateValues.title : oldAnimeStream.title}/${update.coverFilename}`; 
+                    updateValues.coverHREF = `${uploads.activeHREFPathAnime}/${oldAnimeStream.animeID}/${oldAnimeStream.installmentID}/${(updateValues.title) ? updateValues.title : oldAnimeStream.title}/${update.coverFilename}`; 
                 }
 
                 const query = {}

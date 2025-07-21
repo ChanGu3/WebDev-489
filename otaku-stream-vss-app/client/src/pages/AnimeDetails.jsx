@@ -236,8 +236,10 @@ function AnimeDetails()
 
     const ratings = []; 
     for (let i = 1; i < 6; i++) {
+        let percentage = 0;
+        if (anime && anime.ratingData.count > 0) { percentage = ((anime.ratingData[`rate${i}Count`]/anime.ratingData.count) * 100).toFixed(0)}
         ratings.push(
-            <div key={i} className="flex flex-row items-center gap-x-2 py-1 px-1 md:px-2">
+            <div key={`rate${i}Count`} className="flex flex-row items-center gap-x-2 py-1 px-1 md:px-2">
                 <div className="flex flex-row items-center">
                     <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" className="place-self-center w-3 md:w-6">
                         <path className="text-os-blue-secondary" d="M11.245 4.174C11.4765 3.50808 11.5922 3.17513 11.7634 3.08285C11.9115 3.00298 12.0898 3.00298 12.238 3.08285C12.4091 3.17513 12.5248 3.50808 12.7563 4.174L14.2866 8.57639C14.3525 8.76592 14.3854 8.86068 14.4448 8.93125C14.4972 8.99359 14.5641 9.04218 14.6396 9.07278C14.725 9.10743 14.8253 9.10947 15.0259 9.11356L19.6857 9.20852C20.3906 9.22288 20.743 9.23007 20.8837 9.36432C21.0054 9.48051 21.0605 9.65014 21.0303 9.81569C20.9955 10.007 20.7146 10.2199 20.1528 10.6459L16.4387 13.4616C16.2788 13.5829 16.1989 13.6435 16.1501 13.7217C16.107 13.7909 16.0815 13.8695 16.0757 13.9507C16.0692 14.0427 16.0982 14.1387 16.1563 14.3308L17.506 18.7919C17.7101 19.4667 17.8122 19.8041 17.728 19.9793C17.6551 20.131 17.5108 20.2358 17.344 20.2583C17.1513 20.2842 16.862 20.0829 16.2833 19.6802L12.4576 17.0181C12.2929 16.9035 12.2106 16.8462 12.1211 16.8239C12.042 16.8043 11.9593 16.8043 11.8803 16.8239C11.7908 16.8462 11.7084 16.9035 11.5437 17.0181L7.71805 19.6802C7.13937 20.0829 6.85003 20.2842 6.65733 20.2583C6.49056 20.2358 6.34626 20.131 6.27337 19.9793C6.18915 19.8041 6.29123 19.4667 6.49538 18.7919L7.84503 14.3308C7.90313 14.1387 7.93218 14.0427 7.92564 13.9507C7.91986 13.8695 7.89432 13.7909 7.85123 13.7217C7.80246 13.6435 7.72251 13.5829 7.56262 13.4616L3.84858 10.6459C3.28678 10.2199 3.00588 10.007 2.97101 9.81569C2.94082 9.65014 2.99594 9.48051 3.11767 9.36432C3.25831 9.23007 3.61074 9.22289 4.31559 9.20852L8.9754 9.11356C9.176 9.10947 9.27631 9.10743 9.36177 9.07278C9.43726 9.04218 9.50414 8.99359 9.55657 8.93125C9.61593 8.86068 9.64887 8.76592 9.71475 8.57639L11.245 4.174Z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -245,9 +247,9 @@ function AnimeDetails()
                     <p className="text-[10px] md:text-sm text-os-blue-secondary font-semibold">{i}</p>
                 </div>
                 <div className="rounded-xs bg-os-dark-secondary/70 w-[55%] h-1 md:h-2">
-                    <div className={`rounded-xs ${(anime && anime.ratingData.count !== 0) ? `w-[${(anime.ratingData[`rate${i}Count`]/anime.ratingData.count).toFixed(0)}%]` : 'w-[0%]'}  h-1 md:h-2 bg-os-blue-secondary`}></div>
+                    <div className={`rounded-xs h-1 md:h-2 bg-os-blue-secondary`} style={{ width: `${percentage}%` }}></div>
                 </div>
-                <p className="text-[10px] md:text-sm text-os-blue-secondary font-semibold">{(anime) ? `${(anime.ratingData.count !== 0) ? ((anime.ratingData[`rate${i}Count`]/anime.ratingData.count).toFixed(0) * 100) : 0}`: ''}%</p>
+                <p className="text-[10px] md:text-sm text-os-blue-secondary font-semibold">{percentage}%</p>
             </div>
         );
     }
@@ -262,7 +264,7 @@ function AnimeDetails()
                         {/* Rating */}
                         <div className="absolute flex flex-row justify-center md:justify-end w-full h-[100%] md:h-auto top-0 left-0">
                             <div className={`md:mt-[1vw] lg:mt-[6vw] md:mr-[12vw] flex ${(isRatingClicked !== null && isRatingClicked !== undefined) ? 'flex-row' : 'flex-col'} md:flex-col justify-center items-center`}>
-                                <p className="text-lg md:text-4xl text-os-white font-bold my-2 w-full text-center">{(anime) ? `${anime.title}` : ``}</p>
+                                <p className="text-lg md:text-4xl text-os-white font-bold my-0.5 xl:my-2 w-full text-center bg-black/60 rounded-sm px-4 py-2">{(anime) ? `${anime.title}` : ``}</p>
                                 
                                 <div className="w-full flex flex-col items-center">
                                     {/* 5 Stars */}
@@ -271,7 +273,7 @@ function AnimeDetails()
                                     </div>
 
                                     {/* Divider */}
-                                    <div className="hidden md:block my-6 rounded-sm border-3 border-os-white w-[80%]"></div>
+                                    <div className="hidden md:block my-1 xl:my-6 rounded-sm border-3 border-os-white w-[80%]"></div>
 
 
                                     {/* Rating Dropdown */}
@@ -295,16 +297,16 @@ function AnimeDetails()
                         </div>
 
                         {/* Favorites & Continue Watching */}
-                        <div className="md:absolute flex flex-row justify-center md:justify-start my-2 md:my-0 gap-8 bottom-[2vw] left-12">
+                        <div className="md:absolute flex flex-row justify-center md:justify-start my-2 md:my-0 gap-8 md:bottom-[2vw] md:left-12">
                             
                             {/* CW */}
-                            <a href={(continueWatchingStreamAnime) ? `/stream/${continueWatchingStreamAnime.streamID}/${continueWatchingStreamAnime.title}` : (startWatchingStreamAnime) ? `/stream/${startWatchingStreamAnime.id}/${startWatchingStreamAnime.title}`: ''} className={`flex flex-row justify-center items-center gap-2 bg-os-blue-secondary px-2 py-1 group ${(startWatchingStreamAnime || continueWatchingStreamAnime) ? '' : 'hidden'}`}>
+                            <a href={(continueWatchingStreamAnime) ? `/stream/${continueWatchingStreamAnime.streamID}/${continueWatchingStreamAnime.title}` : (startWatchingStreamAnime) ? `/stream/${startWatchingStreamAnime.id}/${startWatchingStreamAnime.title}`: ''} className={`w-[80%] md:w-fit flex flex-row justify-start items-center gap-2 bg-os-blue-secondary px-2 py-1 group ${(startWatchingStreamAnime || continueWatchingStreamAnime) ? '' : 'hidden'}`}>
                                 <svg className="group-hover:text-os-white group-active:text-os-white text-transparent w-[24px] lg:w-[32px]" fill="currentColor" stroke="#F8F8FF" strokeWidth="40" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="-110 -100 512 512" xmlSpace="preserve">
                                     <path id="XMLID_308_" d="M37.728,328.12c2.266,1.256,4.77,1.88,7.272,1.88c2.763,0,5.522-0.763,7.95-2.28l240-149.999
                                         c4.386-2.741,7.05-7.548,7.05-12.72c0-5.172-2.664-9.979-7.05-12.72L52.95,2.28c-4.625-2.891-10.453-3.043-15.222-0.4
                                         C32.959,4.524,30,9.547,30,15v300C30,320.453,32.959,325.476,37.728,328.12z"/>
                                 </svg>
-                                <p className="text-os-white text-sm lg:text-lg font-semibold"><span>{(continueWatchingStreamAnime) ? "Continue Watching": "Start Watching"}:</span> <span>{(continueWatchingStreamAnime) ? `${(!continueWatchingStreamAnime.isMovie) ? `S${continueWatchingStreamAnime.installmentSeasonNum}|E${continueWatchingStreamAnime.streamNumber} - ` : ''}${continueWatchingStreamAnime.title}`: (startWatchingStreamAnime) ? `${(!startWatchingStreamAnime.isMovie) ? `S${startWatchingStreamAnime.installmentSeasonNum}|E${startWatchingStreamAnime.streamNumber} - ` : ''}${(startWatchingStreamAnime.title.length > 20) ? `${startWatchingStreamAnime.title.slice(0,20)}...` : startWatchingStreamAnime.title}` : ''}</span></p>
+                                <p className="text-os-white text-sm lg:text-lg font-semibold truncate"><span>{(continueWatchingStreamAnime) ? "Continue Watching": "Start Watching"}:</span> <span>{(continueWatchingStreamAnime) ? `${(!continueWatchingStreamAnime.isMovie) ? `S${continueWatchingStreamAnime.installmentSeasonNum}|E${continueWatchingStreamAnime.streamNumber} - ` : ''}${continueWatchingStreamAnime.title}`: (startWatchingStreamAnime) ? `${(!startWatchingStreamAnime.isMovie) ? `S${startWatchingStreamAnime.installmentSeasonNum}|E${startWatchingStreamAnime.streamNumber} - ` : ''}${(startWatchingStreamAnime.title.length > 20) ? `${startWatchingStreamAnime.title.slice(0,20)}...` : startWatchingStreamAnime.title}` : ''}</span></p>
                             </a>
 
                             {/* F */}
@@ -363,7 +365,7 @@ function AnimeDetails()
                                 />
 
                             </div>
-                            <div className="grid grid-flow-cols justify-items-center lg:p-0 grid-cols-2 md:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-x-8 gap-y-6 md:gap-y-8">
+                            <div className="grid grid-flow-row grid-cols-2 xl:grid-cols-3 lg:p-0 gap-x-8 gap-y-6 md:gap-y-8">
                                 { (streamListGrid) ? streamListGrid.map((streamAnime, index) => {return <StreamModule2 
                                                                                                             key={index} 
                                                                                                             episodeNum={streamAnime.streamNumber} 

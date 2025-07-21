@@ -70,7 +70,7 @@ class Anime extends Model
 
                 Anime.update(
                     {
-                        coverHREF: `/uploads/anime/${anime.id}/${coverFilename}`,
+                        coverHREF: `${uploads.activeHREFPathAnime}/${anime.id}/${coverFilename}`,
                     },
                     {
                         where: {
@@ -95,12 +95,19 @@ class Anime extends Model
         return new Promise(async (resolve, reject) => { 
             try
             {
+                const anime = await Anime.GetByID(id);
+                if(!(await uploads.doesAnimePathExist(this.#AnimeDirPath(anime))))
+                {
+                    await this.#CreateDirectory(anime);
+                    Logging.LogWarning(`directory does not exist had to re-create directory for anime called ${anime.title}`);
+                }
+
                 const updateValues = {}
                 if(update.title) { updateValues.title = update.title; }
                 if(update.description) { updateValues.description = update.description; }
                 if(update.copyright) { updateValues.copyright = update.copyright; }
                 if(update.originalTranslation) { updateValues.originalTranslation = update.originalTranslation; }
-                if(update.coverFilename) { updateValues.coverHREF = `/uploads/anime/${id}/${update.coverFilename}`; }
+                if(update.coverFilename) { updateValues.coverHREF = `${uploads.activeHREFPathAnime}/${id}/${update.coverFilename}`; }
 
                 const query = {}
                 query.where = {}

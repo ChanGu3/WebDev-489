@@ -1,12 +1,36 @@
+const minimist = require('minimist');
+const argv = minimist(process.argv.slice(2));
+const isDev = (argv.dev === true || argv.d === true);
+
 const path = require('path');
 const fs = require('fs').promises;
 const { Logging, errormsg } = require('./server-logging.cjs');
 const multer = require('multer');
 
+//
+// development
+//
 const pathDev = path.join(__dirname, 'dev');
-const pathImages = path.join(pathDev, 'images')
+const relativePathDev = path.join("dev");
+
+const pathImages = path.join(pathDev, 'images');
+
+const pathDevAnime = path.join(pathDev, "anime");
+const relativePathDevAnime = path.join(relativePathDev, "anime");
+const hrefPathDevAnime = "/dev/anime";
+
+//
+// production
+//
 const pathUploads = path.join(__dirname, "uploads");
+const relativePathUpload = path.join("uploads");
 const pathAnime = path.join(pathUploads, "anime");
+const hrefPathAnime = "/uploads/anime";
+const relativePathAnime = path.join(relativePathUpload, "anime");
+
+const activeAnimePath = (isDev) ? pathDevAnime : pathAnime;
+const activeRelativePathAnime = (isDev) ? relativePathDevAnime : relativePathAnime
+const activeHREFPathAnime = (isDev) ? hrefPathDevAnime : hrefPathAnime
 
 //
 // dirpath should be a path starting from upload so to make a directory in upload called hello just do "test" nested must be path.join("test","child");
@@ -17,7 +41,7 @@ async function mkDir(relativePath)
     {
         if(!(await doesAnimePathExist(relativePath)))
         {
-            const fullPath = path.join(pathAnime, relativePath);
+            const fullPath = path.join(activeAnimePath, relativePath);
             await fs.mkdir(fullPath , {recursive: true});
             return relativePath;
         }
@@ -33,11 +57,11 @@ async function rnDir(prevRelativePath, relativePath)
 {
     try
     {
-        if(!(await doesAnimePathExist(prevRelativePath)))
+        if(await doesAnimePathExist(prevRelativePath))
         {
-            const oldFullPath = path.join(pathAnime, prevRelativePath);
-            const newFullPath = path.join(pathAnime, relativePath);
-            await fs.rename(oldFullPath, newFullPath);  mkdir(fullPath , {recursive: true});
+            const oldFullPath = path.join(activeAnimePath, prevRelativePath);
+            const newFullPath = path.join(activeAnimePath, relativePath);
+            await fs.rename(oldFullPath, newFullPath);
             return relativePath;
         }
     }
@@ -55,7 +79,7 @@ async function doesAnimePathExist(relativePath)
 {
     try
     {
-        const fullPath = path.join(pathAnime, relativePath);
+        const fullPath = path.join(activeAnimePath, relativePath);
         await fs.access(fullPath);
         return true;
     }
@@ -85,6 +109,26 @@ async function doesUploadPathExist(relativePath)
 }
 
 //
+// true or false if found
+//
+async function doesDevPathExist(relativePath)
+{
+    try
+    {
+        const fullPath = path.join(pathDev, relativePath);
+        await fs.access(fullPath);
+        return true;
+    }
+    catch(err)
+    {
+        //Logging.LogWarning(`could not find if path ${dirpath} exists in uploads`);
+        return false;
+    }
+}
+
+
+
+//
 //
 //
 async function recursiveDirDeleteInAnime(relativePath)
@@ -93,7 +137,7 @@ async function recursiveDirDeleteInAnime(relativePath)
     {
         if(!relativePath.includes('.') && relativePath.length !== 0 && await doesAnimePathExist(relativePath))
         {
-            const fullpath = path.join(pathAnime, relativePath);
+            const fullpath = path.join(activeAnimePath, relativePath);
             await fs.rm(fullpath, {recursive: true, force: true});
         }
         else
@@ -110,7 +154,7 @@ async function recursiveDirDeleteInAnime(relativePath)
 
 function GetAnimePath(relativePath)
 {
-    return path.join(pathAnime, relativePath);
+    return path.join(activeAnimePath, relativePath);
 }
 
 function GetUploadPath(relativePath)
@@ -125,9 +169,9 @@ async function DeleteAnimeFile(relativePath, fileName)
 {
     try
     {
-        if(!(await doesAnimePathExist(relativePath)))
+        if(await doesAnimePathExist(path.join(relativePath, fileName)))
         {
-            const fullPath = path.join(pathAnime, relativePath, fileName);
+            const fullPath = path.join(activeAnimePath, relativePath, fileName);
             await fs.rm(fullPath, {force: true})
             return fullPath;
         }
@@ -152,7 +196,7 @@ async function UploadAnimeFile(relativePath, fileName, buffer)
     {
         if(await doesAnimePathExist(relativePath))
         {
-            const fullPath = path.join(pathAnime, relativePath, fileName);
+            const fullPath = path.join(activeAnimePath, relativePath, fileName);
             await fs.writeFile(fullPath, buffer, {flush: true}) 
             return fullPath;
         }
@@ -190,6 +234,7 @@ const uploads = {
     GetAnimePath,
     DeleteAnimeFile,
     UploadAnimeFile,
+    activeHREFPathAnime,
 }
 
 //
@@ -199,10 +244,10 @@ async function clearAnimeFolder()
 {
     try 
     {
-        if(!pathAnime.includes('.') && await doesUploadPathExist('anime'))
+        if(!activeAnimePath.includes('.') && await doesDevPathExist('anime'))
         {
-            await fs.rm(pathAnime, {recursive: true, force: true});
-            await fs.mkdir(pathAnime, {recursive: true});
+            await fs.rm(activeAnimePath, {recursive: true, force: true});
+            await fs.mkdir(activeAnimePath, {recursive: true});
             Logging.LogDev(`anime folder successfully cleared`);
         }
         else
@@ -220,7 +265,7 @@ async function CopyImageFileToAnimePath(existingFileName, relativePath)
 {
     try
     {
-        await fs.copyFile(path.join(pathImages, existingFileName), path.join(pathAnime, relativePath));
+        await fs.copyFile(path.join(pathImages, existingFileName), path.join(activeAnimePath, relativePath));
     }
     catch(err)
     {
