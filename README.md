@@ -1,4 +1,8 @@
-# CPTS_489 Web Development Project
+# OTAKU STREAM 
+- #### Video Streaming Service
+- #### CPTS_489 Web Development Project
+
+<br>
 
 ## Collaborators
 
@@ -20,15 +24,14 @@
 >
 > #### Scripts
 >
-> Look inside of the root package.json for more details...
->
+> - Look inside of the root package.json for more details...
 
 <br>
 
 ### Video Streaming Service
 
 ---
-
+>
 > #### [Brand Name: Otaku Stream]
 > #### Users
 > - Admin: Upload, Update, Delete Movies. View Analytics. Manage Members.
@@ -43,7 +46,7 @@
 ### Web Development Stack
 
 ---
-
+>
 > #### Languages
 >
 > - Javascript [JS] (Programming)
@@ -60,7 +63,7 @@
 >
 > - [TailWind](https://tailwindcss.com/)
 > - [BootStrap](https://getbootstrap.com/)
-> - 
+> 
 > #### Relational Database Management System [RDBMS] 
 >
 > - SQLITE (SQL - used with Object Relational Mapper [ORM])
